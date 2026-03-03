@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Umesh — Content Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080810;--s1:#0e0e1a;--s2:#141425;--s3:#1a1a30;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --gold:#f5c842;--gold2:#ffab00;--orange:#ff6b35;--green:#00e676;
+  --blue:#448aff;--purple:#b388ff;--red:#ff5252;--ice:#00c8ff;
+  --text:#f0f0ff;--muted:#6b6b8a;--muted2:#3a3a55;--glow:rgba(245,200,66,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);z-index:200}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px}
+
+/* HEADER */
+header{padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,8,16,0.97);backdrop-filter:blur(20px);z-index:100;flex-wrap:wrap;gap:10px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--orange));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#000;flex-shrink:0}
+.logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.5px}
+.logo-tag{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:'Space Mono',monospace}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{font-family:'Space Mono',monospace;font-size:10px;padding:4px 10px;border-radius:100px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.badge.live{border-color:rgba(0,230,118,0.3);color:var(--green);background:rgba(0,230,118,0.06)}
+.badge.live::before{content:'● ';font-size:7px}
+.key-btn{font-size:11px;color:var(--muted);background:var(--s2);border:1px solid var(--border);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s}
+.key-btn:hover{color:var(--text);border-color:var(--border2)}
+
+/* TABS */
+.tabs{display:flex;align-items:center;gap:2px;padding:10px 28px;border-bottom:1px solid var(--border);overflow-x:auto;background:var(--s1);position:sticky;top:65px;z-index:90}
+.tabs::-webkit-scrollbar{height:0}
+.tab{font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;border:none;background:none;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--text);background:var(--s2)}
+.tab.active{background:var(--s2);color:var(--gold);border:1px solid rgba(245,200,66,0.2)}
+.tab-dot{width:6px;height:6px;border-radius:50%;background:var(--muted2)}
+.tab.active .tab-dot{background:var(--gold)}
+
+/* MAIN */
+main{max-width:1000px;margin:0 auto;padding:28px 24px 80px}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION TITLES */
+.sec-title{font-family:'Syne',sans-serif;font-weight:700;font-size:22px;margin-bottom:6px}
+.sec-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card+.card{margin-top:12px}
+.card-title{font-family:'Syne',sans-serif;font-weight:600;font-size:13px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title span{font-size:15px}
+
+/* INPUT */
+.field label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-family:'Space Mono',monospace}
+.field select,.field input,.field textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px 13px;color:var(--text);font-family:'Manrope',sans-serif;font-size:13px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.field select:focus,.field input:focus,.field textarea:focus{border-color:rgba(245,200,66,0.4)}
+.field select option{background:#141425}
+.field textarea{resize:none;line-height:1.6}
+.field textarea::placeholder,.field input::placeholder{color:var(--muted2)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;border:none;border-radius:8px;padding:13px 24px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,200,66,0.25)}
+.btn-primary:disabled{background:var(--muted2);color:var(--muted);cursor:not-allowed;transform:none;box-shadow:none}
+.btn-sec{background:var(--s2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:8px 14px;font-size:12px;font-family:'Manrope',sans-serif;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-sec:hover{border-color:var(--border2);background:var(--s3)}
+.btn-ghost{background:none;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;font-family:'Manrope',sans-serif;cursor:pointer;transition:all .15s}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
+
+/* LOADING */
+.loading{display:none;text-align:center;padding:48px 20px}
+.spin{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--muted);font-size:12px;font-family:'Space Mono',monospace;line-height:1.7}
+
+/* ERROR */
+.err{background:rgba(255,82,82,0.08);border:1px solid rgba(255,82,82,0.2);border-radius:8px;padding:12px 16px;color:#ff8a80;font-size:12px;display:none;margin-bottom:14px}
+
+/* RESULTS */
+.results{display:none}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+.results-title{font-family:'Syne',sans-serif;font-weight:700;font-size:18px}
+.results-meta{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace}
+
+/* SCORE BADGE */
+.score{display:inline-flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:11px;padding:3px 9px;border-radius:4px;font-weight:700}
+.score.high{background:rgba(0,230,118,0.12);color:var(--green);border:1px solid rgba(0,230,118,0.25)}
+.score.med{background:rgba(245,200,66,0.12);color:var(--gold);border:1px solid rgba(245,200,66,0.25)}
+.score.low{background:rgba(255,82,82,0.12);color:var(--red);border:1px solid rgba(255,82,82,0.25)}
+
+/* IDEA CARDS */
+.idea-card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;position:relative;overflow:hidden;transition:border-color .15s}
+.idea-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.idea-card.growth::before{background:var(--green)}
+.idea-card.revenue::before{background:var(--gold)}
+.idea-card.series::before{background:var(--purple)}
+.idea-card:hover{border-color:var(--border2)}
+.idea-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.idea-type-badge{flex-shrink:0;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-top:2px;font-family:'Space Mono',monospace}
+.idea-type-badge.growth{background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.2)}
+.idea-type-badge.revenue{background:rgba(245,200,66,0.1);color:var(--gold);border:1px solid rgba(245,200,66,0.2)}
+.idea-type-badge.series{background:rgba(179,136,255,0.1);color:var(--purple);border:1px solid rgba(179,136,255,0.2)}
+.idea-title{font-size:14px;font-weight:600;line-height:1.4;flex:1}
+.idea-angle{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:8px}
+.idea-keywords{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.kw{font-size:10px;color:var(--blue);background:rgba(68,138,255,0.08);border:1px solid rgba(68,138,255,0.15);border-radius:4px;padding:2px 7px;font-family:'Space Mono',monospace}
+.idea-actions{display:flex;gap:5px;flex-wrap:wrap}
+
+/* UPLOAD TIMING */
+.time-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+.time-slot{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px 6px;text-align:center;transition:all .15s}
+.time-slot.best{border-color:rgba(0,230,118,0.4);background:rgba(0,230,118,0.06)}
+.time-slot.good{border-color:rgba(245,200,66,0.3);background:rgba(245,200,66,0.04)}
+.time-day{font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:6px;text-transform:uppercase}
+.time-val{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px}
+.time-bar{height:3px;border-radius:2px;background:var(--muted2);margin:0 4px}
+.time-bar-fill{height:100%;border-radius:3px}
+.time-slot.best .time-bar-fill{background:var(--green)}
+.time-slot.good .time-bar-fill{background:var(--gold)}
+
+/* HOOK ANALYZER */
+.hook-score-ring{width:100px;height:100px;position:relative;margin:0 auto 16px;flex-shrink:0}
+.hook-score-ring svg{transform:rotate(-90deg)}
+.hook-score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:26px}
+.hook-breakdown{display:flex;flex-direction:column;gap:8px}
+.hb-row{display:flex;align-items:center;gap:10px}
+.hb-label{font-size:11px;color:var(--muted);width:120px;flex-shrink:0;font-family:'Space Mono',monospace}
+.hb-bar{flex:1;height:5px;background:var(--s3);border-radius:3px;overflow:hidden}
+.hb-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.hb-val{font-size:11px;font-family:'Space Mono',monospace;width:28px;text-align:right;color:var(--muted)}
+
+/* TRENDING */
+.trend-card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;transition:border-color .15s}
+.trend-card:hover{border-color:var(--border2)}
+.trend-rank{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--muted2);width:32px;flex-shrink:0;line-height:1}
+.trend-info{flex:1}
+.trend-topic{font-size:14px;font-weight:600;margin-bottom:4px}
+.trend-reason{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px}
+.trend-stats{display:flex;gap:10px;flex-wrap:wrap}
+.trend-stat{font-size:10px;font-family:'Space Mono',monospace;color:var(--muted)}
+.trend-stat b{color:var(--text)}
+
+/* COMPETITOR GAP */
+.gap-card{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:8px}
+.gap-opportunity{font-size:14px;font-weight:600;margin-bottom:4px}
+.gap-reason{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.5}
+.gap-title-chip{font-size:12px;color:var(--orange);background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.15);border-radius:4px;padding:4px 9px;display:inline-block;cursor:pointer;margin:2px;transition:all .15s}
+.gap-title-chip:hover{background:rgba(255,107,53,0.15)}
+
+/* SERIES */
+.series-card{background:var(--s2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.series-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.series-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
+.series-ep{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;font-size:13px}
+.series-ep:last-child{border-bottom:none}
+.ep-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);width:24px;flex-shrink:0;margin-top:2px}
+.ep-title{flex:1;line-height:1.4}
+.ep-hook{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+/* ANALYTICS TAB */
+.analytics-layout{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+@media(max-width:700px){.analytics-layout{grid-template-columns:1fr}}
+.stats-input-panel{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:18px;position:sticky;top:120px}
+.si-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.si-item label{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px;font-family:'Space Mono',monospace}
+.si-item input,.si-item textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:'Manrope',sans-serif;font-size:12px;outline:none;transition:border-color .2s}
+.si-item input:focus,.si-item textarea:focus{border-color:rgba(245,200,66,0.4)}
+.si-item input::placeholder,.si-item textarea::placeholder{color:var(--muted2)}
+.si-item.full{grid-column:1/-1}
+
+/* STAT CARDS ROW */
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:600px){.stat-cards{grid-template-columns:repeat(2,1fr)}}
+.sc{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.sc.c1::before{background:var(--gold)}.sc.c2::before{background:var(--ice)}
+.sc.c3::before{background:var(--green)}.sc.c4::before{background:var(--purple)}
+.sc-l{font-size:9px;color:var(--muted);letter-spacing:1.3px;text-transform:uppercase;margin-bottom:6px}
+.sc-v{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;line-height:1}
+.sc.c1 .sc-v{color:var(--gold)}.sc.c2 .sc-v{color:var(--ice)}
+.sc.c3 .sc-v{color:var(--green)}.sc.c4 .sc-v{color:var(--purple)}
+.sc-s{font-size:10px;color:var(--muted);margin-top:3px}
+
+/* INSIGHTS */
+.insight-item{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.insight-ico{font-size:16px;flex-shrink:0;margin-top:1px}
+.insight-txt{font-size:12px;line-height:1.6;color:rgba(255,255,255,.7)}
+.insight-txt b{color:var(--text)}
+
+/* ANALYTICS IDEAS */
+.ana-idea{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;transition:.12s}
+.ana-idea:hover{border-color:var(--border2)}
+.ana-idea-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.ana-idea-num{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--muted2);flex-shrink:0;line-height:1;margin-top:2px}
+.ana-idea-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;line-height:1.35;flex:1}
+.ana-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.atag{padding:2px 7px;border-radius:3px;font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;font-family:'Space Mono',monospace}
+.atag.viral{background:rgba(255,107,53,.14);color:var(--orange);border:1px solid rgba(255,107,53,.2)}
+.atag.trending{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.18)}
+.atag.series{background:rgba(0,200,255,.1);color:var(--ice);border:1px solid rgba(0,200,255,.18)}
+.atag.edu{background:rgba(179,136,255,.1);color:var(--purple);border:1px solid rgba(179,136,255,.18)}
+.ana-why{font-size:11px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:8px}
+.ana-hook{background:rgba(245,200,66,.05);border-left:2px solid var(--gold);padding:7px 11px;border-radius:0 6px 6px 0;font-size:11px;color:rgba(255,255,255,.65);font-style:italic;margin-bottom:8px;line-height:1.6}
+.ana-footer{display:flex;gap:12px;flex-wrap:wrap}
+.ana-foot-item{font-size:9px;color:var(--muted)}
+.ana-foot-item b{color:rgba(255,255,255,.45)}
+
+/* DAILY BRIEF */
+.brief-hero{background:linear-gradient(135deg,var(--s1),var(--s2));border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
+.brief-hero::after{content:'20K';position:absolute;right:-10px;bottom:-20px;font-family:'Syne',sans-serif;font-weight:800;font-size:120px;color:rgba(245,200,66,0.04);line-height:1;pointer-events:none}
+.brief-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:8px;letter-spacing:1px}
+.brief-headline{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(20px,4vw,32px);line-height:1.1;margin-bottom:8px}
+.brief-headline em{color:var(--gold);font-style:normal}
+.brief-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.brief-stats{display:flex;gap:16px;flex-wrap:wrap}
+.brief-stat-val{font-family:'Syne',sans-serif;font-weight:700;font-size:20px}
+.brief-stat-val.up{color:var(--green)}.brief-stat-val.warn{color:var(--gold)}.brief-stat-val.alert{color:var(--red)}
+.brief-stat-label{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.plan-row{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.plan-row:last-child{border-bottom:none}
+.plan-num{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--muted2);width:36px;flex-shrink:0;line-height:1}
+.plan-label{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.plan-text{font-size:14px;font-weight:600;margin-bottom:6px;line-height:1.4}
+.plan-why{font-size:11px;color:var(--muted);line-height:1.5}
+.plan-badge{font-size:10px;font-family:'Space Mono',monospace;padding:2px 8px;border-radius:4px;background:rgba(245,200,66,0.1);color:var(--gold);border:1px solid rgba(245,200,66,0.2);display:inline-block;margin-top:6px}
+
+/* SCRIPT PANEL */
+.script-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;backdrop-filter:blur(6px)}
+.script-panel{position:fixed;top:0;right:-110%;width:min(700px,100vw);height:100vh;background:#0a0a14;border-left:1px solid var(--border);z-index:201;transition:right .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.script-panel.open{right:0}
+.sp-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;flex-shrink:0}
+.sp-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:4px}
+.sp-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;line-height:1.3;word-break:break-word}
+.sp-close{background:none;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:5px;cursor:pointer;font-size:14px;flex-shrink:0;transition:all .15s}
+.sp-close:hover{color:var(--text);border-color:var(--border2)}
+.sp-actions{padding:10px 20px;border-bottom:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.sp-btn{font-size:11px;padding:6px 12px;border-radius:5px;border:1px solid var(--border);background:var(--s2);color:var(--text);cursor:pointer;font-family:'Manrope',sans-serif;font-weight:600;transition:all .15s;white-space:nowrap}
+.sp-btn:hover{border-color:var(--border2)}
+.sp-btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));border-color:transparent;color:#000}
+.sp-btn.tp{background:rgba(179,136,255,0.1);border-color:rgba(179,136,255,0.3);color:var(--purple)}
+.sp-body{flex:1;overflow-y:auto;padding:20px}
+.sp-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:14px}
+.sp-loading p{color:var(--muted);font-size:12px;font-family:'Space Mono',monospace;text-align:center;line-height:1.7}
+.script-part{margin-bottom:24px;animation:fadeIn .4s ease forwards;opacity:0}
+.script-part:nth-child(1){animation-delay:.05s}.script-part:nth-child(2){animation-delay:.1s}
+.script-part:nth-child(3){animation-delay:.15s}.script-part:nth-child(4){animation-delay:.2s}
+.script-part:nth-child(5){animation-delay:.25s}.script-part:nth-child(6){animation-delay:.3s}
+.part-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.part-badge{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:3px;background:var(--s2);border:1px solid var(--border);color:var(--muted);text-transform:uppercase}
+.part-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.part-timing{margin-left:auto;font-size:10px;color:var(--muted2);font-family:'Space Mono',monospace}
+.script-text{font-size:13px;line-height:2;color:#ccc;white-space:pre-wrap;border-left:2px solid var(--border);padding-left:14px}
+.part-divider{height:1px;background:var(--s2);margin-bottom:24px}
+.sp-footer{padding:10px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--s1)}
+.sp-footer span{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace}
+.sp-wc{color:var(--green);font-weight:600}
+
+/* TELEPROMPTER */
+#tp{position:fixed;inset:0;background:#000;z-index:300;display:none;flex-direction:column;overflow:hidden;touch-action:none}
+#tp-progress{position:absolute;top:0;left:0;right:0;height:2px;background:#111;z-index:11}
+#tp-prog-fill{height:100%;background:var(--purple);width:0%;transition:width .15s}
+#tp-bar{position:absolute;top:0;left:0;right:0;z-index:10;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:linear-gradient(to bottom,rgba(0,0,0,.95),transparent);transition:opacity .4s}
+#tp-fade-top{position:absolute;top:0;left:0;right:0;height:160px;background:linear-gradient(to bottom,#000,transparent);z-index:6;pointer-events:none}
+#tp-fade-bot{position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(to top,#000,transparent);z-index:6;pointer-events:none}
+#tp-line{position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(245,200,66,0.1);z-index:5;pointer-events:none}
+#tp-scroller{height:100%;overflow:hidden;position:relative}
+#tp-text{padding:50vh 8vw 80vh;max-width:860px;margin:0 auto;font-family:'Manrope',sans-serif;font-size:36px;font-weight:500;line-height:1.85;color:#f0f0f0;will-change:transform}
+#tp-text .tp-section-label{font-family:'Syne',sans-serif;font-size:.5em;letter-spacing:3px;color:var(--gold);margin:1.2em 0 .3em;opacity:.5;display:block}
+#tp-text p{margin:0 0 .5em}
+#tp-controls{position:absolute;bottom:0;left:0;right:0;z-index:10;padding:16px 20px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;background:linear-gradient(to top,rgba(0,0,0,.95),transparent);transition:opacity .4s}
+.tp-ctrl-group{display:flex;align-items:center;gap:6px}
+.tp-ctrl-label{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px}
+.tp-btn{background:#111;border:1px solid #333;color:#f0f0f0;width:32px;height:32px;border-radius:5px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.tp-btn:hover{background:#222;border-color:#555}
+.tp-val{font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);min-width:28px;text-align:center}
+#tp-play{background:var(--gold);border:none;color:#000;width:52px;height:52px;border-radius:50%;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;box-shadow:0 0 20px rgba(245,200,66,0.3)}
+#tp-play:hover{background:var(--gold2)}
+.tp-exit{background:rgba(255,255,255,.05);border:1px solid #333;color:#aaa;padding:6px 14px;border-radius:5px;cursor:pointer;font-size:12px;font-family:'Manrope',sans-serif;transition:all .15s}
+.tp-exit:hover{background:rgba(255,255,255,.1)}
+.tp-time{font-family:'Space Mono',monospace;font-size:11px;color:#444}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--s2);border:1px solid var(--border2);border-radius:7px;padding:9px 18px;font-size:12px;color:var(--text);z-index:999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;font-family:'Space Mono',monospace}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* API MODAL */
+#api-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:400;align-items:center;justify-content:center;backdrop-filter:blur(8px);padding:20px}
+.api-box{background:var(--s1);border:1px solid var(--border2);border-radius:14px;padding:32px;width:100%;max-width:440px}
+.api-box h2{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:8px}
+.api-box p{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px}
+.api-box a{color:var(--gold)}
+.api-box input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:11px 13px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;outline:none;margin-bottom:6px;transition:border-color .2s}
+.api-box input:focus{border-color:rgba(245,200,66,0.4)}
+.api-err{color:#ff8a80;font-size:11px;min-height:16px;margin-bottom:10px;font-family:'Space Mono',monospace}
+
+@media(max-width:640px){
+  .g2,.g3{grid-template-columns:1fr}
+  .time-grid{grid-template-columns:repeat(4,1fr)}
+  .brief-stats{gap:12px}
+  main{padding:20px 16px 80px}
+  header{padding:12px 16px}
+  .tabs{padding:10px 16px}
+  #tp-text{font-size:26px;padding:50vh 6vw}
+  .stat-cards{grid-template-columns:repeat(2,1fr)}
+}
+
+/* GEOPOLITICS */
+.geo-chip{display:inline-block;font-size:11px;padding:5px 11px;border-radius:100px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.18);color:var(--ice);cursor:pointer;transition:all .15s;font-family:'Manrope',sans-serif;font-weight:600}
+.geo-chip:hover{background:rgba(0,200,255,.15);border-color:rgba(0,200,255,.35)}
+.geo-step{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;transition:opacity .3s}
+.geo-step:last-child{border-bottom:none}
+.geo-step-ico{font-size:16px;flex-shrink:0}
+.geo-news-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:12px;line-height:1.7;color:rgba(255,255,255,.75)}
+.geo-news-item:last-child{border-bottom:none}
+.geo-news-headline{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.geo-news-src{font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.geo-impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:640px){.geo-impact-grid{grid-template-columns:1fr}}
+.geo-impact-card{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;overflow:hidden}
+.geo-impact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.geo-impact-card.bull::before{background:var(--green)}
+.geo-impact-card.bear::before{background:var(--red)}
+.geo-impact-card.neu::before{background:var(--gold)}
+.geo-impact-label{font-size:9px;color:var(--muted);letter-spacing:1.3px;text-transform:uppercase;margin-bottom:5px;font-family:'Space Mono',monospace}
+.geo-impact-val{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;line-height:1;margin-bottom:4px}
+.geo-impact-card.bull .geo-impact-val{color:var(--green)}
+.geo-impact-card.bear .geo-impact-val{color:var(--red)}
+.geo-impact-card.neu .geo-impact-val{color:var(--gold)}
+.geo-impact-desc{font-size:11px;color:rgba(255,255,255,.5);line-height:1.5}
+.geo-title-opt{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s}
+.geo-title-opt:hover{border-color:var(--border2)}
+.geo-title-opt:last-child{margin-bottom:0}
+.geo-title-text{flex:1;font-size:13px;font-weight:600;line-height:1.4}
+.geo-title-type{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-family:'Space Mono',monospace;flex-shrink:0}
+.geo-script-part{margin-bottom:20px}
+.geo-part-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.geo-part-badge{font-family:'Space Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;background:var(--s2);border:1px solid var(--border);color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.geo-part-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.geo-part-timing{margin-left:auto;font-size:10px;color:var(--muted2);font-family:'Space Mono',monospace}
+.geo-script-text{font-size:13px;line-height:2;color:#ccc;white-space:pre-wrap;border-left:2px solid var(--border);padding-left:14px;margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">UE</div>
+    <div>
+      <div class="logo-name">Content Studio</div>
+      <div class="logo-tag">Script · Teleprompter · Analytics · AI Ideas</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="badge live">LIVE</div>
+    <div class="badge" id="datechip"></div>
+    <button class="key-btn" onclick="showApiModal()">🔑 API Key</button>
+  </div>
+</header>
+
+<div class="tabs" id="tabBar">
+  <button class="tab active" onclick="switchTab('brief')" data-tab="brief"><span class="tab-dot"></span>Daily Brief</button>
+  <button class="tab" onclick="switchTab('analytics')" data-tab="analytics"><span class="tab-dot"></span>Analytics + Ideas</button>
+  <button class="tab" onclick="switchTab('ideas')" data-tab="ideas"><span class="tab-dot"></span>Idea Engine</button>
+  <button class="tab" onclick="switchTab('trending')" data-tab="trending"><span class="tab-dot"></span>Trending</button>
+  <button class="tab" onclick="switchTab('gaps')" data-tab="gaps"><span class="tab-dot"></span>Gaps</button>
+  <button class="tab" onclick="switchTab('hook')" data-tab="hook"><span class="tab-dot"></span>Hook Analyzer</button>
+  <button class="tab" onclick="switchTab('timing')" data-tab="timing"><span class="tab-dot"></span>Best Time</button>
+  <button class="tab" onclick="switchTab('series')" data-tab="series"><span class="tab-dot"></span>Series Planner</button>
+  <button class="tab" onclick="switchTab('geo')" data-tab="geo"><span class="tab-dot"></span>🌐 Geopolitics</button>
+</div>
+
+<main>
+
+<!-- ══ TAB: DAILY BRIEF ══ -->
+<div class="panel active" id="panel-brief">
+  <div class="brief-hero">
+    <div class="brief-date" id="briefDate"></div>
+    <div class="brief-headline">Good morning, <em>Umesh.</em><br>Here's your 20K path today.</div>
+    <div class="brief-sub">Your channel is alive — but sleeping. Every day you post is a step toward 20K views/day. This is your command centre.</div>
+    <div class="brief-stats">
+      <div><div class="brief-stat-val warn">12.2K</div><div class="brief-stat-label">Subscribers</div></div>
+      <div><div class="brief-stat-val alert">~35</div><div class="brief-stat-label">Views / Day</div></div>
+      <div><div class="brief-stat-val warn">₹750</div><div class="brief-stat-label">Est. Monthly</div></div>
+      <div><div class="brief-stat-val up">20K</div><div class="brief-stat-label">Target/Day</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>📋</span> Today's Action Plan</div>
+    <div id="briefLoading" class="loading" style="display:block;padding:32px 0"><div class="spin"></div><p>Generating your daily brief...</p></div>
+    <div id="briefContent" style="display:none"></div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <div class="card-title"><span>📅</span> This Week's Schedule</div>
+    <div>
+      <div class="plan-row"><div class="plan-num">M</div><div><div class="plan-label">Monday</div><div class="plan-text">Sales Topic</div><div class="plan-why">Highest CPM category. Monday audience is hungry to improve before the week starts.</div><div class="plan-badge">CPM ₹280–₹380</div></div></div>
+      <div class="plan-row"><div class="plan-num">T</div><div><div class="plan-label">Tuesday</div><div class="plan-text">Marketing / Funnels</div><div class="plan-why">Businesses search for growth content mid-week. High advertiser demand.</div><div class="plan-badge">CPM ₹220–₹320</div></div></div>
+      <div class="plan-row"><div class="plan-num">W</div><div><div class="plan-label">Wednesday</div><div class="plan-text">Stock Market</div><div class="plan-why">Finance content peaks Wednesday. Market updates drive search traffic.</div><div class="plan-badge">CPM ₹300–₹420</div></div></div>
+      <div class="plan-row"><div class="plan-num">T</div><div><div class="plan-label">Thursday</div><div class="plan-text">Middle Class Mindset</div><div class="plan-why">Most viral format. Shareable. Drives subscriber growth fastest.</div><div class="plan-badge">VIRAL POTENTIAL ⚡</div></div></div>
+      <div class="plan-row"><div class="plan-num">F</div><div><div class="plan-label">Friday</div><div class="plan-text">Entrepreneurship</div><div class="plan-why">Weekend planners. People thinking about quitting jobs by Friday evening.</div><div class="plan-badge">HIGH INTENT VIEWERS</div></div></div>
+      <div class="plan-row"><div class="plan-num">S</div><div><div class="plan-label">Saturday</div><div class="plan-text">20-Min Deep Dive</div><div class="plan-why">Longer watch time day. 20+ min = mid-roll ads = 2x AdSense per video.</div><div class="plan-badge">2X ADSENSE</div></div></div>
+      <div class="plan-row"><div class="plan-num">S</div><div><div class="plan-label">Sunday</div><div class="plan-text">Q&A / Viewer Questions</div><div class="plan-why">Community engagement day. Reply to comments, boost algorithm signals.</div><div class="plan-badge">COMMUNITY BUILDER</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: ANALYTICS + IDEAS ══ -->
+<div class="panel" id="panel-analytics">
+  <div class="sec-title">Analytics + AI Ideas</div>
+  <div class="sec-sub">Enter your numbers from YouTube Studio. Claude reads your real data and suggests your next 8 videos.</div>
+
+  <div class="analytics-layout">
+    <!-- Left: inputs -->
+    <div class="stats-input-panel">
+      <div class="card-title" style="margin-bottom:12px"><span>📊</span> Your Channel Stats</div>
+      <div class="si-grid">
+        <div class="si-item"><label>Subscribers</label><input id="iSubs" type="number" placeholder="12000"></div>
+        <div class="si-item"><label>Total Videos</label><input id="iVideos" type="number" placeholder="45"></div>
+        <div class="si-item"><label>Views (28d)</label><input id="iViews28" type="number" placeholder="15000"></div>
+        <div class="si-item"><label>Watch Hrs (28d)</label><input id="iWatch28" type="number" placeholder="800"></div>
+        <div class="si-item"><label>Subs Gained (28d)</label><input id="iSubsGained" type="number" placeholder="200"></div>
+        <div class="si-item"><label>Avg Duration</label><input id="iAvgDur" type="text" placeholder="3m 20s"></div>
+        <div class="si-item full"><label>Top Videos (title + views)</label><textarea id="iTopVids" rows="3" placeholder="750+ CIBIL Score — 8,200 views&#10;Middle Class Mindset — 5,100 views&#10;How I Made ₹1L — 3,800 views"></textarea></div>
+        <div class="si-item full"><label>Niche / Focus</label><input id="iNiche" type="text" placeholder="Telugu finance, mindset, stock market"></div>
+        <div class="si-item full"><label>What's NOT working</label><input id="iNotWorking" type="text" placeholder="shorts get no views, educational too slow..."></div>
+      </div>
+      <button class="btn-primary" id="anaBtn" onclick="runAnalytics()">⚡ Analyse + Generate Ideas</button>
+    </div>
+
+    <!-- Right: output -->
+    <div id="anaOutput">
+      <div style="text-align:center;padding:60px 20px;color:var(--muted)">
+        <div style="font-size:40px;opacity:.15;margin-bottom:12px">📊</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Fill In Your Stats</div>
+        <div style="font-size:12px;line-height:1.7">Claude will analyse your data, calculate insights,<br>and generate 8 targeted video ideas.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: IDEA ENGINE ══ -->
+<div class="panel" id="panel-ideas">
+  <div class="sec-title">Idea Engine</div>
+  <div class="sec-sub">Generates viral-scored titles with SEO keywords and CTR prediction. Every idea is built to drive views.</div>
+  <div class="card">
+    <div class="card-title"><span>⚙️</span> Generation Settings</div>
+    <div class="g3" style="margin-bottom:12px">
+      <div class="field"><label>Focus</label>
+        <select id="ideasFocus">
+          <option value="mixed">Mixed (Recommended)</option>
+          <option value="growth">Growth / Viral</option>
+          <option value="revenue">Revenue / Course Sales</option>
+          <option value="mindset">Mindset & Beliefs</option>
+          <option value="stock">Stock Market</option>
+          <option value="sales">Sales Mastery</option>
+          <option value="marketing">Marketing / Funnels</option>
+          <option value="entrepreneur">Entrepreneurship</option>
+        </select>
+      </div>
+      <div class="field"><label>Goal This Week</label>
+        <select id="ideasGoal">
+          <option value="views">Max Views</option>
+          <option value="subs">Grow Subscribers</option>
+          <option value="viral">Go Viral</option>
+          <option value="revenue">Drive Sales</option>
+        </select>
+      </div>
+      <div class="field"><label>Count</label>
+        <select id="ideasCount">
+          <option value="20">20 Ideas</option>
+          <option value="30">30 Ideas</option>
+          <option value="10">10 Quick</option>
+        </select>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:12px"><label>Today's Context (optional)</label>
+      <textarea id="ideasContext" rows="2" placeholder="e.g. 'Sensex crashed today' or 'new startup policy announced' or any topic on your mind..."></textarea>
+    </div>
+    <div class="err" id="ideasErr"></div>
+    <button class="btn-primary" id="ideasBtn" onclick="generateIdeas()">⚡ GENERATE VIRAL IDEAS</button>
+  </div>
+  <div class="loading" id="ideasLoading"><div class="spin"></div><p>Generating ideas + scoring viral potential...</p></div>
+  <div class="results" id="ideasResults">
+    <div class="results-header"><div class="results-title">IDEAS</div><div class="results-meta" id="ideasMeta"></div></div>
+    <div id="ideasContainer"></div>
+  </div>
+</div>
+
+<!-- ══ TAB: TRENDING ══ -->
+<div class="panel" id="panel-trending">
+  <div class="sec-title">Trending Topics</div>
+  <div class="sec-sub">What the Telugu business audience is searching for RIGHT NOW — before your competitors find it.</div>
+  <div class="card">
+    <div class="card-title"><span>🔍</span> Settings</div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="field"><label>Category</label>
+        <select id="trendCat">
+          <option value="all">All Topics</option>
+          <option value="finance">Finance & Stock Market</option>
+          <option value="business">Business & Entrepreneurship</option>
+          <option value="mindset">Mindset & Psychology</option>
+          <option value="marketing">Marketing & Sales</option>
+        </select>
+      </div>
+      <div class="field"><label>Urgency</label>
+        <select id="trendUrgency">
+          <option value="today">Trending Today</option>
+          <option value="week">This Week</option>
+          <option value="evergreen">Evergreen High-Volume</option>
+        </select>
+      </div>
+    </div>
+    <div class="err" id="trendErr"></div>
+    <button class="btn-primary" id="trendBtn" onclick="generateTrending()">🔥 FIND TRENDING TOPICS</button>
+  </div>
+  <div class="loading" id="trendLoading"><div class="spin"></div><p>Scanning Telugu search trends...</p></div>
+  <div class="results" id="trendResults">
+    <div class="results-header"><div class="results-title">TRENDING NOW</div><div class="results-meta" id="trendMeta"></div></div>
+    <div id="trendContainer"></div>
+  </div>
+</div>
+
+<!-- ══ TAB: GAPS ══ -->
+<div class="panel" id="panel-gaps">
+  <div class="sec-title">Competitor Gap Analysis</div>
+  <div class="sec-sub">Topics the Telugu business audience wants — but nobody is creating yet. These are your 10X view opportunities.</div>
+  <div class="card">
+    <div class="card-title"><span>🎯</span> Settings</div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="field"><label>Your Niche</label>
+        <select id="gapNiche">
+          <option value="telugu-business">Telugu Business (Broad)</option>
+          <option value="telugu-finance">Telugu Finance & Investing</option>
+          <option value="telugu-sales">Telugu Sales & Marketing</option>
+          <option value="telugu-mindset">Telugu Mindset & Success</option>
+          <option value="telugu-startup">Telugu Startup & Entrepreneur</option>
+        </select>
+      </div>
+      <div class="field"><label>Gap Type</label>
+        <select id="gapType">
+          <option value="underserved">Underserved Topics</option>
+          <option value="format">Format Gaps</option>
+          <option value="audience">Audience Gaps</option>
+        </select>
+      </div>
+    </div>
+    <div class="err" id="gapsErr"></div>
+    <button class="btn-primary" id="gapsBtn" onclick="generateGaps()">🎯 FIND GAPS</button>
+  </div>
+  <div class="loading" id="gapsLoading"><div class="spin"></div><p>Analyzing competitor content gaps...</p></div>
+  <div class="results" id="gapsResults">
+    <div class="results-header"><div class="results-title">YOUR GAPS</div><div class="results-meta" id="gapsMeta"></div></div>
+    <div id="gapsContainer"></div>
+  </div>
+</div>
+
+<!-- ══ TAB: HOOK ANALYZER ══ -->
+<div class="panel" id="panel-hook">
+  <div class="sec-title">Hook Strength Analyzer</div>
+  <div class="sec-sub">Paste your opening 30 seconds. Get a score, breakdown, and a rewritten version that retains more viewers.</div>
+  <div class="card">
+    <div class="card-title"><span>🎣</span> Your Opening Hook</div>
+    <div class="field" style="margin-bottom:12px"><label>Paste First 30 Seconds of Script</label>
+      <textarea id="hookText" rows="5" placeholder="e.g. 'Meeru ee video chustunte, meeru oka important subject gurinchi telusukuntaaru...'"></textarea>
+    </div>
+    <div class="err" id="hookErr"></div>
+    <button class="btn-primary" id="hookBtn" onclick="analyzeHook()">🔬 ANALYZE HOOK</button>
+  </div>
+  <div class="loading" id="hookLoading"><div class="spin"></div><p>Scoring hook strength across 6 dimensions...</p></div>
+  <div class="results" id="hookResults"><div id="hookContainer"></div></div>
+</div>
+
+<!-- ══ TAB: BEST TIME ══ -->
+<div class="panel" id="panel-timing">
+  <div class="sec-title">Best Upload Time</div>
+  <div class="sec-sub">Optimal upload windows for Telugu business audience to maximise first-hour views — which drives algorithmic push.</div>
+  <div class="card">
+    <div class="card-title"><span>⏰</span> Settings</div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="field"><label>Video Type</label>
+        <select id="timeType">
+          <option value="regular">Regular Topic Video</option>
+          <option value="deepdive">Deep Dive (20+ min)</option>
+          <option value="trending">Trending / News Reaction</option>
+          <option value="mindset">Mindset / Motivational</option>
+        </select>
+      </div>
+      <div class="field"><label>Target Audience</label>
+        <select id="timeAudience">
+          <option value="salaried">Salaried Employees</option>
+          <option value="students">Students / Freshers</option>
+          <option value="business">Business Owners</option>
+          <option value="mixed">Mixed</option>
+        </select>
+      </div>
+    </div>
+    <div class="err" id="timeErr"></div>
+    <button class="btn-primary" id="timeBtn" onclick="generateTiming()">📊 GENERATE UPLOAD SCHEDULE</button>
+  </div>
+  <div class="loading" id="timeLoading"><div class="spin"></div><p>Calculating optimal upload windows...</p></div>
+  <div class="results" id="timeResults"><div id="timeContainer"></div></div>
+</div>
+
+<!-- ══ TAB: SERIES PLANNER ══ -->
+<div class="panel" id="panel-series">
+  <div class="sec-title">Series Planner</div>
+  <div class="sec-sub">Multi-part series build returning audiences — the #1 driver of subscriber loyalty and watch time. Plan yours here.</div>
+  <div class="card">
+    <div class="card-title"><span>📺</span> Settings</div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="field"><label>Topic Area</label>
+        <select id="seriesTopic">
+          <option value="sales">Sales Mastery</option>
+          <option value="stock">Stock Market for Beginners</option>
+          <option value="marketing">Digital Marketing</option>
+          <option value="mindset">Middle Class to Rich Mindset</option>
+          <option value="entrepreneur">Start Your Business</option>
+          <option value="funnels">Funnel Building</option>
+        </select>
+      </div>
+      <div class="field"><label>Episodes</label>
+        <select id="seriesEps">
+          <option value="5">5 Episodes</option>
+          <option value="7">7 Episodes</option>
+          <option value="10">10 Episodes</option>
+        </select>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:12px"><label>Series Goal</label>
+      <select id="seriesGoal">
+        <option value="authority">Build Authority</option>
+        <option value="views">Maximize Views</option>
+        <option value="sales">Drive Course Sales</option>
+        <option value="subscribers">Grow Subscribers</option>
+      </select>
+    </div>
+    <div class="err" id="seriesErr"></div>
+    <button class="btn-primary" id="seriesBtn" onclick="generateSeries()">📺 PLAN MY SERIES</button>
+  </div>
+  <div class="loading" id="seriesLoading"><div class="spin"></div><p>Planning your series arc...</p></div>
+  <div class="results" id="seriesResults"><div id="seriesContainer"></div></div>
+</div>
+
+</main>
+
+<!-- ══ TAB: GEOPOLITICS ══ -->
+<div class="panel" id="panel-geo">
+  <div class="sec-title">🌐 Geopolitics → Indian Markets</div>
+  <div class="sec-sub">Searches for live news on any geopolitical event, then writes a high-engagement Telugu-style video script on how it impacts Indian stock markets.</div>
+
+  <div class="card">
+    <div class="card-title"><span>⚡</span> What's Happening in the World?</div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="field">
+        <label>Geopolitical Event / Topic</label>
+        <input type="text" id="geoTopic" placeholder="e.g. US-China trade war, Russia Ukraine, Iran oil...">
+      </div>
+      <div class="field">
+        <label>Market Focus</label>
+        <select id="geoMarket">
+          <option value="broad">Broad Market (Nifty / Sensex)</option>
+          <option value="it">IT Sector</option>
+          <option value="pharma">Pharma Sector</option>
+          <option value="banking">Banking &amp; Finance</option>
+          <option value="oil">Oil &amp; Energy</option>
+          <option value="metals">Metals &amp; Mining</option>
+          <option value="fmcg">FMCG &amp; Consumer</option>
+          <option value="auto">Auto Sector</option>
+        </select>
+      </div>
+    </div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="field">
+        <label>Video Tone</label>
+        <select id="geoTone">
+          <option value="alarm">🚨 Urgent — Market at Risk</option>
+          <option value="opportunity">💰 Opportunity — Hidden Gains</option>
+          <option value="explainer">🧠 Deep Explainer — Educational</option>
+          <option value="prediction">🔮 Prediction — What Happens Next</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Script Length</label>
+        <select id="geoLength">
+          <option value="medium">Medium (~8 min)</option>
+          <option value="long">Long (~15 min deep dive)</option>
+          <option value="short">Short (~5 min quick take)</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-family:'Space Mono',monospace">HOT TOPICS — CLICK TO USE</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span class="geo-chip" onclick="document.getElementById('geoTopic').value='US-China trade war tariffs 2025 impact India'">🇺🇸🇨🇳 US-China Tariffs</span>
+        <span class="geo-chip" onclick="document.getElementById('geoTopic').value='Russia Ukraine war oil energy prices India'">🇷🇺 Russia-Ukraine</span>
+        <span class="geo-chip" onclick="document.getElementById('geoTopic').value='Iran Israel Middle East conflict crude oil India'">🛢️ Middle East Oil</span>
+        <span class="geo-chip" onclick="document.getElementById('geoTopic').value='US Federal Reserve interest rate decision India markets'">🏦 US Fed Rates</span>
+        <span class="geo-chip" onclick="document.getElementById('geoTopic').value='China economy slowdown recession impact India exports'">🇨🇳 China Slowdown</span>
+        <span class="geo-chip" onclick="document.getElementById('geoTopic').value='Indian rupee dollar exchange rate fall RBI'">💵 Rupee Fall</span>
+        <span class="geo-chip" onclick="document.getElementById('geoTopic').value='India Pakistan geopolitical tension stock market'">🇮🇳 India-Pakistan</span>
+        <span class="geo-chip" onclick="document.getElementById('geoTopic').value='BRICS de-dollarization new currency India Russia China'">🌍 BRICS Dollar</span>
+      </div>
+    </div>
+    <div class="err" id="geoErr"></div>
+    <button class="btn-primary" id="geoBtn" onclick="generateGeoScript()">🌐 FETCH LIVE NEWS + WRITE SCRIPT</button>
+    <div style="margin-top:8px;font-size:10px;color:var(--muted);text-align:center;font-family:'Space Mono',monospace">Searches the web for today's real news before writing your script</div>
+  </div>
+
+  <div id="geoProgress" style="display:none;margin-top:14px">
+    <div class="card">
+      <div id="geoStep1" class="geo-step"><span class="geo-step-ico">⏳</span><span>Searching for latest geopolitical news...</span></div>
+      <div id="geoStep2" class="geo-step" style="opacity:.3"><span class="geo-step-ico">⏳</span><span>Analysing Indian market impact...</span></div>
+      <div id="geoStep3" class="geo-step" style="opacity:.3"><span class="geo-step-ico">⏳</span><span>Writing high-engagement Telugu script...</span></div>
+    </div>
+  </div>
+
+  <div id="geoOutput" style="display:none">
+    <div class="card" style="margin-top:14px">
+      <div class="card-title"><span>📡</span> Live News Brief <span style="font-size:9px;color:var(--green);font-family:'Space Mono',monospace;border:1px solid rgba(0,230,118,.3);padding:2px 7px;border-radius:4px;margin-left:6px">LIVE DATA</span></div>
+      <div id="geoNewsContent"></div>
+    </div>
+    <div id="geoImpactCards" style="margin-top:12px"></div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-title"><span>🔥</span> Viral Title Options</div>
+      <div id="geoTitles"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-title"><span>✍️</span> Full Video Script <span id="geoScriptMeta" style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-left:8px"></span></div>
+      <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="btn-sec" onclick="copyGeoScript()">📋 Copy</button>
+        <button class="btn-sec" onclick="downloadGeoScript()">⬇️ Download</button>
+        <button class="btn-sec" style="color:var(--purple);border-color:rgba(179,136,255,.3)" onclick="openGeoTeleprompter()">🎬 Teleprompter</button>
+        <button class="btn-sec" onclick="generateGeoScript()">🔄 Regenerate</button>
+      </div>
+      <div id="geoScriptContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT PANEL -->
+<div class="script-overlay" id="spOverlay" onclick="closeScript()"></div>
+<div class="script-panel" id="scriptPanel">
+  <div class="sp-header">
+    <div style="flex:1;min-width:0"><div class="sp-label">Script For</div><div class="sp-title" id="spTitle">—</div></div>
+    <button class="sp-close" onclick="closeScript()">✕</button>
+  </div>
+  <div class="sp-actions" id="spActions" style="display:none">
+    <button class="sp-btn primary" onclick="copyFullScript()">📋 Copy</button>
+    <button class="sp-btn" onclick="downloadScript()">⬇️ Download</button>
+    <button class="sp-btn" onclick="regenScript()">🔄 Regen</button>
+    <button class="sp-btn tp" onclick="openTeleprompter()">🎬 Teleprompter</button>
+  </div>
+  <div class="sp-body" id="spBody">
+    <div class="sp-loading" id="spLoading"><div class="spin"></div><p>Writing script...<br>Hook · Story · Solution · CTA</p></div>
+    <div id="spContent" style="display:none"></div>
+  </div>
+  <div class="sp-footer" id="spFooter" style="display:none">
+    <span>Words: <span class="sp-wc" id="spWc">—</span></span>
+    <span id="spDuration">Duration: —</span>
+    <span id="spTplBadge" style="font-size:9px;color:var(--gold);background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.2);padding:2px 8px;border-radius:4px;letter-spacing:.5px"></span>
+  </div>
+</div>
+
+<!-- TELEPROMPTER -->
+<div id="tp">
+  <div id="tp-progress"><div id="tp-prog-fill"></div></div>
+  <div id="tp-bar">
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;letter-spacing:3px;color:var(--gold)">TELEPROMPTER</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div class="tp-ctrl-group"><span class="tp-ctrl-label">SPEED</span><button class="tp-btn" onclick="tpChangeSpeed(-0.5)">−</button><span class="tp-val" id="tpSpeedVal">1.0</span><button class="tp-btn" onclick="tpChangeSpeed(0.5)">+</button></div>
+      <div class="tp-ctrl-group"><span class="tp-ctrl-label">SIZE</span><button class="tp-btn" onclick="tpChangeSize(-2)">−</button><span class="tp-val" id="tpSizeVal">36</span><button class="tp-btn" onclick="tpChangeSize(2)">+</button></div>
+      <button class="tp-btn" id="mirrorBtn" onclick="tpToggleMirror()" style="width:auto;padding:0 10px;font-size:10px;font-family:'Space Mono',monospace;letter-spacing:1px">⟺ MIRROR</button>
+      <button class="tp-exit" onclick="closeTeleprompter()">✕ Exit</button>
+    </div>
+  </div>
+  <div id="tp-fade-top"></div><div id="tp-line"></div><div id="tp-fade-bot"></div>
+  <div id="tp-scroller"><div id="tp-text"></div></div>
+  <div id="tp-controls">
+    <button id="tp-play" onclick="tpTogglePlay()">▶</button>
+    <button class="tp-btn" onclick="tpReset()" style="width:36px;height:36px;border-radius:50%;font-size:14px">↺</button>
+    <span class="tp-time" id="tpTime">0:00 / ~0:00</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- API MODAL -->
+<div id="api-modal">
+  <div class="api-box">
+    <h2>API KEY</h2>
+    <p>Enter your Anthropic API key to power this studio. Get yours at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>. Stored locally only.</p>
+    <input id="apiKeyInput" type="password" placeholder="sk-ant-api03-...">
+    <div class="api-err" id="apiErr"></div>
+    <button class="btn-primary" onclick="saveApiKey()">SAVE & START</button>
+  </div>
+</div>
+
+<script>
+
+// ═══════════════════════════════════════════════════════════
+// UMESH CONTENT STUDIO — CLEAN JS
+// ═══════════════════════════════════════════════════════════
+
+// ── GLOBALS ──────────────────────────────────────────────────
+let apiKey = localStorage.getItem('ue_api_key2') || '';
+let ideaStore = [];
+let ideaTypeStore = [];
+let currentScriptTitle = '';
+let currentScriptType = '';
+let currentScriptRaw = '';
+let geoScriptRaw = '';
+let geoRequestActive = false;
+let tpPlaying = false;
+let tpSpeed = 1.0;
+let tpFontSize = 36;
+let tpPos = 0;
+let tpRaf = null;
+let tpTotal = 0;
+let tpHideTimer = null;
+let tpMirrored = false;
+let tpLastTime = null;
+
+// ── INIT ─────────────────────────────────────────────────────
+const now = new Date();
+document.getElementById('datechip').textContent =
+  now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+document.getElementById('briefDate').textContent =
+  now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+
+if (!apiKey) showApiModal();
+else generateBrief();
+
+// ── UTILITIES ────────────────────────────────────────────────
+function showApiModal() { document.getElementById('api-modal').style.display = 'flex'; }
+
+function saveApiKey() {
+  const v = document.getElementById('apiKeyInput').value.trim();
+  if (!v.startsWith('sk-ant-')) {
+    document.getElementById('apiErr').textContent = 'Key must start with sk-ant-...';
+    return;
+  }
+  apiKey = v;
+  localStorage.setItem('ue_api_key2', apiKey);
+  document.getElementById('api-modal').style.display = 'none';
+  generateBrief();
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function escHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function copyRaw(text) {
+  navigator.clipboard.writeText(text).then(() => toast('Copied!'));
+}
+
+function fmtN(n) {
+  n = parseInt(n) || 0;
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function scoreClass(n) { return n >= 80 ? 'high' : n >= 60 ? 'med' : 'low'; }
+
+// ── TABS ─────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelector('[data-tab="' + name + '"]').classList.add('active');
+}
+
+// ── API ──────────────────────────────────────────────────────
+var lastApiCall = 0;
+
+async function callClaude(prompt, maxTokens) {
+  maxTokens = maxTokens || 2000;
+  // Enforce 3-second gap between any API calls to avoid rate limits
+  var now = Date.now();
+  var gap = now - lastApiCall;
+  if (gap < 3000 && lastApiCall > 0) {
+    await new Promise(function(r) { setTimeout(r, 3000 - gap); });
+  }
+  lastApiCall = Date.now();
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: maxTokens,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const errData = data.error || data;
+    if (errData.type === 'exceeded_limit' || errData.representativeClaim === 'concurrents') {
+      throw new Error('Rate limited — please wait 10–15 seconds and try again.');
+    }
+    throw new Error(errData.message || 'API error ' + res.status);
+  }
+  return data.content && data.content[0] ? data.content[0].text : '';
+}
+
+function parseJSON(raw) {
+  var cleaned = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+  // Try direct parse first
+  try { return JSON.parse(cleaned); } catch(e1) {}
+  // Try to find and extract the JSON object
+  var start = cleaned.indexOf('{');
+  var end = cleaned.lastIndexOf('}');
+  if (start !== -1 && end !== -1) {
+    try { return JSON.parse(cleaned.slice(start, end + 1)); } catch(e2) {}
+  }
+  // Try fixing truncated arrays/objects by closing them
+  var fixed = cleaned;
+  // Count open vs close braces
+  var opens = (fixed.match(/\{/g) || []).length;
+  var closes = (fixed.match(/\}/g) || []).length;
+  var arrOpens = (fixed.match(/\[/g) || []).length;
+  var arrCloses = (fixed.match(/\]/g) || []).length;
+  // Remove trailing comma if any
+  fixed = fixed.replace(/,\s*$/, '');
+  // Close any open arrays/objects
+  for (var i = 0; i < arrOpens - arrCloses; i++) fixed += ']';
+  for (var j = 0; j < opens - closes; j++) fixed += '}';
+  try { return JSON.parse(fixed); } catch(e3) {}
+  throw new Error('Could not parse response. Try again.');
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+}
+function hideErr(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+}
+function setLoading(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = show ? 'block' : 'none';
+}
+function setResults(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = show ? 'block' : 'none';
+}
+function setBtn(id, disabled) {
+  const el = document.getElementById(id);
+  if (el) el.disabled = disabled;
+}
+
+// ═══════════════════════════════════════════════════════════
+// 1. DAILY BRIEF
+// ═══════════════════════════════════════════════════════════
+async function generateBrief() {
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const today = days[new Date().getDay()];
+  const topicMap = {
+    Monday: 'Sales', Tuesday: 'Marketing & Funnels', Wednesday: 'Stock Market',
+    Thursday: 'Middle Class Mindset', Friday: 'Entrepreneurship',
+    Saturday: '20-Min Deep Dive', Sunday: 'Q&A / Viewer Questions'
+  };
+  const todayTopic = topicMap[today] || 'Mixed';
+
+  const prompt = [
+    'You are the content coach for Umesh Emmadishetty, Telugu YouTube creator with 12.2K subscribers. Goal: 20K views/day.',
+    'Today is ' + today + '. Today content pillar: ' + todayTopic + '.',
+    'Return ONLY valid JSON (no markdown):',
+    '{"title":"punchy motivational sentence","actions":[',
+    '{"step":1,"label":"RECORD","text":"specific video title to record today","why":"why this gets views"},',
+    '{"step":2,"label":"OPTIMIZE","text":"one specific SEO action on existing video","why":"why this helps"},',
+    '{"step":3,"label":"ENGAGE","text":"one community action","why":"algorithm benefit"}',
+    '],"todayTitle":"best video title for today","todayHook":"opening 2 sentences","warning":"one thing NOT to do today"}'
+  ].join('\n');
+
+  try {
+    const raw = await callClaude(prompt, 1000);
+    const d = parseJSON(raw);
+    let html = '<div style="margin-bottom:20px;padding:14px;background:rgba(245,200,66,0.06);border:1px solid rgba(245,200,66,0.15);border-radius:8px">'
+      + '<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:16px;color:var(--gold)">' + escHtml(d.title) + '</div></div>';
+    d.actions.forEach(function(a) {
+      html += '<div class="plan-row"><div class="plan-num">' + a.step + '</div><div>'
+        + '<div class="plan-label">' + escHtml(a.label) + '</div>'
+        + '<div class="plan-text">' + escHtml(a.text) + '</div>'
+        + '<div class="plan-why">' + escHtml(a.why) + '</div>'
+        + '</div></div>';
+    });
+    html += '<div style="margin-top:20px;padding:14px;background:var(--s2);border-radius:8px;border:1px solid var(--border)">'
+      + '<div style="font-size:10px;color:var(--muted);font-family:\'Space Mono\',monospace;letter-spacing:1px;margin-bottom:8px">TODAY\'S VIDEO</div>'
+      + '<div style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--gold)">' + escHtml(d.todayTitle) + '</div>'
+      + '<div style="font-size:13px;color:#ccc;font-style:italic;line-height:1.7;border-left:2px solid var(--border);padding-left:12px">"' + escHtml(d.todayHook) + '"</div>'
+      + '</div>'
+      + '<div style="margin-top:12px;padding:12px 14px;background:rgba(255,82,82,0.06);border:1px solid rgba(255,82,82,0.15);border-radius:8px;font-size:12px;color:#ff8a80">'
+      + '<b>⚠️ DON\'T:</b> ' + escHtml(d.warning) + '</div>';
+    document.getElementById('briefContent').innerHTML = html;
+    document.getElementById('briefLoading').style.display = 'none';
+    document.getElementById('briefContent').style.display = 'block';
+  } catch(e) {
+    document.getElementById('briefLoading').innerHTML = '<p style="color:#ff8a80">Error: ' + escHtml(e.message) + '</p>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 2. ANALYTICS + IDEAS
+// ═══════════════════════════════════════════════════════════
+function buildInsights(d) {
+  const ins = [];
+  const s = parseInt(d.subs) || 0;
+  const v28 = parseInt(d.views28) || 0;
+  const wh = parseInt(d.watch28) || 0;
+  const sg = parseInt(d.subsGained) || 0;
+  const numV = parseInt(d.videos) || 0;
+
+  if (s && v28) {
+    const r = v28 / s;
+    if (r < 0.3) ins.push({ ico: '📉', msg: '<b>Low view-to-sub ratio (' + (r*100).toFixed(0) + '%)</b> — existing subscribers aren\'t watching. Match content to why they subscribed.' });
+    else if (r > 1) ins.push({ ico: '🚀', msg: '<b>Strong ratio (' + (r*100).toFixed(0) + '%)</b> — reaching beyond your audience. Push harder on thumbnails and SEO.' });
+  }
+  if (sg && s) {
+    const g = (sg / s * 100).toFixed(1);
+    ins.push({ ico: '📈', msg: '<b>Growing at ' + g + '% / month</b> — ' + (parseFloat(g) > 2 ? 'strong momentum, double down on what works.' : 'below 2% average. Test new formats and titles.') });
+  }
+  if (wh && v28) {
+    const mpv = (wh * 60) / v28;
+    if (mpv < 2) ins.push({ ico: '⏱️', msg: '<b>Low watch time per view (' + mpv.toFixed(1) + ' min)</b> — viewers drop off early. Fix your hook.' });
+    else ins.push({ ico: '✅', msg: '<b>Good watch time (' + mpv.toFixed(1) + ' min/view)</b> — healthy retention. Try longer 15–20 min videos.' });
+  }
+  if (numV && s) {
+    const spv = (s / numV).toFixed(0);
+    ins.push({ ico: '🎬', msg: '<b>' + spv + ' subs per video</b> — ' + (parseInt(spv) > 200 ? 'above average, your library is converting.' : 'keep publishing, compound effect takes time.') });
+  }
+  return ins;
+}
+
+async function runAnalytics() {
+  const d = {
+    subs: document.getElementById('iSubs').value.trim(),
+    videos: document.getElementById('iVideos').value.trim(),
+    views28: document.getElementById('iViews28').value.trim(),
+    watch28: document.getElementById('iWatch28').value.trim(),
+    subsGained: document.getElementById('iSubsGained').value.trim(),
+    avgDur: document.getElementById('iAvgDur').value.trim(),
+    topVids: document.getElementById('iTopVids').value.trim(),
+    niche: document.getElementById('iNiche').value.trim(),
+    notWork: document.getElementById('iNotWorking').value.trim()
+  };
+
+  if (!d.subs && !d.topVids && !d.niche) { toast('Fill in at least subscribers, top videos, or niche'); return; }
+
+  setBtn('anaBtn', true);
+  document.getElementById('anaOutput').innerHTML = '<div style="text-align:center;padding:48px 20px">'
+    + '<div class="spin" style="margin:0 auto 12px"></div>'
+    + '<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)">Claude is analysing...</div>'
+    + '</div>';
+
+  var statsHtml = '';
+  if (d.subs || d.views28 || d.watch28 || d.subsGained) {
+    statsHtml = '<div class="stat-cards">'
+      + '<div class="sc c1"><div class="sc-l">Subscribers</div><div class="sc-v">' + (d.subs ? fmtN(d.subs) : '—') + '</div><div class="sc-s">Total</div></div>'
+      + '<div class="sc c2"><div class="sc-l">Views / 28d</div><div class="sc-v">' + (d.views28 ? fmtN(d.views28) : '—') + '</div><div class="sc-s">Last 28 days</div></div>'
+      + '<div class="sc c3"><div class="sc-l">Watch Hours</div><div class="sc-v">' + (d.watch28 ? fmtN(d.watch28) : '—') + '</div><div class="sc-s">Last 28 days</div></div>'
+      + '<div class="sc c4"><div class="sc-l">Subs Gained</div><div class="sc-v">' + (d.subsGained ? fmtN(d.subsGained) : '—') + '</div><div class="sc-s">Last 28 days</div></div>'
+      + '</div>';
+  }
+
+  var insights = buildInsights(d);
+  var insightsHtml = '';
+  if (insights.length) {
+    insightsHtml = '<div class="card" style="margin-bottom:14px"><div class="card-title"><span>📊</span> Channel Insights</div>'
+      + insights.map(function(i) { return '<div class="insight-item"><div class="insight-ico">' + i.ico + '</div><div class="insight-txt">' + i.msg + '</div></div>'; }).join('')
+      + '</div>';
+  }
+
+  var context = 'CREATOR: Umesh Emmadishetty — Telugu YouTube creator\n'
+    + 'NICHE: ' + (d.niche || 'Business / Finance / Mindset (Telugu)') + '\n'
+    + 'SUBSCRIBERS: ' + (d.subs || 'unknown') + ' | TOTAL VIDEOS: ' + (d.videos || 'unknown') + '\n'
+    + 'VIEWS LAST 28 DAYS: ' + (d.views28 || 'unknown') + ' | WATCH HOURS (28d): ' + (d.watch28 || 'unknown') + '\n'
+    + 'SUBSCRIBERS GAINED (28d): ' + (d.subsGained || 'unknown') + ' | AVG VIEW DURATION: ' + (d.avgDur || 'unknown') + '\n'
+    + 'TOP VIDEOS: ' + (d.topVids || 'not provided') + '\n'
+    + 'WHAT IS NOT WORKING: ' + (d.notWork || 'not specified');
+
+  var prompt = 'YouTube growth strategist for Telugu business creator Umesh Emmadishetty. Generate 8 video ideas from this channel data.\n'
+    + 'Return ONLY JSON: {"ideas":[{"title":"str","type":"viral|trending|series|edu","why":"str","hook":"str","topic":"str","potential":"low|medium|high|viral","uploadDay":"str"}]}\n\n'
+    + context + '\n\nMix: 3 viral, 2 series, 2 educational, 1 personal story.';
+
+  try {
+    var raw = await callClaude(prompt, 2500);
+    var parsed = parseJSON(raw);
+    var ideas = parsed.ideas || [];
+    var ideasHtml = '<div class="card"><div class="card-title"><span>💡</span> AI Video Ideas — Based on Your Data</div>';
+
+    ideas.forEach(function(idea, i) {
+      var idx = ideaStore.length;
+      ideaStore.push(idea.title);
+      ideaTypeStore.push(idea.type || 'growth');
+      var typeClass = idea.type === 'viral' ? 'viral' : idea.type === 'trending' ? 'trending' : idea.type === 'series' ? 'series' : 'edu';
+      var potClass = idea.potential === 'viral' ? 'viral' : idea.potential === 'high' ? 'trending' : idea.potential === 'medium' ? 'series' : 'edu';
+      ideasHtml += '<div class="ana-idea">'
+        + '<div class="ana-idea-top">'
+        + '<div class="ana-idea-num">' + String(i+1).padStart(2,'0') + '</div>'
+        + '<div style="flex:1;min-width:0"><div class="ana-idea-title">' + escHtml(idea.title) + '</div>'
+        + '<div class="ana-tags"><span class="atag ' + typeClass + '">' + escHtml(idea.type || 'idea') + '</span>'
+        + '<span class="atag ' + potClass + '">' + escHtml(idea.potential || '?') + ' potential</span></div></div></div>'
+        + (idea.why ? '<div class="ana-why">' + escHtml(idea.why) + '</div>' : '')
+        + (idea.hook ? '<div class="ana-hook">"' + escHtml(idea.hook) + '"</div>' : '')
+        + '<div class="ana-footer">'
+        + (idea.topic ? '<span class="ana-foot-item">📍 <b>' + escHtml(idea.topic) + '</b></span>' : '')
+        + (idea.uploadDay ? '<span class="ana-foot-item">📅 Upload <b>' + escHtml(idea.uploadDay) + '</b></span>' : '')
+        + '</div>'
+        + '<div style="margin-top:8px;display:flex;gap:6px">'
+        + '<button class="btn-ghost" onclick="copyRaw(ideaStore[' + idx + '])">Copy Title</button>'
+        + '<button class="btn-ghost" style="color:var(--gold);border-color:rgba(245,200,66,0.2)" onclick="openScript(ideaStore[' + idx + '],ideaTypeStore[' + idx + '])">✍️ Write Script</button>'
+        + '</div></div>';
+    });
+    ideasHtml += '</div>';
+    document.getElementById('anaOutput').innerHTML = statsHtml + insightsHtml + ideasHtml;
+    toast('Analysis complete ✓');
+  } catch(e) {
+    document.getElementById('anaOutput').innerHTML = statsHtml + insightsHtml
+      + '<div style="background:rgba(255,82,82,0.08);border:1px solid rgba(255,82,82,0.2);border-radius:8px;padding:16px;color:#ff8a80;font-size:12px">Error: ' + escHtml(e.message) + '</div>';
+  } finally {
+    setBtn('anaBtn', false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 3. IDEA ENGINE
+// ═══════════════════════════════════════════════════════════
+function copyIdea(i) { copyRaw(ideaStore[i]); }
+function writeScript(i) { openScript(ideaStore[i], ideaTypeStore[i]); }
+
+async function generateIdeas() {
+  var focus = document.getElementById('ideasFocus').value;
+  var goal = document.getElementById('ideasGoal').value;
+  var count = document.getElementById('ideasCount').value;
+  var context = document.getElementById('ideasContext').value.trim();
+
+  setBtn('ideasBtn', true);
+  hideErr('ideasErr');
+  setLoading('ideasLoading', true);
+  setResults('ideasResults', false);
+
+  var prompt = 'Telugu YouTube strategist for Umesh (12K subs, business/finance). Focus:' + focus + ' Goal:' + goal + '\n'
+    + (context ? 'Context: ' + context + '\n' : '')
+    + 'Return ONLY JSON: {"videos":[{"title":"8w max tension title","type":"growth|revenue|series","angle":"str","ctrScore":80,"keywords":["k1","k2"],"thumbnail":"3w text"}],"hooks":["h1","h2","h3","h4","h5"]}\n'
+    + 'Generate ' + Math.round(parseInt(count) * 0.7) + ' videos + 5 hooks. High tension titles only.';
+
+  try {
+    var raw = await callClaude(prompt, 2500);
+    var d = parseJSON(raw);
+    var html = '';
+
+    if (d.videos && d.videos.length) {
+      html += '<div style="margin-bottom:8px;font-family:\'Space Mono\',monospace;font-size:10px;color:var(--muted)">' + d.videos.length + ' VIDEO IDEAS</div>';
+      d.videos.forEach(function(v) {
+        var idx = ideaStore.length;
+        ideaStore.push(v.title);
+        ideaTypeStore.push(v.type || 'growth');
+        var cls = v.type === 'revenue' ? 'revenue' : v.type === 'series' ? 'series' : 'growth';
+        var lbl = v.type === 'revenue' ? 'Revenue' : v.type === 'series' ? 'Series' : 'Growth';
+        var sc = v.ctrScore || 75;
+        html += '<div class="idea-card ' + cls + '">'
+          + '<div class="idea-top"><span class="idea-type-badge ' + cls + '">' + lbl + '</span>'
+          + '<div class="idea-title">' + escHtml(v.title) + '</div>'
+          + '<span class="score ' + scoreClass(sc) + '">' + sc + '</span></div>'
+          + (v.angle ? '<div class="idea-angle">' + escHtml(v.angle) + '</div>' : '')
+          + (v.keywords && v.keywords.length ? '<div class="idea-keywords">' + v.keywords.map(function(k) { return '<span class="kw">' + escHtml(k) + '</span>'; }).join('') + '</div>' : '')
+          + (v.thumbnail ? '<div style="font-size:11px;color:var(--orange);margin-bottom:8px">🖼️ Thumbnail: <b>' + escHtml(v.thumbnail) + '</b></div>' : '')
+          + '<div class="idea-actions">'
+          + '<button class="btn-ghost" onclick="copyIdea(' + idx + ')">Copy</button>'
+          + '<button class="btn-ghost" style="color:var(--gold);border-color:rgba(245,200,66,0.2)" onclick="writeScript(' + idx + ')">✍️ Write Script</button>'
+          + '</div></div>';
+      });
+    }
+
+    if (d.hooks && d.hooks.length) {
+      html += '<div style="margin-top:20px;margin-bottom:8px;font-family:\'Space Mono\',monospace;font-size:10px;color:var(--muted)">OPENING HOOKS</div>';
+      d.hooks.forEach(function(h) {
+        var idx = ideaStore.length;
+        ideaStore.push(h);
+        ideaTypeStore.push('neutral');
+        html += '<div style="background:var(--s2);border:1px solid var(--border);border-left:2px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:7px;font-size:13px;line-height:1.7;color:#ccc;font-style:italic">'
+          + escHtml(h)
+          + '<div style="margin-top:7px"><button class="btn-ghost" onclick="copyIdea(' + idx + ')">Copy</button></div></div>';
+      });
+    }
+
+    document.getElementById('ideasContainer').innerHTML = html;
+    document.getElementById('ideasMeta').textContent = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    setResults('ideasResults', true);
+    document.getElementById('ideasResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch(e) {
+    showErr('ideasErr', 'Error: ' + e.message);
+  } finally {
+    setBtn('ideasBtn', false);
+    setLoading('ideasLoading', false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 4. TRENDING
+// ═══════════════════════════════════════════════════════════
+async function generateTrending() {
+  var cat = document.getElementById('trendCat').value;
+  var urgency = document.getElementById('trendUrgency').value;
+
+  setBtn('trendBtn', true);
+  hideErr('trendErr');
+  setLoading('trendLoading', true);
+  setResults('trendResults', false);
+
+  var prompt = 'Telugu YouTube SEO. Category:' + cat + ' Urgency:' + urgency + '\n'
+    + 'Return ONLY JSON: {"topics":[{"topic":"str","why":"str","searchVolume":"High|Medium|Very High","cpm":"Rs range","competition":"Low|Medium|High","titleIdea":"str","urgency":"emoji"}]}\n'
+    + '10 topics for Telugu business audience India 2025-2026.';
+
+  try {
+    var raw = await callClaude(prompt, 2000);
+    var d = parseJSON(raw);
+    var html = '';
+    d.topics.forEach(function(t, i) {
+      var idx = ideaStore.length;
+      ideaStore.push(t.titleIdea || t.topic);
+      ideaTypeStore.push('growth');
+      html += '<div class="trend-card">'
+        + '<div class="trend-rank">' + String(i+1).padStart(2,'0') + '</div>'
+        + '<div class="trend-info">'
+        + '<div class="trend-topic">' + escHtml(t.topic) + '</div>'
+        + '<div class="trend-reason">' + escHtml(t.why) + '</div>'
+        + '<div class="trend-stats">'
+        + '<span class="trend-stat">Volume: <b>' + escHtml(t.searchVolume) + '</b></span>'
+        + '<span class="trend-stat">CPM: <b>' + escHtml(t.cpm) + '</b></span>'
+        + '<span class="trend-stat">Competition: <b>' + escHtml(t.competition) + '</b></span>'
+        + '</div>'
+        + '<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'
+        + '<span style="font-size:12px;color:var(--blue);font-style:italic">"' + escHtml(t.titleIdea) + '"</span>'
+        + '<button class="btn-ghost" style="font-size:10px" onclick="copyIdea(' + idx + ')">Copy Title</button>'
+        + '<button class="btn-ghost" style="font-size:10px;color:var(--gold);border-color:rgba(245,200,66,0.2)" onclick="writeScript(' + idx + ')">Write Script</button>'
+        + '</div></div>'
+        + '<div style="font-size:18px;flex-shrink:0">' + (t.urgency || '📈') + '</div>'
+        + '</div>';
+    });
+    document.getElementById('trendContainer').innerHTML = html;
+    document.getElementById('trendMeta').textContent = d.topics.length + ' topics';
+    setResults('trendResults', true);
+  } catch(e) {
+    showErr('trendErr', 'Error: ' + e.message);
+  } finally {
+    setBtn('trendBtn', false);
+    setLoading('trendLoading', false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 5. COMPETITOR GAPS
+// ═══════════════════════════════════════════════════════════
+async function generateGaps() {
+  var niche = document.getElementById('gapNiche').value;
+  var type = document.getElementById('gapType').value;
+
+  setBtn('gapsBtn', true);
+  hideErr('gapsErr');
+  setLoading('gapsLoading', true);
+  setResults('gapsResults', false);
+
+  var prompt = 'You find content gaps for Telugu YouTube creators. Niche: ' + niche + '. Gap type: ' + type + '.\n'
+    + 'Return ONLY a valid JSON object, no markdown, no extra text:\n'
+    + '{"gaps":[{"opportunity":"topic name","reason":"why competitors miss it and why it is an opportunity","potential":"High|Very High|Explosive","titles":["title 1","title 2","title 3"]}]}\n'
+    + 'Generate exactly 8 gaps for Telugu business audience. Keep each reason under 20 words.';
+
+  try {
+    var raw = await callClaude(prompt, 2500);
+    var d = parseJSON(raw);
+    var html = '';
+    d.gaps.forEach(function(g) {
+      html += '<div class="gap-card">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
+        + '<div class="gap-opportunity">' + escHtml(g.opportunity) + '</div>'
+        + '<span class="score ' + (g.potential === 'Explosive' ? 'high' : g.potential === 'Very High' ? 'med' : 'low') + '">' + escHtml(g.potential) + '</span>'
+        + '</div>'
+        + '<div class="gap-reason">' + escHtml(g.reason) + '</div>'
+        + '<div>' + g.titles.map(function(t) {
+          var idx = ideaStore.length;
+          ideaStore.push(t);
+          ideaTypeStore.push('growth');
+          return '<span class="gap-title-chip" onclick="copyIdea(' + idx + ')">' + escHtml(t) + '</span>';
+        }).join('') + '</div></div>';
+    });
+    document.getElementById('gapsContainer').innerHTML = html;
+    document.getElementById('gapsMeta').textContent = d.gaps.length + ' gaps found';
+    setResults('gapsResults', true);
+  } catch(e) {
+    showErr('gapsErr', 'Error: ' + e.message);
+  } finally {
+    setBtn('gapsBtn', false);
+    setLoading('gapsLoading', false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 6. HOOK ANALYZER
+// ═══════════════════════════════════════════════════════════
+async function analyzeHook() {
+  var text = document.getElementById('hookText').value.trim();
+  if (!text) { showErr('hookErr', 'Please paste your hook text.'); return; }
+
+  setBtn('hookBtn', true);
+  hideErr('hookErr');
+  setLoading('hookLoading', true);
+  setResults('hookResults', false);
+
+  var prompt = 'Score this Telugu video hook across 6 dimensions (0-100 each).\nHook: "' + text + '"\n'
+    + 'Return ONLY JSON: {"overallScore":0,"verdict":"str","scores":{"patternInterrupt":0,"tension":0,"specificity":0,"audienceMirror":0,"promiseClarity":0,"teluguCultureFit":0},"weaknesses":["w1","w2"],"rewrite":"90+ score rewrite in Telugu/English"}';
+
+  try {
+    var raw = await callClaude(prompt, 1500);
+    var d = parseJSON(raw);
+    var sc = d.overallScore || 70;
+    var col = sc >= 80 ? 'var(--green)' : sc >= 60 ? 'var(--gold)' : 'var(--red)';
+    var circ = 2 * Math.PI * 40;
+    var fill = circ - (circ * (sc / 100));
+    var labels = { patternInterrupt: 'Pattern Interrupt', tension: 'Tension', specificity: 'Specificity', audienceMirror: 'Audience Mirror', promiseClarity: 'Promise Clarity', teluguCultureFit: 'Telugu Fit' };
+
+    var html = '<div class="card" style="margin-bottom:12px"><div class="card-title"><span>📊</span> Hook Score</div>'
+      + '<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">'
+      + '<div class="hook-score-ring">'
+      + '<svg width="100" height="100" viewBox="0 0 100 100">'
+      + '<circle cx="50" cy="50" r="40" fill="none" stroke="var(--s3)" stroke-width="8"/>'
+      + '<circle cx="50" cy="50" r="40" fill="none" stroke="' + col + '" stroke-width="8" stroke-dasharray="' + circ + '" stroke-dashoffset="' + fill + '" stroke-linecap="round"/>'
+      + '</svg><div class="hook-score-num" style="color:' + col + '">' + sc + '</div></div>'
+      + '<div style="flex:1"><div style="font-size:14px;font-weight:600;margin-bottom:8px">' + escHtml(d.verdict) + '</div>'
+      + '<div class="hook-breakdown">';
+
+    Object.entries(d.scores || {}).forEach(function(entry) {
+      var k = entry[0], v = entry[1];
+      var c = v >= 80 ? 'var(--green)' : v >= 60 ? 'var(--gold)' : 'var(--red)';
+      html += '<div class="hb-row"><div class="hb-label">' + (labels[k] || k) + '</div>'
+        + '<div class="hb-bar"><div class="hb-fill" style="width:' + v + '%;background:' + c + '"></div></div>'
+        + '<div class="hb-val">' + v + '</div></div>';
+    });
+    html += '</div></div></div></div>';
+
+    if (d.weaknesses && d.weaknesses.length) {
+      html += '<div class="card" style="margin-bottom:12px"><div class="card-title"><span>⚠️</span> Weaknesses</div>'
+        + d.weaknesses.map(function(w) { return '<div style="font-size:13px;color:var(--muted);padding:6px 0;border-bottom:1px solid var(--border)">• ' + escHtml(w) + '</div>'; }).join('')
+        + '</div>';
+    }
+    if (d.rewrite) {
+      var idx = ideaStore.length;
+      ideaStore.push(d.rewrite);
+      ideaTypeStore.push('neutral');
+      html += '<div class="card"><div class="card-title"><span>✨</span> Rewritten Hook (90+ Score)</div>'
+        + '<div style="font-size:14px;line-height:1.9;color:var(--text);border-left:2px solid var(--gold);padding-left:14px;font-style:italic;margin-bottom:12px">"' + escHtml(d.rewrite) + '"</div>'
+        + '<button class="btn-ghost" onclick="copyIdea(' + idx + ')">Copy Rewrite</button></div>';
+    }
+
+    document.getElementById('hookContainer').innerHTML = html;
+    setResults('hookResults', true);
+  } catch(e) {
+    showErr('hookErr', 'Error: ' + e.message);
+  } finally {
+    setBtn('hookBtn', false);
+    setLoading('hookLoading', false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 7. BEST UPLOAD TIME
+// ═══════════════════════════════════════════════════════════
+async function generateTiming() {
+  var type = document.getElementById('timeType').value;
+  var audience = document.getElementById('timeAudience').value;
+
+  setBtn('timeBtn', true);
+  hideErr('timeErr');
+  setLoading('timeLoading', true);
+  setResults('timeResults', false);
+
+  var prompt = 'Optimal YouTube upload times. Type:' + type + ' Audience:' + audience + ' (Telugu, Hyderabad/Bangalore)\n'
+    + 'Return ONLY JSON: {"recommendation":"str","schedule":[{"day":"Mon","time":"7:30 PM","score":88,"label":"Best|Good|Prime"},{"day":"Tue","time":"8:00 PM","score":75,"label":"Good"},{"day":"Wed","time":"8:00 PM","score":90,"label":"Best"},{"day":"Thu","time":"7:00 PM","score":82,"label":"Best"},{"day":"Fri","time":"6:30 PM","score":78,"label":"Good"},{"day":"Sat","time":"10:00 AM","score":95,"label":"Prime"},{"day":"Sun","time":"11:00 AM","score":92,"label":"Prime"}],"avoid":"str","firstHourTip":"str"}';
+
+  try {
+    var raw = await callClaude(prompt, 1500);
+    var d = parseJSON(raw);
+    var html = '<div class="card" style="margin-bottom:12px"><div class="card-title"><span>💡</span> Recommendation</div>'
+      + '<div style="font-size:13px;line-height:1.7;color:#ccc">' + escHtml(d.recommendation) + '</div></div>'
+      + '<div class="card" style="margin-bottom:12px"><div class="card-title"><span>📅</span> Optimal Upload Windows</div><div class="time-grid">';
+
+    d.schedule.forEach(function(s) {
+      var isPrime = s.label === 'Prime', isBest = s.label === 'Best';
+      var cls = (isPrime || isBest) ? 'best' : s.score >= 70 ? 'good' : '';
+      var barCol = isPrime ? 'var(--green)' : isBest ? 'var(--gold)' : 'var(--muted)';
+      html += '<div class="time-slot ' + cls + '">'
+        + '<div class="time-day">' + escHtml(s.day) + '</div>'
+        + '<div class="time-val" style="color:' + ((isPrime || isBest) ? barCol : 'var(--text)') + '">' + escHtml(s.time) + '</div>'
+        + '<div style="font-size:9px;color:' + barCol + ';margin-bottom:4px;font-family:\'Space Mono\',monospace">' + escHtml(s.label) + '</div>'
+        + '<div class="time-bar"><div class="time-bar-fill" style="width:' + s.score + '%;background:' + barCol + '"></div></div>'
+        + '</div>';
+    });
+    html += '</div></div>';
+    if (d.firstHourTip) html += '<div class="card" style="margin-bottom:12px"><div class="card-title"><span>🚀</span> First Hour Strategy</div><div style="font-size:13px;line-height:1.7;color:#ccc">' + escHtml(d.firstHourTip) + '</div></div>';
+    if (d.avoid) html += '<div class="card"><div class="card-title"><span>⛔</span> Avoid</div><div style="font-size:13px;color:var(--muted)">' + escHtml(d.avoid) + '</div></div>';
+
+    document.getElementById('timeContainer').innerHTML = html;
+    setResults('timeResults', true);
+  } catch(e) {
+    showErr('timeErr', 'Error: ' + e.message);
+  } finally {
+    setBtn('timeBtn', false);
+    setLoading('timeLoading', false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 8. SERIES PLANNER
+// ═══════════════════════════════════════════════════════════
+async function generateSeries() {
+  seriesEpStore = [];
+  var topic = document.getElementById('seriesTopic').value;
+  var eps = document.getElementById('seriesEps').value;
+  var goal = document.getElementById('seriesGoal').value;
+
+  setBtn('seriesBtn', true);
+  hideErr('seriesErr');
+  setLoading('seriesLoading', true);
+  setResults('seriesResults', false);
+
+  var prompt = 'Telugu YouTube series planner for Umesh. Topic:' + topic + ' Episodes:' + eps + ' Goal:' + goal + '\n'
+    + 'Return ONLY JSON: {"series":[{"name":"str","pitch":"str","episodes":[{"num":1,"title":"str","hook":"str","cliffhanger":"str"}]}]}\n'
+    + '2 series concepts, ' + eps + ' episodes each. Telugu business/finance audience.';
+
+  try {
+    var raw = await callClaude(prompt, 1800);
+    var d = parseJSON(raw);
+    var html = '';
+    d.series.forEach(function(s) {
+      html += '<div class="series-card">'
+        + '<div class="series-header"><div><div class="series-name">' + escHtml(s.name) + '</div>'
+        + '<div style="font-size:12px;color:var(--muted);margin-top:3px">' + escHtml(s.pitch) + '</div></div>'
+        + '<span style="font-size:10px;font-family:\'Space Mono\',monospace;color:var(--muted);flex-shrink:0">' + s.episodes.length + ' EPS</span></div>';
+      s.episodes.forEach(function(ep) {
+        var idx = ideaStore.length;
+        ideaStore.push(ep.title);
+        ideaTypeStore.push('series');
+        var epIdx = seriesEpStore.length;
+        seriesEpStore.push({
+          num: ep.num,
+          title: ep.title,
+          hook: ep.hook || '',
+          cliffhanger: ep.cliffhanger || '',
+          seriesName: s.name,
+          totalEps: s.episodes.length
+        });
+        html += '<div class="series-ep">'
+          + '<div class="ep-num">Ep' + ep.num + '</div>'
+          + '<div style="flex:1"><div class="ep-title">' + escHtml(ep.title) + '</div>'
+          + '<div class="ep-hook">"' + escHtml(ep.hook) + '"</div>'
+          + (ep.cliffhanger ? '<div style="font-size:10px;color:var(--purple);margin-top:4px;font-family:\'Space Mono\',monospace">→ ' + escHtml(ep.cliffhanger) + '</div>' : '')
+          + '<div style="display:flex;gap:5px;margin-top:8px">'
+          + '<button class="btn-ghost" style="font-size:10px" onclick="copyIdea(' + idx + ')">Copy Title</button>'
+          + '<button class="btn-ghost" style="font-size:10px;color:var(--gold);border-color:rgba(245,200,66,0.2)" onclick="openSeriesScript(' + epIdx + ')">✍️ Write Script</button>'
+          + '</div></div></div>';
+      });
+      html += '</div>';
+    });
+    document.getElementById('seriesContainer').innerHTML = html;
+    setResults('seriesResults', true);
+  } catch(e) {
+    showErr('seriesErr', 'Error: ' + e.message);
+  } finally {
+    setBtn('seriesBtn', false);
+    setLoading('seriesLoading', false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SERIES EPISODE SCRIPT WRITER
+// ═══════════════════════════════════════════════════════════
+
+function openSeriesScript(epIdx) {
+  var ep = seriesEpStore[epIdx];
+  if (!ep) { toast('Episode data not found'); return; }
+
+  currentScriptTitle = ep.seriesName + ' | Ep' + ep.num + ': ' + ep.title;
+  currentScriptType = 'series';
+  currentScriptRaw = '';
+  currentSeriesEp = ep;
+
+  document.getElementById('spTitle').textContent = currentScriptTitle;
+  document.getElementById('spActions').style.display = 'none';
+  document.getElementById('spFooter').style.display = 'none';
+  document.getElementById('spContent').style.display = 'none';
+  document.getElementById('spLoading').style.display = 'flex';
+  document.getElementById('spLoading').innerHTML = [
+    '<div class="spin" style="margin:0 auto 12px"></div>',
+    '<p style="text-align:center;color:var(--muted);font-size:13px">',
+    'Writing Episode ' + ep.num + ' of ' + ep.totalEps + '<br>',
+    '<span style="color:var(--gold)">' + ep.title + '</span>',
+    '</p>'
+  ].join('');
+  document.getElementById('spOverlay').style.display = 'block';
+  document.getElementById('scriptPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  fetchSeriesEpScript(ep);
+}
+
+var currentSeriesEp = null;
+
+async function fetchSeriesEpScript(ep) {
+  var isFirst = ep.num === 1;
+  var isLast = ep.num === ep.totalEps;
+
+  var posNote = isFirst
+    ? 'Episode 1: Hook new viewers hard. Introduce the series promise strongly.'
+    : isLast
+    ? 'FINAL episode: Deliver the big payoff. Reference the whole journey. Emotional close.'
+    : 'Middle episode: Open with 1-line recap of Ep' + (ep.num - 1) + ', deliver this lesson, end with cliffhanger into Ep' + (ep.num + 1) + '.';
+
+  var promptLines = [
+    'Write a complete YouTube script for Umesh Emmadishetty (Telugu finance/business creator).',
+    'SERIES: ' + ep.seriesName + ' (' + ep.totalEps + '-part series)',
+    'THIS EPISODE: Ep' + ep.num + ' - ' + ep.title,
+    'HOOK: ' + ep.hook,
+    ep.cliffhanger ? 'EPISODE MUST END WITH: ' + ep.cliffhanger : '',
+    'CONTEXT: ' + posNote,
+    '',
+    'STRUCTURE:',
+    '[PART 1 - HOOK | 0:00-0:45]',
+    isFirst ? 'Open with the hook above. Introduce the series. No Namaskar.' : 'One-sentence recap of last episode, then straight into this episode hook.',
+    '[PART 2 - SETUP | 0:45-2:30]',
+    'Establish the problem or question this episode answers. Personal to Telugu viewer.',
+    '[PART 3 - CORE LESSON | 2:30-7:00]',
+    'Main content. Teach with specific examples, Rs amounts, real Telugu scenarios. Mix Telugu+English.',
+    '[PART 4 - PROOF | 7:00-8:30]',
+    'Story or real example proving the lesson. Specific numbers and outcome.',
+    '[PART 5 - CLIFFHANGER AND CTA | 8:30-9:30]',
+    ep.cliffhanger ? 'End with: ' + ep.cliffhanger + '. Subscribe CTA for next episode.' : 'Strong next-episode teaser and warm subscribe CTA.',
+    '',
+    'RULES: No Namaskar. Add [director note: ...] for camera cues. Mix Telugu+English. 1000-1200 words total.'
+  ];
+
+  var prompt = promptLines.filter(function(l) { return l !== null && l !== undefined; }).join('\n');
+
+  try {
+    var raw = await callClaude(prompt, 2200);
+    currentScriptRaw = raw;
+    renderScript(raw, 'SERIES EP' + ep.num);
+  } catch(e) {
+    document.getElementById('spLoading').innerHTML = [
+      '<p style="color:#ff8a80;text-align:center">',
+      'Error: ' + escHtml(e.message),
+      '<br><br>',
+      '<button class="sp-btn primary" onclick="fetchSeriesEpScript(currentSeriesEp)">Try Again</button>',
+      '</p>'
+    ].join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCRIPT TEMPLATES (6 variations)
+// ═══════════════════════════════════════════════════════════
+var SCRIPT_TEMPLATES = [
+  { name: 'MYTH BUSTER', structure: 'P1-MYTH(0:00-0:40): State popular belief, then demolish it with "kani idi 100% wrong." P2-EVIDENCE(0:40-2:30): 3 data points with specific Rs numbers. P3-VILLAIN(2:30-4:30): Who benefits from the myth? Name them. P4-TRUTH(4:30-7:00): What actually works, real before/after story. P5-APPLY(7:00-9:00): Numbered steps viewer can take THIS WEEK. P6-CHALLENGE(9:00-9:30): 30-day challenge, report in comments. P7-CTA(9:30-10:00): Warm elder-brother close.' },
+  { name: 'BEFORE / AFTER STORY', structure: 'P1-RESULT FIRST(0:00-0:50): Start at the outcome — "2 years lo Rs3L debt to Rs18L savings. Ela?" P2-BEFORE(0:50-2:30): Vivid before: salary, EMIs, stress. Ultra-specific Rs amounts. P3-TURNING POINT(2:30-4:00): The ONE moment/insight that changed everything. P4-JOURNEY(4:00-7:00): Month by month, with mistakes and doubts. P5-AFTER(7:00-8:30): Life now in numbers — freedom, choices. P6-ROADMAP(8:30-9:30): 3-4 starter actions for the viewer. P7-CTA(9:30-10:00): Ask viewers to share their own before story.' },
+  { name: 'THE COUNTDOWN', structure: 'P1-PROMISE(0:00-0:45): Tease the numbered list, never reveal #1 early. P2-CONTEXT(0:45-2:00): Why this is urgent RIGHT NOW. P3-FIRST HALF(2:00-5:00): Items with name, example, cliffhanger to next. Build intensity. P4-SECOND HALF(5:00-8:00): Best, most surprising items saved for here. P5-PRINCIPLE(8:00-9:00): The one thread connecting all items. P6-CTA(9:00-9:30): Ask viewers to add theirs, promise to reply.' },
+  { name: 'CRISIS AND CALM', structure: 'P1-CRISIS(0:00-0:50): Open mid-chaos, scary stat, no intro. P2-PERSONAL IMPACT(0:50-2:30): Translate crisis to viewer Rs situation. P3-WRONG REACTION(2:30-4:30): What 90% will do wrong and why it backfires. P4-STRATEGY(4:30-7:30): Numbered calm steps with data. P5-PROOF(7:30-8:45): 2008/2020/2022 — who followed this approach won. P6-CTA(8:45-9:30): Ask them to share with one person who needs this.' },
+  { name: 'SOCRATIC METHOD', structure: 'P1-QUESTION(0:00-0:45): The question everyone has but fears to ask. Make them feel seen. P2-COMPLEXITY(0:45-2:30): Why it is genuinely hard — position Umesh as honest expert. P3-DEEPER ISSUE(2:30-4:30): The real question underneath. Reframe — should surprise viewers. P4-OPTIONS(4:30-7:00): 3 options with pros/cons. Hold off picking one. P5-ANSWER(7:00-8:30): Umesh personal bold opinion with reasoning. P6-STEEL MAN(8:30-9:15): Fair opposing view, then gentle rebuttal. P7-CTA(9:15-9:45): Invite debate in comments.' },
+  { name: 'DAY IN THE LIFE', structure: 'P1-CHARACTER(0:00-0:50): Telugu middle-class person, exact salary/loans/city — viewer thinks "that is me." P2-MORNING(0:50-2:30): Financial micro-decisions they do not notice. Hidden drains. P3-CRISIS(2:30-4:30): Something goes wrong — how they react vs how a smarter version reacts. P4-RECKONING(4:30-7:00): Opens bank app. Umesh pauses story to teach core lesson. P5-TWO FUTURES(7:00-8:30): Side-by-side 5-year numbers — same vs changed. P6-CTA(8:30-9:15): Ask biggest unexpected expense this month.' }
+];
+
+// ═══════════════════════════════════════════════════════════
+// SCRIPT PANEL
+// ═══════════════════════════════════════════════════════════
+function openScript(title, type) {
+  currentScriptTitle = title;
+  currentScriptType = type;
+  currentScriptRaw = '';
+  document.getElementById('spTitle').textContent = title;
+  document.getElementById('spActions').style.display = 'none';
+  document.getElementById('spFooter').style.display = 'none';
+  document.getElementById('spContent').style.display = 'none';
+  document.getElementById('spLoading').style.display = 'flex';
+  document.getElementById('spOverlay').style.display = 'block';
+  document.getElementById('scriptPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  fetchScript(title, type);
+}
+
+function closeScript() {
+  document.getElementById('scriptPanel').classList.remove('open');
+  document.getElementById('spOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function regenScript() { openScript(currentScriptTitle, currentScriptType); }
+function copyFullScript() { copyRaw(currentScriptRaw); }
+
+function downloadScript() {
+  var blob = new Blob([currentScriptRaw], { type: 'text/plain' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'script_' + Date.now() + '.txt';
+  a.click();
+  toast('Downloaded!');
+}
+
+async function fetchScript(title, type) {
+  var ctype = type === 'revenue' ? 'REVENUE (course sales)' : type === 'series' ? 'SERIES EPISODE' : 'GROWTH (viral/mindset)';
+  var seed = title.split('').reduce(function(a, c) { return a + c.charCodeAt(0); }, 0) % SCRIPT_TEMPLATES.length;
+  var tpl = SCRIPT_TEMPLATES[seed];
+
+  var prompt = 'You are writing for Umesh Emmadishetty — Telugu YouTube creator. Straight-talking, brilliant big-brother energy.\n'
+    + 'VIDEO: "' + title + '"\n'
+    + 'TYPE: ' + ctype + '\n'
+    + 'TEMPLATE: ' + tpl.name + '\n\n'
+    + 'STRUCTURE:\n' + tpl.structure + '\n\n'
+    + 'RULES:\n'
+    + '- NEVER open with Namaskar, Hello or any greeting\n'
+    + '- Every rupee amount must be specific: Rs47,000 not "some amount"\n'
+    + '- Add [director note: ...] for camera cues\n'
+    + '- Mix Telugu and English naturally throughout\n'
+    + '- Each section must end forcing viewer to stay for the next\n'
+    + '- Speak TO camera like talking to one person\n'
+    + '- Total: 1400-1600 words\n\n'
+    + 'Format your output using these exact headers for each part:\n'
+    + '[PART 1 - name | timing]\n'
+    + '[PART 2 - name | timing]\n'
+    + 'etc. Then write the script content for each part.';
+
+  try {
+    var raw = await callClaude(prompt, 2500);
+    currentScriptRaw = raw;
+    renderScript(raw, tpl.name);
+  } catch(e) {
+    document.getElementById('spLoading').innerHTML = '<p style="color:#ff8a80">Error: ' + escHtml(e.message)
+      + '<br><br><button class="sp-btn primary" onclick="regenScript()">Try Again</button></p>';
+  }
+}
+
+function renderScript(text, templateName) {
+  templateName = templateName || '';
+  var partColors = ['var(--orange)', 'var(--gold)', 'var(--green)', 'var(--blue)', 'var(--purple)', '#f472b6', 'var(--green)'];
+  var re = /\[PART \d+[^\]]*\]/gi;
+  var headers = [];
+  var m;
+  while ((m = re.exec(text)) !== null) headers.push(m[0]);
+  var bodies = text.split(/\[PART \d+[^\]]*\]/i).slice(1);
+  var html = '';
+
+  if (!headers.length) {
+    html = '<div style="font-size:13px;line-height:2;color:#ccc;white-space:pre-wrap">' + escHtml(text) + '</div>';
+  } else {
+    headers.forEach(function(h, i) {
+      var color = partColors[i % partColors.length];
+      var label = h.replace(/\[|\]/g, '').split('|')[0].replace(/PART \d+ [-] /i, '').trim();
+      var timingMatch = h.match(/\d+:\d+[\s\S]*?\d+:\d+/);
+      var timing = timingMatch ? timingMatch[0] : '';
+      var body = bodies[i] ? bodies[i].trim() : '';
+      var fmt = escHtml(body)
+        .replace(/\[director note[:\s]*([^\]]*)\]/gi, '<i style="color:var(--muted);font-size:11px">[$1]</i>')
+        .replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--gold)">$1</b>');
+      html += '<div class="script-part">'
+        + '<div class="part-head">'
+        + '<span class="part-badge">Part ' + (i+1) + '</span>'
+        + '<span class="part-name" style="color:' + color + '">' + escHtml(label) + '</span>'
+        + (timing ? '<span class="part-timing">' + timing + '</span>' : '')
+        + '</div>'
+        + '<div class="script-text">' + fmt + '</div>'
+        + '</div><div class="part-divider"></div>';
+    });
+  }
+
+  document.getElementById('spContent').innerHTML = html;
+  var wc = text.split(/\s+/).filter(Boolean).length;
+  var mins = Math.round(wc / 140);
+  document.getElementById('spWc').textContent = wc.toLocaleString();
+  document.getElementById('spDuration').textContent = '~' + mins + ' min';
+  var badge = document.getElementById('spTplBadge');
+  if (badge) badge.textContent = templateName;
+  document.getElementById('spFooter').style.display = 'flex';
+  document.getElementById('spLoading').style.display = 'none';
+  document.getElementById('spContent').style.display = 'block';
+  document.getElementById('spActions').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════════════════
+// TELEPROMPTER
+// ═══════════════════════════════════════════════════════════
+function openTeleprompter() {
+  if (!currentScriptRaw) { toast('Generate a script first!'); return; }
+  var lines = currentScriptRaw
+    .replace(/\[PART (\d+)[^\]]*\]/gi, '\nPART_LABEL_$1\n')
+    .replace(/\[director note[:\s]*[^\]]*\]/gi, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .split('\n');
+  var html = '';
+  lines.forEach(function(l) {
+    var t = l.trim();
+    if (!t) return;
+    if (t.indexOf('PART_LABEL_') === 0) {
+      html += '<span class="tp-section-label">PART ' + escHtml(t.replace('PART_LABEL_', '')) + '</span>';
+    } else {
+      html += '<p>' + escHtml(t) + '</p>';
+    }
+  });
+
+  var el = document.getElementById('tp-text');
+  el.innerHTML = html;
+  el.style.fontSize = tpFontSize + 'px';
+  el.style.transform = '';
+  tpPos = 0;
+  tpPlaying = false;
+  document.getElementById('tpSpeedVal').textContent = tpSpeed.toFixed(1);
+  document.getElementById('tpSizeVal').textContent = tpFontSize;
+  document.getElementById('mirrorBtn').style.color = '';
+  document.getElementById('tp-play').textContent = '▶';
+  document.getElementById('tp-prog-fill').style.width = '0%';
+  document.getElementById('tp').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  document.fonts.ready.then(function() {
+    tpTotal = Math.max(0, el.scrollHeight - document.getElementById('tp-scroller').clientHeight);
+    tpUpdateTime();
+  });
+  document.addEventListener('keydown', tpKeyHandler);
+  tpShowControls();
+}
+
+function closeTeleprompter() {
+  tpPlaying = false;
+  cancelAnimationFrame(tpRaf);
+  document.getElementById('tp').style.display = 'none';
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', tpKeyHandler);
+}
+
+function tpKeyHandler(e) {
+  if (document.getElementById('tp').style.display === 'none') return;
+  if (e.code === 'Space') { e.preventDefault(); tpTogglePlay(); }
+  if (e.code === 'ArrowUp') tpChangeSpeed(0.5);
+  if (e.code === 'ArrowDown') tpChangeSpeed(-0.5);
+  if (e.code === 'Escape') closeTeleprompter();
+}
+
+function tpShowControls() {
+  document.getElementById('tp-bar').style.opacity = '1';
+  document.getElementById('tp-controls').style.opacity = '1';
+  clearTimeout(tpHideTimer);
+  tpHideTimer = setTimeout(function() {
+    if (tpPlaying) {
+      document.getElementById('tp-bar').style.opacity = '0';
+      document.getElementById('tp-controls').style.opacity = '0';
+    }
+  }, 3000);
+}
+
+document.getElementById('tp').addEventListener('mousemove', tpShowControls);
+document.getElementById('tp').addEventListener('touchstart', tpShowControls, { passive: true });
+
+function tpTogglePlay() {
+  tpPlaying = !tpPlaying;
+  document.getElementById('tp-play').textContent = tpPlaying ? '⏸' : '▶';
+  if (tpPlaying) { tpLastTime = null; tpRaf = requestAnimationFrame(tpTick); }
+  else cancelAnimationFrame(tpRaf);
+}
+
+function tpTick(ts) {
+  if (!tpPlaying) return;
+  if (tpLastTime === null) tpLastTime = ts;
+  var dt = ts - tpLastTime;
+  tpLastTime = ts;
+  tpPos += tpSpeed * 60 * (dt / 1000);
+  if (tpPos >= tpTotal) {
+    tpPos = tpTotal;
+    tpPlaying = false;
+    document.getElementById('tp-play').textContent = '▶';
+    tpShowControls();
+  }
+  document.getElementById('tp-text').style.transform = 'translateY(-' + tpPos + 'px)';
+  document.getElementById('tp-prog-fill').style.width = (tpTotal > 0 ? Math.min((tpPos / tpTotal) * 100, 100) : 0) + '%';
+  tpUpdateTime();
+  if (tpPlaying) tpRaf = requestAnimationFrame(tpTick);
+}
+
+function tpReset() {
+  tpPlaying = false;
+  cancelAnimationFrame(tpRaf);
+  tpPos = 0;
+  document.getElementById('tp-text').style.transform = 'translateY(0)';
+  document.getElementById('tp-prog-fill').style.width = '0%';
+  document.getElementById('tp-play').textContent = '▶';
+  tpUpdateTime();
+}
+
+function tpChangeSpeed(d) {
+  tpSpeed = Math.max(0.5, Math.min(3.0, Math.round((tpSpeed + d) * 10) / 10));
+  document.getElementById('tpSpeedVal').textContent = tpSpeed.toFixed(1);
+}
+
+function tpChangeSize(d) {
+  tpFontSize = Math.max(18, Math.min(72, tpFontSize + d));
+  document.getElementById('tpSizeVal').textContent = tpFontSize;
+  document.getElementById('tp-text').style.fontSize = tpFontSize + 'px';
+  document.fonts.ready.then(function() {
+    tpTotal = Math.max(0, document.getElementById('tp-text').scrollHeight - document.getElementById('tp-scroller').clientHeight);
+  });
+}
+
+function tpToggleMirror() {
+  tpMirrored = !tpMirrored;
+  document.getElementById('tp-scroller').style.transform = tpMirrored ? 'scaleX(-1)' : '';
+  document.getElementById('mirrorBtn').style.color = tpMirrored ? 'var(--gold)' : '';
+}
+
+function tpUpdateTime() {
+  var wc = currentScriptRaw.split(/\s+/).filter(Boolean).length;
+  var totalS = Math.round(wc / (140 / 60));
+  var elapsedS = tpTotal > 0 ? Math.round((tpPos / tpTotal) * totalS) : 0;
+  function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  document.getElementById('tpTime').textContent = fmt(elapsedS) + ' / ~' + fmt(totalS);
+}
+
+// ═══════════════════════════════════════════════════════════
+// GEOPOLITICS TAB
+// ═══════════════════════════════════════════════════════════
+var GEO_TEMPLATES = [
+  { name: 'BREAKING NEWS ANCHOR', parts: [
+    { name: 'BREAKING HEADLINE', timing: '0:00-0:45', hint: 'Mid-sentence start, most shocking fact from news. No greeting.' },
+    { name: 'WHAT HAPPENED', timing: '0:45-2:30', hint: 'Who/what/where/when with specific dates and figures from news brief.' },
+    { name: 'INDIA DIRECT HIT', timing: '2:30-4:30', hint: 'FII flows, rupee, oil bill — personal impact on Telugu salaried person.' },
+    { name: 'MARKET BATTLEFIELD', timing: '4:30-7:00', hint: 'Sector-by-sector impact, actual Nifty stock names, short vs long term.' },
+    { name: 'YOUR ORDERS', timing: '7:00-8:45', hint: 'Numbered commands: Buy/Avoid/Hold/Hedge. No vague advice.' },
+    { name: 'CTA', timing: '8:45-9:30', hint: 'Ask viewers what they are doing with portfolio right now.' }
+  ]},
+  { name: 'CHAI PE CHARCHA', parts: [
+    { name: 'THE QUESTION', timing: '0:00-0:50', hint: 'Start with the question viewers have but will not say out loud.' },
+    { name: 'SIMPLE EXPLANATION', timing: '0:50-3:00', hint: 'Everyday analogies — "imagine Hyderabad shop owner..." Make global local.' },
+    { name: 'THE REAL CONCERN', timing: '3:00-5:00', hint: 'Rs5L MF + home loan + salary person — concrete rupee impact.' },
+    { name: 'THREE SCENARIOS', timing: '5:00-7:30', hint: 'Best/Base/Worst case with specific Nifty levels and probabilities.' },
+    { name: 'MY HONEST TAKE', timing: '7:30-8:45', hint: 'Personal bold contrarian opinion. Not hedged.' },
+    { name: 'CTA', timing: '8:45-9:30', hint: 'Invite debate in comments.' }
+  ]},
+  { name: 'HISTORY REPEATS', parts: [
+    { name: 'THE DEJA VU HOOK', timing: '0:00-0:50', hint: 'This happened before — name exact year and crisis immediately.' },
+    { name: 'THEN VS NOW', timing: '0:50-2:30', hint: 'Side-by-side comparison with exact data: similarities and key differences.' },
+    { name: 'MARKETS THEN', timing: '2:30-4:30', hint: 'Month-by-month India market reaction historically. Specific stocks/percentages.' },
+    { name: 'THE DIVERGENCE', timing: '4:30-6:30', hint: 'Where the parallel breaks — what is different this time and why it matters.' },
+    { name: 'PATTERN PLAYBOOK', timing: '6:30-8:30', hint: 'Sectors that outperformed in similar conditions — actual stock names.' },
+    { name: 'CTA', timing: '8:30-9:15', hint: 'Ask about a crisis they personally navigated.' }
+  ]},
+  { name: 'THE CONTRARIAN', parts: [
+    { name: 'THE PANIC SCENE', timing: '0:00-0:45', hint: 'Paint the panic: WhatsApp forwards, CNBC, broker calls. Dramatic.' },
+    { name: 'WHY WRONG', timing: '0:45-2:30', hint: '3 specific data points the panicking crowd is ignoring.' },
+    { name: 'HIDDEN OPPORTUNITY', timing: '2:30-5:00', hint: 'FII data, promoter buying — smart money signal. Specific sectors.' },
+    { name: 'RISK CASE', timing: '5:00-6:30', hint: 'Honest bear case — what has to happen for panic crowd to be right.' },
+    { name: 'CONTRARIAN TRADE', timing: '6:30-8:30', hint: 'Specific positions: sizing, time horizon, exit conditions.' },
+    { name: 'CTA', timing: '8:30-9:15', hint: 'Challenge agree/disagree in comments, promise to reply.' }
+  ]},
+  { name: 'FAMILY BUDGET IMPACT', parts: [
+    { name: 'MEET THE FAMILY', timing: '0:00-0:50', hint: 'Rs80K Hyderabad family, 2 kids, home+car loan — start with exact cost this event adds.' },
+    { name: 'HOUSEHOLD CALCULATOR', timing: '0:50-3:00', hint: 'Petrol, groceries, EMI, school fees — specific Rs change for each.' },
+    { name: 'SAVINGS ATTACK', timing: '3:00-5:00', hint: 'MF NAV, FD rates, gold, property — multi-front squeeze.' },
+    { name: 'GOVT RESPONSE', timing: '5:00-6:30', hint: 'RBI/Govt policy tools likely deployed. Balanced view.' },
+    { name: 'FAMILY PLAYBOOK', timing: '6:30-8:30', hint: 'Emergency fund, SIP strategy, expense cuts — tailored to this profile.' },
+    { name: 'CTA', timing: '8:30-9:15', hint: 'Ask biggest expense being hit by this event.' }
+  ]}
+];
+
+async function generateGeoScript() {
+  if (geoRequestActive) { toast('Already generating — please wait...'); return; }
+
+  var topic = document.getElementById('geoTopic').value.trim();
+  if (!topic) {
+    showErr('geoErr', 'Please enter a geopolitical topic or click a hot topic chip.');
+    return;
+  }
+
+  hideErr('geoErr');
+  geoRequestActive = true;
+  document.getElementById('geoBtn').disabled = true;
+  document.getElementById('geoBtn').textContent = '⏳ Generating...';
+  document.getElementById('geoProgress').style.display = 'block';
+  document.getElementById('geoOutput').style.display = 'none';
+  geoScriptRaw = '';
+
+  var market = document.getElementById('geoMarket').value;
+  var tone = document.getElementById('geoTone').value;
+  var length = document.getElementById('geoLength').value;
+
+  var toneMap = {
+    alarm: 'URGENT/ALARM — Market at serious risk. Create fear and urgency.',
+    opportunity: 'OPPORTUNITY — Find the hidden gains. Contrarian optimistic angle.',
+    explainer: 'EDUCATIONAL EXPLAINER — Break it down simply. Be the professor.',
+    prediction: 'PREDICTION — Tell them what will happen next. Make bold calls.'
+  };
+  var marketMap = {
+    broad: 'Nifty 50 and Sensex broad market',
+    it: 'IT sector (TCS, Infosys, Wipro, HCL)',
+    pharma: 'Pharma sector (Sun Pharma, Dr Reddy, Cipla)',
+    banking: 'Banking and NBFC (HDFC, ICICI, SBI)',
+    oil: 'Oil and Energy (ONGC, Reliance, IOC)',
+    metals: 'Metals (Tata Steel, JSW, Hindalco)',
+    fmcg: 'FMCG and Consumer (HUL, ITC, Nestle)',
+    auto: 'Auto sector (Maruti, Tata Motors, M&M)'
+  };
+  var wordMap = { short: 700, medium: 1100, long: 1800 };
+  var targetWords = wordMap[length] || 1100;
+
+  var seed = (topic.length + tone.length) % GEO_TEMPLATES.length;
+  var geoTpl = GEO_TEMPLATES[seed];
+
+  setGeoStep(1, 'searching');
+
+  try {
+    // Step 1: Web search for live news
+    var searchRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{
+          role: 'user',
+          content: 'Search the web for the latest news (last 7 days) about: "' + topic + '" and its impact on Indian stock markets and economy.\n\nFind:\n1. What is exactly happening geopolitically right now (specific dates, figures, leaders, decisions)\n2. How is it specifically affecting India, Indian markets, Indian rupee\n3. Which Indian sectors or stocks are most impacted\n4. What analysts and experts are saying\n5. Specific data: index movements, percentage changes, oil prices, currency rates\n\nGive a detailed factual news brief with all specific numbers, names, and dates you find.'
+        }]
+      })
+    });
+
+    var searchData = await searchRes.json();
+    if (!searchRes.ok) throw new Error((searchData.error && searchData.error.message) || 'Search API error');
+
+    var newsContext = searchData.content
+      .filter(function(b) { return b.type === 'text'; })
+      .map(function(b) { return b.text; })
+      .join('\n') || 'Unable to fetch live news. Using general knowledge about this topic.';
+
+    setGeoStep(1, 'done');
+    setGeoStep(2, 'searching');
+
+    // Render news brief
+    document.getElementById('geoNewsContent').innerHTML = newsContext
+      .split('\n')
+      .filter(function(l) { return l.trim(); })
+      .map(function(l) { return '<div class="geo-news-item">' + escHtml(l) + '</div>'; })
+      .join('');
+
+    // Trim newsContext to max 600 words to stay within token limits
+    var newsWords = newsContext.split(/\s+/);
+    if (newsWords.length > 600) newsContext = newsWords.slice(0, 600).join(' ') + '... [truncated for brevity]';
+
+    setGeoStep(2, 'done');
+    setGeoStep(3, 'searching');
+
+    // Step 2: Generate impact cards, titles and script
+    // Build parts instruction as plain string to avoid nested template literals
+    var partsInstruction = geoTpl.parts.map(function(p, i) {
+      return 'Part ' + (i+1) + ' - ' + p.name + ' (' + p.timing + '): ' + p.hint;
+    }).join('\n\n');
+
+    var partsJSON = geoTpl.parts.map(function(p, i) {
+      return '{"name":"' + p.name + '","timing":"' + p.timing + '","content":"write script here"}';
+    }).join(',');
+
+    var scriptPrompt = 'You are writing for Umesh Emmadishetty — Telugu YouTube finance creator. Big-brother energy. Explains global events like sitting across from you over chai.\n\n'
+      + 'LIVE NEWS BRIEF:\n' + newsContext + '\n\n'
+      + 'VIDEO TOPIC: "' + topic + '"\n'
+      + 'MARKET FOCUS: ' + (marketMap[market] || 'Indian stock market') + '\n'
+      + 'TEMPLATE: ' + geoTpl.name + '\n'
+      + 'TONE: ' + (toneMap[tone] || toneMap.explainer) + '\n'
+      + 'TARGET WORDS: ' + targetWords + '\n\n'
+      + 'STRUCTURE:\n' + partsInstruction + '\n\n'
+      + 'RULES:\n'
+      + '- NEVER open with Namaskar, Hello or any greeting\n'
+      + '- Every number must be SPECIFIC — use actual figures from the news brief\n'
+      + '- Mix Telugu and English naturally\n'
+      + '- Add [delivery note: ...] for camera direction at key moments\n'
+      + '- Each section must end forcing viewer to stay for the next\n'
+      + '- Speak to ONE person not a crowd\n\n'
+      + 'Return ONLY valid JSON (no markdown):\n'
+      + '{"impactCards":[{"label":"Nifty Impact","value":"value","desc":"desc","type":"bull|bear|neu"},{"label":"label","value":"value","desc":"desc","type":"bull|bear|neu"},{"label":"label","value":"value","desc":"desc","type":"bull|bear|neu"}],'
+      + '"titles":[{"text":"title1","type":"SHOCK"},{"text":"title2","type":"FOMO"},{"text":"title3","type":"EMOTION"},{"text":"title4","type":"LEARN"},{"text":"title5","type":"PREDICT"}],'
+      + '"templateUsed":"' + geoTpl.name + '",'
+      + '"script":{"parts":[' + partsJSON + ']}}';
+
+    // Pause to avoid concurrent limit
+    await new Promise(function(r) { setTimeout(r, 1500); });
+
+    var scriptRes = await callClaude(scriptPrompt, 2500);
+    var parsed = parseJSON(scriptRes);
+
+    setGeoStep(3, 'done');
+
+    // Render impact cards
+    if (parsed.impactCards && parsed.impactCards.length) {
+      var cardsHtml = '<div class="geo-impact-grid">';
+      parsed.impactCards.forEach(function(c) {
+        cardsHtml += '<div class="geo-impact-card ' + (c.type || 'neu') + '">'
+          + '<div class="geo-impact-label">' + escHtml(c.label) + '</div>'
+          + '<div class="geo-impact-val">' + escHtml(c.value) + '</div>'
+          + '<div class="geo-impact-desc">' + escHtml(c.desc) + '</div>'
+          + '</div>';
+      });
+      cardsHtml += '</div>';
+      document.getElementById('geoImpactCards').innerHTML = cardsHtml;
+    }
+
+    // Render title options
+    if (parsed.titles && parsed.titles.length) {
+      var typeColors = { SHOCK: 'var(--red)', FOMO: 'var(--orange)', EMOTION: 'var(--purple)', LEARN: 'var(--blue)', PREDICT: 'var(--green)' };
+      var titlesHtml = '';
+      parsed.titles.forEach(function(t) {
+        var col = typeColors[t.type] || 'var(--muted)';
+        titlesHtml += '<div class="geo-title-opt">'
+          + '<div class="geo-title-text">' + escHtml(t.text) + '</div>'
+          + '<span class="geo-title-type" style="background:rgba(255,255,255,.05);color:' + col + ';border:1px solid ' + col + '33">' + escHtml(t.type) + '</span>'
+          + '<button class="btn-ghost" style="font-size:10px;flex-shrink:0" onclick="copyRaw(' + JSON.stringify(t.text) + ');toast(\'Copied!\')">Copy</button>'
+          + '</div>';
+      });
+      document.getElementById('geoTitles').innerHTML = titlesHtml;
+    }
+
+    // Render script
+    if (parsed.script && parsed.script.parts) {
+      var scriptColors = ['var(--orange)', 'var(--gold)', 'var(--green)', 'var(--blue)', 'var(--purple)', 'var(--ice)'];
+      var scriptHtml = '';
+      var rawParts = [];
+      parsed.script.parts.forEach(function(p, i) {
+        var col = scriptColors[i % scriptColors.length];
+        scriptHtml += '<div class="geo-script-part">'
+          + '<div class="geo-part-head">'
+          + '<span class="geo-part-badge">Part ' + (i+1) + '</span>'
+          + '<span class="geo-part-name" style="color:' + col + '">' + escHtml(p.name) + '</span>'
+          + (p.timing ? '<span class="geo-part-timing">' + escHtml(p.timing) + '</span>' : '')
+          + '</div>'
+          + '<div class="geo-script-text">' + escHtml(p.content) + '</div>'
+          + '</div>';
+        rawParts.push('[' + p.name + ' | ' + (p.timing || '') + ']\n' + p.content);
+      });
+      geoScriptRaw = rawParts.join('\n\n');
+      document.getElementById('geoScriptContent').innerHTML = scriptHtml;
+      var wc = geoScriptRaw.split(/\s+/).filter(Boolean).length;
+      document.getElementById('geoScriptMeta').textContent = wc.toLocaleString() + ' words · ~' + Math.round(wc / 140) + ' min · ' + geoTpl.name;
+    }
+
+    document.getElementById('geoOutput').style.display = 'block';
+    document.getElementById('geoOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    toast('Script ready ✓');
+
+  } catch(e) {
+    var errMsg = e.message;
+    try {
+      var errParsed = JSON.parse(errMsg);
+      if (errParsed.type === 'exceeded_limit' || errParsed.representativeClaim === 'concurrents') {
+        errMsg = 'Too many requests at once. Please wait 10-15 seconds and try again.';
+      }
+    } catch(_) {}
+    showErr('geoErr', errMsg);
+    document.getElementById('geoProgress').style.display = 'none';
+  } finally {
+    geoRequestActive = false;
+    document.getElementById('geoBtn').disabled = false;
+    document.getElementById('geoBtn').textContent = '🌐 FETCH LIVE NEWS + WRITE SCRIPT';
+  }
+}
+
+function setGeoStep(step, state) {
+  var el = document.getElementById('geoStep' + step);
+  if (!el) return;
+  var icons = { searching: '⚡', done: '✅' };
+  var texts = {
+    1: { searching: 'Searching for latest geopolitical news...', done: 'Live news fetched ✓' },
+    2: { searching: 'Analysing Indian market impact...', done: 'Market impact analysed ✓' },
+    3: { searching: 'Writing high-engagement script...', done: 'Script written ✓' }
+  };
+  el.style.opacity = '1';
+  el.innerHTML = '<span class="geo-step-ico">' + (icons[state] || '⏳') + '</span><span>' + ((texts[step] && texts[step][state]) || '') + '</span>';
+  if (state === 'done') el.style.color = 'var(--green)';
+  if (state === 'done' && step < 3) {
+    var next = document.getElementById('geoStep' + (step + 1));
+    if (next) {
+      next.style.opacity = '1';
+      var nextTexts = { 2: 'Analysing Indian market impact...', 3: 'Writing high-engagement script...' };
+      next.innerHTML = '<span class="geo-step-ico">⚡</span><span>' + (nextTexts[step + 1] || '') + '</span>';
+    }
+  }
+}
+
+function copyGeoScript() { if (geoScriptRaw) copyRaw(geoScriptRaw); else toast('Generate a script first'); }
+
+function downloadGeoScript() {
+  if (!geoScriptRaw) { toast('Generate a script first'); return; }
+  var blob = new Blob([geoScriptRaw], { type: 'text/plain' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'geo_script_' + Date.now() + '.txt';
+  a.click();
+  toast('Downloaded!');
+}
+
+function openGeoTeleprompter() {
+  if (!geoScriptRaw) { toast('Generate a script first'); return; }
+  currentScriptRaw = geoScriptRaw;
+  openTeleprompter();
+}
+
+
+</script>
+</body>
+</html>
