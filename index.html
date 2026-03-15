@@ -566,12 +566,13 @@ function renderSaved() {
 async function generateIdeas() {
   const btn = document.getElementById('genBtn');
   const loading = document.getElementById('loading');
+  const loadingMsg = loading.querySelector('p');
   const results = document.getElementById('results');
   const errorBox = document.getElementById('errorBox');
   const focus = document.getElementById('focusSelect').value;
   const goal = document.getElementById('goalSelect').value;
   const count = parseInt(document.getElementById('countSelect').value);
-  const context = document.getElementById('contextInput').value.trim();
+  const userContext = document.getElementById('contextInput').value.trim();
 
   btn.disabled = true;
   loading.style.display = 'block';
@@ -579,11 +580,26 @@ async function generateIdeas() {
   errorBox.style.display = 'none';
 
   const focusLabels = {mixed:'Mixed Growth+Revenue',growth:'Growth/Viral',revenue:'Revenue/Course Sales',mindset:'Mindset & Belief Shifts',stock:'Stock Market & Investing',digital:'Digital Entrepreneurship',news:'Trending News Reaction'};
+  const today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
 
-  const prompt = 'You are a content strategist for Umesh Emmadishetty, Telugu YouTube creator.\n\nCHANNEL: Telugu audience 20s-40s, financial freedom + digital entrepreneurship\nTOP VIDEO: "Save Yourself From Middle Class Trap" 94K views\nTONE: straight-talking big brother, no fluff, culturally Telugu\nTWO TYPES: GROWTH = mindset/viral | REVENUE = digital skills/courses\n\nFocus=' + focusLabels[focus] + ', Goal=' + goal + ', Count=' + count + '\n' + (context ? 'Context: ' + context : 'No context - generate evergreen ideas') + '\n\nTITLE RULES: Max 8 English words. Must have tension/villain/uncomfortable truth. NO generic titles.\n\nRespond ONLY with valid JSON (no markdown):\n{"videos":[{"title":"...","type":"growth|revenue","angle":"..."}],"shorts":[{"hook":"...","concept":"..."}],"hooks":["..."]}\n\nGenerate ' + Math.round(count*0.5) + ' videos, ' + Math.round(count*0.25) + ' shorts, ' + Math.round(count*0.25) + ' hooks.';
+  const searchMap = {
+    mixed:   ['viral YouTube India money 2026', 'personal finance trends India 2026'],
+    growth:  ['viral mindset content India 2026 trending', 'middle class India pain points 2026'],
+    revenue: ['digital entrepreneurship India 2026', 'online income skills India 2026'],
+    mindset: ['mindset wealth India 2026 trending', 'middle class trap India 2026'],
+    stock:   ['Indian stock market news today', 'Sensex Nifty 2026 trends today'],
+    digital: ['AI jobs impact India 2026', 'freelance digital skills India 2026'],
+    news:    ['India business finance news today 2026', 'trending money news India today']
+  };
+  const queries = searchMap[focus] || searchMap['mixed'];
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    // STEP 1: Live web search for current trends
+    loadingMsg.textContent = 'Step 1/2: Searching what is trending right now in India...';
+
+    const searchPrompt = 'Today is ' + today + '. Use web search to find the most current and relevant information for these queries:\n- ' + queries[0] + '\n- ' + queries[1] + '\n\nReturn a focused summary of 5-7 trending topics, news events, controversies, pain points, or opportunities in India RIGHT NOW (2026) that relate to personal finance, digital income, wealth-building, or entrepreneurship. Include specific numbers, platform names, events. Be very current - only 2025-2026 information.';
+
+    const searchRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -591,14 +607,50 @@ async function generateIdeas() {
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:2000, messages:[{role:'user',content:prompt}]})
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        tools: [{"type": "web_search_20250305", "name": "web_search"}],
+        messages: [{role: 'user', content: searchPrompt}]
+      })
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ? data.error.message : 'API error ' + res.status);
-    const raw = data.content && data.content[0] ? data.content[0].text : '';
+
+    const searchData = await searchRes.json();
+    if (!searchRes.ok) throw new Error(searchData.error ? searchData.error.message : 'Search error');
+
+    // Extract text blocks from response (web_search returns mixed content blocks)
+    let trendingContext = '';
+    if (searchData.content) {
+      searchData.content.forEach(function(block) {
+        if (block.type === 'text') trendingContext += block.text + ' ';
+      });
+    }
+    trendingContext = trendingContext.trim() || 'No live data retrieved.';
+    lastTrendingContext = trendingContext;
+
+    // STEP 2: Generate ideas grounded in live trends
+    loadingMsg.textContent = 'Step 2/2: Generating fresh 2026 ideas based on live trends...';
+
+    const ideasPrompt = 'You are a content strategist for Umesh Emmadishetty, Telugu YouTube creator. Today is ' + today + '.\n\nCHANNEL: Telugu audience 20s-40s, financial freedom + digital entrepreneurship\nTOP VIDEO: Save Yourself From Middle Class Trap - 94K views\nTONE: straight-talking big brother, no fluff, culturally Telugu\nTWO TYPES: GROWTH = mindset/viral | REVENUE = digital skills/courses\n\nFocus=' + focusLabels[focus] + ', Goal=' + goal + ', Count=' + count + '\n\nLIVE TRENDING DATA (scraped today):\n' + trendingContext + '\n\n' + (userContext ? 'CREATOR CONTEXT: ' + userContext + '\n\n' : '') + 'TITLE RULES: Max 8 English words. Tension/villain/uncomfortable truth. NO generic 2024 titles. Must feel fresh - reference AI economy, new platforms, 2026 realities.\n\nRespond ONLY with valid JSON (no markdown):\n{"videos":[{"title":"...","type":"growth|revenue","angle":"why this lands in 2026"}],"shorts":[{"hook":"...","concept":"..."}],"hooks":["..."]}\n\nGenerate ' + Math.round(count*0.5) + ' videos, ' + Math.round(count*0.25) + ' shorts, ' + Math.round(count*0.25) + ' hooks.';
+
+    const ideasRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:2000, messages:[{role:'user',content:ideasPrompt}]})
+    });
+
+    const ideasData = await ideasRes.json();
+    if (!ideasRes.ok) throw new Error(ideasData.error ? ideasData.error.message : 'API error ' + ideasRes.status);
+    const raw = ideasData.content && ideasData.content[0] ? ideasData.content[0].text : '';
     const clean = raw.replace(/```json/g,'').replace(/```/g,'').trim();
     const parsed = JSON.parse(clean);
     renderIdeas(parsed);
+
   } catch(err) {
     if (err.message && err.message.indexOf('401') !== -1) {
       errorBox.innerHTML = 'Invalid API key. <a href="#" onclick="showApiModal()" style="color:var(--accent)">Update</a>';
@@ -609,14 +661,47 @@ async function generateIdeas() {
   } finally {
     btn.disabled = false;
     loading.style.display = 'none';
+    loadingMsg.textContent = 'Analyzing your brand and generating fresh ideas...';
   }
 }
+
+var lastTrendingContext = '';
+
 
 function renderIdeas(data) {
   const container = document.getElementById('ideasContainer');
   const results = document.getElementById('results');
   const total = (data.videos ? data.videos.length : 0) + (data.shorts ? data.shorts.length : 0) + (data.hooks ? data.hooks.length : 0);
   document.getElementById('resultsMeta').textContent = total + ' ideas  ' + new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+
+  // Show live trends banner
+  var oldBanner = document.getElementById('trendBanner');
+  if (oldBanner) oldBanner.remove();
+  if (lastTrendingContext && lastTrendingContext.length > 20) {
+    var banner = document.createElement('div');
+    banner.id = 'trendBanner';
+    banner.style.cssText = 'background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:9px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:#888;line-height:1.6;cursor:pointer;';
+    var preview = lastTrendingContext.slice(0, 300) + (lastTrendingContext.length > 300 ? '...' : '');
+    banner.innerHTML = '<span style="color:#22c55e;font-weight:600;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:4px">Live Trends Used Today</span>' + escHtml(preview);
+    banner.title = 'Click to see full trending context';
+    banner.onclick = function() { alert(lastTrendingContext); };
+    document.getElementById('ideasContainer').parentNode.insertBefore(banner, document.getElementById('ideasContainer'));
+  }
+
+  // Show trending context banner
+  var trendBanner = document.getElementById('trendBanner');
+  if (!trendBanner) {
+    trendBanner = document.createElement('div');
+    trendBanner.id = 'trendBanner';
+    trendBanner.style.cssText = 'background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:9px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:#666;line-height:1.6;';
+    container.parentNode.insertBefore(trendBanner, container);
+  }
+  if (lastTrendingContext) {
+    trendBanner.innerHTML = '<span style="color:#22c55e;font-weight:600;font-size:11px;letter-spacing:1px;text-transform:uppercase">Live Trends Used</span><br>' + escHtml(lastTrendingContext.slice(0, 400)) + (lastTrendingContext.length > 400 ? '...' : '');
+    trendBanner.style.display = 'block';
+  } else {
+    trendBanner.style.display = 'none';
+  }
 
   ideaStore = []; ideaTypeStore = [];
   let html = '';
@@ -722,9 +807,45 @@ function downloadScript() {
 
 async function fetchScript(title, type) {
   const ctype = type === 'growth' ? 'GROWTH (viral/mindset)' : type === 'revenue' ? 'REVENUE (course sales)' : 'MIXED';
-  const prompt = 'Write a YouTube video script for Umesh Emmadishetty, Telugu creator.\n\nVIDEO: "' + title + '"\nTYPE: ' + ctype + '\nAUDIENCE: Telugu 20s-40s, middle class, want financial freedom\nTONE: straight-talking big brother, Telugu+English code-switching, spoken voice\n\nWrite COMPLETE 7-part script, 1450-1600 words total (~10-12 min).\n\nUse these EXACT section headers:\n[PART 1 - HOOK | 0:00-0:45 | ~100 words]\n[PART 2 - PROBLEM DEEPENER | 0:45-2:30 | ~250 words]\n[PART 3 - VILLAIN REVEAL | 2:30-4:00 | ~200 words]\n[PART 4 - STORY/PROOF | 4:00-6:30 | ~300 words]\n[PART 5 - SOLUTION | 6:30-8:30 | ~350 words]\n[PART 6 - CALLBACK | 8:30-9:30 | ~150 words]\n[PART 7 - CTA | 9:30-10:00 | ~100 words]\n\nRules: NEVER start with Namaskar. Mix Telugu+English. Use [director note] for cues. Real numbers in Part 4.';
+  const today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+  const loading = document.getElementById('spLoading');
 
   try {
+    // STEP 1: Search for live facts related to the video title
+    loading.innerHTML = '<div class="spin"></div><p>Step 1/2: Searching live data for accurate facts, prices, and current events...</p>';
+
+    const searchPrompt = 'Today is ' + today + '. I need to write a YouTube video script about: "' + title + '" for a Telugu finance/entrepreneurship creator. Use web search to find:\n1. Any current stock prices, company news, or financial data mentioned in the topic\n2. Current statistics, salaries, cost of living numbers in India (2025-2026)\n3. Any recent news events, policy changes, or market moves relevant to this topic\n4. Real current examples of people/companies relevant to this topic in India\n\nReturn specific, accurate, current data points I can use in the script. Focus on verifiable numbers and recent events only.';
+
+    const searchRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 800,
+        tools: [{"type": "web_search_20250305", "name": "web_search"}],
+        messages: [{role: 'user', content: searchPrompt}]
+      })
+    });
+
+    const searchData = await searchRes.json();
+    let liveData = '';
+    if (searchData.content) {
+      searchData.content.forEach(function(block) {
+        if (block.type === 'text') liveData += block.text + ' ';
+      });
+    }
+    liveData = liveData.trim() || 'No live data found - use conservative estimates only.';
+
+    // STEP 2: Write script with live data grounded facts
+    loading.innerHTML = '<div class="spin"></div><p>Step 2/2: Writing script with verified current data...</p>';
+
+    const prompt = 'Write a YouTube video script for Umesh Emmadishetty, Telugu creator. Today is ' + today + '.\n\nVIDEO: "' + title + '"\nTYPE: ' + ctype + '\nAUDIENCE: Telugu 20s-40s, middle class, want financial freedom\nTONE: straight-talking big brother, Telugu+English code-switching, spoken voice\n\nLIVE VERIFIED DATA (use ONLY these numbers/facts - do NOT invent prices or statistics):\n' + liveData + '\n\nCRITICAL RULES FOR FACTS:\n- Only use stock prices, salaries, or statistics from the LIVE DATA above\n- If a specific number is not in the live data, say "check current price" or use ranges like "Rs 50,000-80,000 salary range"\n- NEVER hallucinate specific stock prices, company valuations, or financial figures\n- Date all statistics: say "as of ' + today + '" when citing numbers\n\nWrite COMPLETE 7-part script, 1450-1600 words total (~10-12 min).\n\n[PART 1 - HOOK | 0:00-0:45 | ~100 words]\n[PART 2 - PROBLEM DEEPENER | 0:45-2:30 | ~250 words]\n[PART 3 - VILLAIN REVEAL | 2:30-4:00 | ~200 words]\n[PART 4 - STORY/PROOF | 4:00-6:30 | ~300 words]\n[PART 5 - SOLUTION | 6:30-8:30 | ~350 words]\n[PART 6 - CALLBACK | 8:30-9:30 | ~150 words]\n[PART 7 - CTA | 9:30-10:00 | ~100 words]\n\nRules: NEVER start with Namaskar. Mix Telugu+English. Use [director note] for cues.';
+
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -738,11 +859,16 @@ async function fetchScript(title, type) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error ? data.error.message : 'API error');
     currentScriptRaw = data.content && data.content[0] ? data.content[0].text : '';
+
+    // Attach live data used as footer note
+    currentScriptRaw = currentScriptRaw + '\n\n---\n[LIVE DATA USED: ' + liveData.slice(0, 300) + ']';
     renderScript(currentScriptRaw);
+
   } catch(err) {
     document.getElementById('spLoading').innerHTML = '<p style="color:#f87171">Error: ' + escHtml(err.message) + '<br><br><button class="sp-btn primary" onclick="regenScript()">Try Again</button></p>';
   }
 }
+
 
 function renderScript(text) {
   var partColors = ['#ff6b2b','#ffb347','#22c55e','#60a5fa','#a78bfa','#f472b6','#34d399'];
@@ -821,9 +947,45 @@ function downloadShortScript() {
 }
 
 async function fetchShortScript(hook) {
-  const prompt = 'You are an elite 8-figure YouTube Shorts scriptwriter. Write a viral Shorts script.\n\nHOOK: "' + hook + '"\nCREATOR: Umesh Emmadishetty - Telugu creator, straight-talking big brother\nAUDIENCE: Telugu 20s-40s, want financial freedom\nTONE: Mix Telugu+English naturally. Under 60 seconds (~130-150 words).\n\nFORMAT - use these EXACT labels:\n[PATTERN INTERRUPT]\n[CREDIBILITY]\n[CORE INSIGHT]\n[REFRAME]\n[CTA]\n\nAdd (PAUSE), (SLOW), (DIRECT CAM) cues where needed.\nONE powerful idea only. Short sentences. Every word earns its place.\n\nWrite the script:';
+  const today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+  const loading = document.getElementById('ssLoading');
 
   try {
+    // STEP 1: Live search for accurate facts
+    loading.innerHTML = '<div class="spin"></div><p>Searching live data for accurate facts...</p>';
+
+    const searchPrompt = 'Today is ' + today + '. For a YouTube Short about: "' + hook + '" - quickly find any current Indian statistics, prices, or facts that would make this content accurate and credible for 2026. Return 3-5 specific current data points only.';
+
+    const searchRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        tools: [{"type": "web_search_20250305", "name": "web_search"}],
+        messages: [{role: 'user', content: searchPrompt}]
+      })
+    });
+
+    const searchData = await searchRes.json();
+    let liveData = '';
+    if (searchData.content) {
+      searchData.content.forEach(function(block) {
+        if (block.type === 'text') liveData += block.text + ' ';
+      });
+    }
+    liveData = liveData.trim() || '';
+
+    // STEP 2: Write Short with verified facts
+    loading.innerHTML = '<div class="spin"></div><p>Writing Short script with verified facts...</p>';
+
+    const prompt = 'You are an elite 8-figure YouTube Shorts scriptwriter. Write a viral Shorts script. Today is ' + today + '.\n\nHOOK: "' + hook + '"\nCREATOR: Umesh Emmadishetty - Telugu creator, straight-talking big brother\nAUDIENCE: Telugu 20s-40s, want financial freedom\nTONE: Mix Telugu+English naturally. Under 60 seconds (~130-150 words).\n\n' + (liveData ? 'VERIFIED LIVE DATA (use these facts - do NOT invent numbers):\n' + liveData + '\n\n' : '') + 'CRITICAL: Only cite real verified numbers. If unsure, use ranges or say "check today\'s price".\n\nFORMAT:\n[PATTERN INTERRUPT]\n[CREDIBILITY]\n[CORE INSIGHT]\n[REFRAME]\n[CTA]\n\nAdd (PAUSE), (SLOW), (DIRECT CAM) cues. ONE powerful idea. Short sentences.\n\nWrite the script:';
+
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -838,10 +1000,12 @@ async function fetchShortScript(hook) {
     if (!res.ok) throw new Error(data.error ? data.error.message : 'API error');
     currentShortRaw = data.content && data.content[0] ? data.content[0].text : '';
     renderShortScript(currentShortRaw);
+
   } catch(err) {
     document.getElementById('ssLoading').innerHTML = '<p style="color:#f87171">Error: ' + escHtml(err.message) + '<br><br><button class="sp-btn primary" onclick="regenShortScript()">Try Again</button></p>';
   }
 }
+
 
 function renderShortScript(text) {
   var sectionColors = {'PATTERN INTERRUPT':'#ff6b2b','CREDIBILITY':'#ffb347','CORE INSIGHT':'#22c55e','REFRAME':'#60a5fa','CTA':'#a78bfa'};
