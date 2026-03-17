@@ -670,6 +670,9 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 //  INIT 
 document.getElementById('datechip').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 
+// Track active tab explicitly — never rely on computed styles
+var currentTab = 'ideas';
+
 let apiKey = localStorage.getItem('ue_api_key') || '';
 if (!apiKey) showApiModal();
 
@@ -755,6 +758,9 @@ function renderSaved() {
   }
 
 async function generateIdeas() {
+  // Only run when the Ideas tab is active
+  if (currentTab !== 'ideas') { return; }
+
   const btn = document.getElementById('genBtn');
   const loading = document.getElementById('loading');
   const loadingMsg = loading.querySelector('p');
@@ -867,7 +873,21 @@ async function generateIdeas() {
         ? 'SPECIAL MODE - STOCK MARKET:\nYou have live market numbers. Use EXACT index levels, exact % moves, exact stock names from the data. Ideas should help audience understand what today\'s market moves mean for their SIPs, portfolios, and investment decisions. Include a mix of: market explainer, stock analysis, investor psychology, and actionable tips for today.'
         : 'Generate ideas grounded in the trending context above. Every idea must feel like it was written today in 2026.';
 
-    const ideasPrompt = 'You are a content strategist for Umesh Emmadishetty, Telugu YouTube creator. TODAY IS ' + today + '.\n\nCHANNEL: Telugu audience 20s-40s, middle class, financial freedom + digital entrepreneurship\nTOP VIDEO: "Save Yourself From Middle Class Trap" 94K views\nTONE: Straight-talking big brother, no fluff, culturally Telugu\nTWO TYPES: GROWTH (mindset/viral) | REVENUE (digital skills, course sales)\n\nFocus: ' + focusLabels[focus] + ' | Goal: ' + goal + ' | Count: ' + count + '\n\n' + modeInstructions + '\n\nLIVE DATA FETCHED RIGHT NOW:\n' + trendingContext + '\n\n' + (userContext ? 'CREATOR NOTES: ' + userContext + '\n\n' : '') + '2026 INDIA CONTEXT (weave in naturally):\n- AI tools (Claude, ChatGPT, Gemini) used daily by Indian professionals\n- IT layoffs, freshers struggling to get placed 2025-26\n- New income tax regime confusion - salaried class anxious\n- SIP investors nervous after market swings\n- Gig economy: Zepto/Blinkit pay vs IT salary debate\n- NRI dream being questioned - abroad vs India cost of living\n- YouTube now accepted career by Telugu families\n- Rupee weakness, US tariffs hitting Indian exports\n\nSTRICT TITLE RULES:\n- Max 8 words\n- Must name a villain, expose a lie, or challenge a belief\n- Must feel written TODAY - reader thinks "this is current"\n- NO generic titles like "How To Save Money"\n- Style reference (do not copy): "AI Just Killed Your IT Career", "Your SIP Is Not Enough Anymore", "The NRI Dream Is Dead"\n\nRespond ONLY with valid JSON (no markdown):\n{"videos":[{"title":"...","type":"growth|revenue","angle":"why this hits in 2026"}],"shorts":[{"hook":"scroll-stopping opening line","concept":"what the short shows"}],"hooks":["opening line for a video"]}\n\nGenerate ' + Math.round(count*0.5) + ' videos, ' + Math.round(count*0.25) + ' shorts, ' + Math.round(count*0.25) + ' hooks.';
+    // Build pipeline exclusion context inline — no wrapper needed
+    const pipeCtxParts = [];
+    const pipeActive = pipeline.filter(function(p){ return p.col==='ideas'||p.col==='prog'; });
+    const pipeDone   = pipeline.filter(function(p){ return p.col==='done'; });
+    if (pipeActive.length) {
+      pipeCtxParts.push('ALREADY IN PIPELINE — do NOT suggest these or similar topics:');
+      pipeActive.forEach(function(p){ pipeCtxParts.push('  - ' + p.title); });
+    }
+    if (pipeDone.length) {
+      pipeCtxParts.push('ALREADY RECORDED — topics already covered, avoid repeating:');
+      pipeDone.forEach(function(p){ pipeCtxParts.push('  - ' + p.title); });
+    }
+    const pipelineExclude = pipeCtxParts.length ? pipeCtxParts.join('\n') + '\n\n' : '';
+
+    const ideasPrompt = pipelineExclude + 'You are a content strategist for Umesh Emmadishetty, Telugu YouTube creator. TODAY IS ' + today + '.\n\nCHANNEL: Telugu audience 20s-40s, middle class, financial freedom + digital entrepreneurship\nTOP VIDEO: "Save Yourself From Middle Class Trap" 94K views\nTONE: Straight-talking big brother, no fluff, culturally Telugu\nTWO TYPES: GROWTH (mindset/viral) | REVENUE (digital skills, course sales)\n\nFocus: ' + focusLabels[focus] + ' | Goal: ' + goal + ' | Count: ' + count + '\n\n' + modeInstructions + '\n\nLIVE DATA FETCHED RIGHT NOW:\n' + trendingContext + '\n\n' + (userContext ? 'CREATOR NOTES: ' + userContext + '\n\n' : '') + '2026 INDIA CONTEXT (weave in naturally):\n- AI tools (Claude, ChatGPT, Gemini) used daily by Indian professionals\n- IT layoffs, freshers struggling to get placed 2025-26\n- New income tax regime confusion - salaried class anxious\n- SIP investors nervous after market swings\n- Gig economy: Zepto/Blinkit pay vs IT salary debate\n- NRI dream being questioned - abroad vs India cost of living\n- YouTube now accepted career by Telugu families\n- Rupee weakness, US tariffs hitting Indian exports\n\nSTRICT TITLE RULES:\n- Max 8 words\n- Must name a villain, expose a lie, or challenge a belief\n- Must feel written TODAY - reader thinks "this is current"\n- NO generic titles like "How To Save Money"\n- Style reference (do not copy): "AI Just Killed Your IT Career", "Your SIP Is Not Enough Anymore", "The NRI Dream Is Dead"\n\nRespond ONLY with valid JSON (no markdown):\n{"videos":[{"title":"...","type":"growth|revenue","angle":"why this hits in 2026"}],"shorts":[{"hook":"scroll-stopping opening line","concept":"what the short shows"}],"hooks":["opening line for a video"]}\n\nGenerate ' + Math.round(count*0.5) + ' videos, ' + Math.round(count*0.25) + ' shorts, ' + Math.round(count*0.25) + ' hooks.';
 
     const ideasRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -891,7 +911,7 @@ async function generateIdeas() {
     if (err.message && err.message.indexOf('401') !== -1) {
       errorBox.innerHTML = 'Invalid API key. <a href="#" onclick="showApiModal()" style="color:var(--accent)">Update</a>';
     } else if (err.message && (err.message.indexOf('rate limit') !== -1 || err.message.indexOf('30,000') !== -1 || err.message.indexOf('tokens per minute') !== -1)) {
-      errorBox.innerHTML = '<b>Rate limit hit.</b> Wait 60 sec then try again. <button onclick="setTimeout(function(){generateIdeas();},62000);this.textContent=\'Auto-retrying...\';this.disabled=true;" style="margin-left:8px;background:var(--accent);color:#000;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">Auto Retry (60s)</button>';
+      errorBox.innerHTML = '<b>⏱ Rate limit hit.</b> You are sending too many requests. Wait 60 seconds, then click Generate again.';
     } else {
       errorBox.textContent = 'Error: ' + (err.message || 'Something went wrong.');
     }
@@ -1049,56 +1069,40 @@ async function fetchScript(title, type) {
   const today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
   const loading = document.getElementById('spLoading');
 
+  // Track if a script generation is already running to prevent double-clicks
+  if (window._scriptGenerating) { return; }
+  window._scriptGenerating = true;
+
   try {
-    loading.innerHTML = '<div class="spin"></div><p>Step 1/2: Fetching live prices, news & facts for this script...</p>';
+    loading.innerHTML = '<div class="spin"></div><p>Writing your script...<br><span style="font-size:11px;opacity:.6">Hook · Story · Value · CTA</span></p>';
 
-    const todayShort2 = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-
-    // Determine if topic likely needs stock/market data
-    const needsStockData = /stock|share|nifty|sensex|invest|SIP|mutual fund|market|NSE|BSE|portfolio|equity|rupee|INR/i.test(title);
-    const needsJobData = /salary|job|career|IT|software|engineer|fresher|hire|layoff|AI replac/i.test(title);
-
-    // Build search queries based on topic
-    const scriptSearchQueries = [
-      'Today is ' + today + '. Search for: ' + title + ' India 2026 news facts statistics\n\nReturn a numbered fact list with:\n1. Any stock prices, index levels, % changes mentioned in this topic (current as of today)\n2. Current salary ranges in India for roles mentioned\n3. Latest news in last 60 days related to this topic\n4. Real Indian companies, apps, platforms relevant right now\n5. Any RBI, SEBI, govt policies relevant to this topic\nOnly 2025-2026 verified data. Be precise with numbers.'
-    ];
-
-    if (needsStockData) {
-      scriptSearchQueries.push('Search: Sensex Nifty levels today ' + todayShort2 + ' AND top stocks related to: ' + title + '\nReturn: exact index values, % change today, specific stock prices mentioned in topic with current price and % change from 52-week high/low.');
-    }
-    if (needsJobData) {
-      scriptSearchQueries.push('Search: India IT software job market 2026 salary freshers ' + title + '\nReturn: current fresher salary ranges, experienced salary data, layoff numbers, hiring trends with real company names.');
-    }
-
-    const scriptFetches = scriptSearchQueries.map(function(sp) {
-      return fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 600,
-          tools: [{"type": "web_search_20250305", "name": "web_search"}],
-          messages: [{role: 'user', content: sp}]
-        })
-      }).then(function(r) { return r.json(); });
-    });
-
-    loading.innerHTML = '<div class="spin"></div><p>Step 1/2: Running ' + scriptSearchQueries.length + ' live search' + (scriptSearchQueries.length > 1 ? 'es' : '') + ' for current data...</p>';
-
-    // Sequential to avoid rate limits - run max 1 search for script facts
-    let liveData = '';
-    var sfArray = await Promise.allSettled(scriptFetches.slice(0,1));
-    sfArray.forEach(function(result){ if (result.status==='fulfilled' && result.value && result.value.content) { result.value.content.forEach(function(block){ if (block.type==='text') liveData += block.text + '\n\n'; }); } });
-    liveData = liveData.trim() || 'No live data found - use conservative estimates and ranges only.';
-
-    loading.innerHTML = '<div class="spin"></div><p>Step 2/2: Writing script with verified 2026 data...</p>';
-
-    const prompt = 'Write a YouTube video script for Umesh Emmadishetty, Telugu creator. TODAY IS ' + today + ' - you are writing in 2026, not 2024.\\n\\nVIDEO TITLE: "' + title + '"\\nTYPE: ' + ctype + '\\nAUDIENCE: Telugu 20s-40s, middle class professionals and aspiring entrepreneurs\\nTONE: Straight-talking big brother. Telugu+English naturally mixed. Spoken voice, not written.\\n\\n=== VERIFIED LIVE DATA - USE ONLY THESE NUMBERS ===\\n' + liveData + '\\n=== END LIVE DATA ===\\n\\nFACT ACCURACY RULES (CRITICAL - follow strictly):\\n- ONLY cite rupee amounts, stock prices, salaries that appear in LIVE DATA above\\n- If a stock price is NOT in live data, write: "trading around [check NSE today]"\\n- If salary not verified, write: "somewhere between X and Y depending on company"\\n- NEVER invent specific valuations, returns, or financial figures\\n- When citing any number, say: "as of ' + today + '"\\n\\n2026 INDIA REALITIES TO WEAVE IN (use what fits naturally):\\n- AI tools now used daily by Indian professionals - ChatGPT, Claude, Gemini\\n- Mass IT layoffs, freshers struggling to get placed 2025-26\\n- New income tax regime 2025 - salaried class confused and anxious\\n- SIP investors nervous after market volatility\\n- Gig economy debate: Zepto/Blinkit delivery pay vs IT salary\\n- NRI dream being questioned - cost of living abroad vs India\\n- YouTube/content creation now accepted career by Telugu families\\n- Rupee at record lows, US tariffs hitting Indian exports\\n\\nSCRIPT STRUCTURE (~1500 words, 10-12 min):\\n[PART 1 - HOOK | 0:00-0:45 | ~100 words] - Start mid-story or with a bold challenge. NEVER start with "Namaskar".\\n[PART 2 - PROBLEM DEEPENER | 0:45-2:30 | ~250 words] - Make them feel deeply understood. Telugu family references.\\n[PART 3 - VILLAIN REVEAL | 2:30-4:00 | ~200 words] - Name the real enemy: a system, belief, or lie.\\n[PART 4 - STORY/PROOF | 4:00-6:30 | ~300 words] - Real story with specific numbers from LIVE DATA only.\\n[PART 5 - SOLUTION | 6:30-8:30 | ~350 words] - Concrete belief shifts or action steps for 2026.\\n[PART 6 - CALLBACK | 8:30-9:30 | ~150 words] - Return to hook, issue one specific challenge.\\n[PART 7 - CTA | 9:30-10:00 | ~100 words] - One clear action.\\n\\nWrite the complete script now:';
+    const prompt = [
+      'Write a punchy YouTube video script for Umesh Emmadishetty, Telugu creator. TODAY IS ' + today + '.',
+      '',
+      'VIDEO TITLE: "' + title + '"',
+      'TYPE: ' + ctype + ' | AUDIENCE: Telugu 20s-40s middle class | TONE: Straight-talking big brother, Telugu+English mix',
+      '',
+      '2026 INDIA CONTEXT (weave in naturally where relevant):',
+      '- AI disrupting IT jobs, freshers struggling to get placed 2025-26',
+      '- New income tax regime confusion, SIP investors nervous',
+      '- Gig economy: Zepto/Blinkit pay vs IT salary debate',
+      '- NRI dream being questioned, YouTube now accepted career',
+      '',
+      'SCRIPT STRUCTURE (label each part):',
+      '[HOOK - 0:00-0:45] No greeting. Start mid-sentence with a shocking fact or question. Make viewer feel: "this is about ME."',
+      '[SETUP - 0:45-2:30] Validate their pain. 2-3 specific examples a Telugu middle-class person recognises instantly.',
+      '[CORE VALUE - 2:30-7:00] The actual lesson. Real examples, specific numbers where possible. Teach like a brilliant older brother.',
+      '[PROOF - 7:00-8:30] Story or case study making the lesson real. Named city, named situation, real-feeling outcome.',
+      '[CTA - 8:30-9:30] Warm close. Subscribe ask feels like a genuine recommendation, not a demand.',
+      '',
+      'WRITING RULES:',
+      '- NEVER start with Namaskar, Hello, or any greeting',
+      '- If using numbers/salaries: give ranges not exact, e.g. "Rs40,000 to Rs70,000"',
+      '- Add [director note: lean forward] or [show on screen: X] at key moments',
+      '- Code-switch Telugu naturally: "idi choodandi", "meeru", "kaani", "avutundi"',
+      '- Each section ends with a question or cliffhanger pulling to the next',
+      '- Target: 1200-1400 words total',
+    ].join('\n');
 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -1108,16 +1112,27 @@ async function fetchScript(title, type) {
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:3000, messages:[{role:'user',content:prompt}]})
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:2200, messages:[{role:'user',content:prompt}]})
     });
+
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error ? data.error.message : 'API error');
+    if (!res.ok) {
+      const errMsg = data.error ? data.error.message : 'API error ' + res.status;
+      if (errMsg.indexOf('rate limit') !== -1 || errMsg.indexOf('30,000') !== -1 || res.status === 429) {
+        throw new Error('Rate limit hit. Wait 60 seconds then click Try Again.');
+      }
+      throw new Error(errMsg);
+    }
     currentScriptRaw = data.content && data.content[0] ? data.content[0].text : '';
-    currentScriptRaw = currentScriptRaw + '\n\n---\n[LIVE DATA USED: ' + liveData.slice(0, 300) + ']';
+    if (!currentScriptRaw) throw new Error('Empty response. Try again.');
     renderScript(currentScriptRaw);
 
   } catch(err) {
-    document.getElementById('spLoading').innerHTML = '<p style="color:#f87171">Error: ' + escHtml(err.message) + '<br><br><button class="sp-btn primary" onclick="regenScript()">Try Again</button></p>';
+    document.getElementById('spLoading').innerHTML = '<p style="color:#f87171;text-align:center;padding:20px">'
+      + escHtml(err.message)
+      + '<br><br><button class="sp-btn primary" onclick="regenScript()" style="margin:0 auto">Try Again</button></p>';
+  } finally {
+    window._scriptGenerating = false;
   }
 }
 
@@ -1202,41 +1217,32 @@ async function fetchShortScript(hook) {
   const today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
   const loading = document.getElementById('ssLoading');
 
+  if (window._shortGenerating) { return; }
+  window._shortGenerating = true;
+
   try {
-    // STEP 1: Live search for accurate facts
-    loading.innerHTML = '<div class="spin"></div><p>Searching live data for accurate facts...</p>';
+    loading.innerHTML = '<div class="spin"></div><p>Writing Short script...</p>';
 
-    const searchPrompt = 'Today is ' + today + '. For a YouTube Short about: "' + hook + '" - quickly find any current Indian statistics, prices, or facts that would make this content accurate and credible for 2026. Return 3-5 specific current data points only.';
-
-    const searchRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        tools: [{"type": "web_search_20250305", "name": "web_search"}],
-        messages: [{role: 'user', content: searchPrompt}]
-      })
-    });
-
-    const searchData = await searchRes.json();
-    let liveData = '';
-    if (searchData.content) {
-      searchData.content.forEach(function(block) {
-        if (block.type === 'text') liveData += block.text + ' ';
-      });
-    }
-    liveData = liveData.trim() || '';
-
-    // STEP 2: Write Short with verified facts
-    loading.innerHTML = '<div class="spin"></div><p>Writing Short script with verified facts...</p>';
-
-    const prompt = 'You are an elite 8-figure YouTube Shorts scriptwriter. Write a viral Shorts script. Today is ' + today + '.\n\nHOOK: "' + hook + '"\nCREATOR: Umesh Emmadishetty - Telugu creator, straight-talking big brother\nAUDIENCE: Telugu 20s-40s, want financial freedom\nTONE: Mix Telugu+English naturally. Under 60 seconds (~130-150 words).\n\n' + (liveData ? 'VERIFIED LIVE DATA (use these facts - do NOT invent numbers):\n' + liveData + '\n\n' : '') + 'CRITICAL: Only cite real verified numbers. If unsure, use ranges or say "check today\'s price".\n\nFORMAT:\n[PATTERN INTERRUPT]\n[CREDIBILITY]\n[CORE INSIGHT]\n[REFRAME]\n[CTA]\n\nAdd (PAUSE), (SLOW), (DIRECT CAM) cues. ONE powerful idea. Short sentences.\n\nWrite the script:';
+    const prompt = [
+      'Write a viral 60-second YouTube Shorts script for Umesh Emmadishetty, Telugu creator. TODAY IS ' + today + '.',
+      '',
+      'HOOK CONCEPT: "' + hook + '"',
+      'AUDIENCE: Telugu 20s-40s, middle class, want financial freedom',
+      'TONE: Punchy, fast, big-brother energy. Telugu+English naturally mixed.',
+      '',
+      'STRUCTURE (label each section):',
+      '[HOOK - 0:00-0:05] First 5 seconds. Start with the hook line exactly. No greeting. Must make them stop scrolling.',
+      '[BODY - 0:05-0:45] 3 rapid-fire points or a quick story. Each point max 2 sentences. Fast pace.',
+      '[PAYOFF - 0:45-0:55] The surprising truth or solution. The "aha" moment.',
+      '[CTA - 0:55-1:00] One-line call to action. Follow for part 2, or comment their answer.',
+      '',
+      'RULES:',
+      '- Total word count: 150-180 words ONLY (60 seconds at natural speaking pace)',
+      '- Every sentence must earn its place — cut anything that slows momentum',
+      '- Use specific numbers where natural: "Rs45,000 salary" not "a good salary"',
+      '- Telugu code-switch naturally: "idi choodandi", "meeru", "kaani"',
+      '- End each section pulling forward — no full stops that feel like endings',
+    ].join('\n');
 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -1246,19 +1252,28 @@ async function fetchShortScript(hook) {
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1800, messages:[{role:'user',content:prompt}]})
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:800, messages:[{role:'user',content:prompt}]})
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error ? data.error.message : 'API error');
+    if (!res.ok) {
+      const errMsg = data.error ? data.error.message : 'API error ' + res.status;
+      if (errMsg.indexOf('rate limit') !== -1 || errMsg.indexOf('30,000') !== -1 || res.status === 429) {
+        throw new Error('Rate limit hit. Wait 60 seconds then click Try Again.');
+      }
+      throw new Error(errMsg);
+    }
     currentShortRaw = data.content && data.content[0] ? data.content[0].text : '';
+    if (!currentShortRaw) throw new Error('Empty response. Try again.');
     renderShortScript(currentShortRaw);
 
   } catch(err) {
-    document.getElementById('ssLoading').innerHTML = '<p style="color:#f87171">Error: ' + escHtml(err.message) + '<br><br><button class="sp-btn primary" onclick="regenShortScript()">Try Again</button></p>';
+    document.getElementById('ssLoading').innerHTML = '<p style="color:#f87171;text-align:center;padding:20px">'
+      + escHtml(err.message)
+      + '<br><br><button class="sp-btn primary" onclick="regenShortScript()" style="margin:0 auto">Try Again</button></p>';
+  } finally {
+    window._shortGenerating = false;
   }
 }
-
-
 function renderShortScript(text) {
   var sectionColors = {'PATTERN INTERRUPT':'#ff6b2b','CREDIBILITY':'#ffb347','CORE INSIGHT':'#22c55e','REFRAME':'#60a5fa','CTA':'#a78bfa'};
   var timings = {'PATTERN INTERRUPT':'0-3 sec','CREDIBILITY':'3-8 sec','CORE INSIGHT':'8-45 sec','REFRAME':'45-55 sec','CTA':'55-60 sec'};
@@ -1741,6 +1756,7 @@ function pipeRender() {
 
 // ── MAIN TAB SWITCHER ─────────────────────────────────
 function switchMainTab(tab) {
+  currentTab = tab; // track explicitly
   var isIdeas = tab === 'ideas';
   var mainEl = document.querySelector('main');
   
@@ -1784,55 +1800,11 @@ saveIdea = function(text) {
 
 // Pipeline button labels are set directly in renderIdeas HTML generation
 
-// ── EXCLUDE PIPELINE IDEAS FROM GENERATION PROMPT ───
-// Patch the ideasPrompt building to inject pipeline context
-var _origGenerateIdeas = generateIdeas;
-generateIdeas = async function() {
-  // Attach pipeline context to window so fetchIdeasPrompt can use it
-  window._pipelineContext = getPipelineExcludeContext();
-  return _origGenerateIdeas.apply(this, arguments);
-};
+// Pipeline context is injected directly inside generateIdeas (no wrapper needed)
 
-function getPipelineExcludeContext() {
-  pipeLoad();
-  var inPipe = pipeline.filter(function(c){ return c.col === 'ideas' || c.col === 'prog'; });
-  var recorded = pipeline.filter(function(c){ return c.col === 'done'; });
-  var parts = [];
-  if (inPipe.length) {
-    parts.push('ALREADY IN PIPELINE (do NOT suggest these or similar topics):');
-    inPipe.forEach(function(c){ parts.push('  - ' + c.title); });
-  }
-  if (recorded.length) {
-    parts.push('ALREADY RECORDED (topics covered, avoid repeating):');
-    recorded.forEach(function(c){ parts.push('  - ' + c.title); });
-  }
-  return parts.length ? parts.join('\n') : '';
-}
+// getPipelineExcludeContext removed — logic is now inline in generateIdeas
 
-// Patch the ideasPrompt string - inject pipeline context into the prompt
-// We hook into the fetch call for ideas
-var _origFetch = window.fetch;
-window.fetch = function(url, opts) {
-  if (url && url.indexOf('api.anthropic.com') !== -1 && opts && opts.body) {
-    try {
-      var body = JSON.parse(opts.body);
-      if (body.messages && body.messages[0] && body.messages[0].content && 
-          body.messages[0].content.indexOf('Umesh Emmadishetty') !== -1 &&
-          body.messages[0].content.indexOf('videos') !== -1 &&
-          body.messages[0].content.indexOf('STRICT TITLE RULES') !== -1) {
-        var pipeCtx = window._pipelineContext || '';
-        if (pipeCtx) {
-          body.messages[0].content = body.messages[0].content.replace(
-            'STRICT TITLE RULES:',
-            pipeCtx + '\n\nSTRICT TITLE RULES:'
-          );
-          opts = Object.assign({}, opts, { body: JSON.stringify(body) });
-        }
-      }
-    } catch(e) { /* ignore parse errors */ }
-  }
-  return _origFetch.apply(this, arguments);
-};
+// Pipeline context injected directly in generateIdeas — no fetch interceptor needed
 
 // ── INIT PIPELINE ────────────────────────────────────
 pipeLoad();
