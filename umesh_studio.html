@@ -261,6 +261,93 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
   .input-grid .input-group:last-child { grid-column:auto; }
 }
 
+
+/* ===== KANBAN PIPELINE ===== */
+.pipeline-nav {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px; flex-wrap:wrap; gap:12px;
+}
+.pipeline-nav h2 { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; }
+.pipeline-stats { display:flex; gap:16px; flex-wrap:wrap; }
+.pipe-stat { text-align:center; }
+.pipe-stat-val { font-family:'Bebas Neue',sans-serif; font-size:22px; line-height:1; }
+.pipe-stat-val.c-ideas { color:#60a5fa; }
+.pipe-stat-val.c-prog  { color:#f59e0b; }
+.pipe-stat-val.c-done  { color:#22c55e; }
+.pipe-stat-label { font-size:9px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; font-family:'DM Mono',monospace; }
+
+.kanban-board { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; align-items:start; }
+@media(max-width:680px) { .kanban-board { grid-template-columns:1fr; } }
+
+.kanban-col {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:14px; min-height:200px;
+}
+.kanban-col.drag-over { border-color:var(--accent); background:rgba(255,107,43,.04); }
+
+.kcol-head {
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);
+}
+.kcol-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.kcol-dot.ideas   { background:#60a5fa; }
+.kcol-dot.prog    { background:#f59e0b; }
+.kcol-dot.done    { background:#22c55e; }
+.kcol-title { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:1.5px; color:var(--muted); text-transform:uppercase; }
+.kcol-count { margin-left:auto; font-size:10px; font-family:'DM Mono',monospace; color:var(--muted2); background:var(--surface2); padding:2px 7px; border-radius:10px; }
+
+.kcard {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; padding:11px 12px; margin-bottom:7px;
+  cursor:grab; user-select:none; transition:all .15s;
+  position:relative; overflow:hidden;
+}
+.kcard:last-child { margin-bottom:0; }
+.kcard::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
+.kcard.growth::before { background:#22c55e; }
+.kcard.revenue::before { background:#f59e0b; }
+.kcard.neutral::before { background:#444; }
+.kcard:hover { border-color:var(--muted2); transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.3); }
+.kcard.dragging * { pointer-events:none; }
+.kcard.dragging { opacity:.4; cursor:grabbing; }
+.kcard-title { font-size:13px; line-height:1.4; color:var(--text); margin-bottom:8px; font-weight:500; }
+.kcard-meta { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.kcard-type { font-size:9px; font-weight:600; letter-spacing:.8px; text-transform:uppercase; padding:2px 6px; border-radius:3px; font-family:'DM Mono',monospace; }
+.kcard-type.growth  { background:rgba(34,197,94,.1); color:#22c55e; border:1px solid rgba(34,197,94,.2); }
+.kcard-type.revenue { background:rgba(245,158,11,.1); color:#f59e0b; border:1px solid rgba(245,158,11,.2); }
+.kcard-type.neutral { background:rgba(255,255,255,.05); color:var(--muted); border:1px solid var(--border); }
+.kcard-date { font-size:9px; color:var(--muted2); font-family:'DM Mono',monospace; margin-left:auto; }
+.kcard-actions { display:flex; gap:4px; margin-top:8px; }
+.kcard-btn { font-size:10px; color:var(--muted); background:none; border:1px solid var(--border); border-radius:4px; padding:3px 7px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; white-space:nowrap; }
+.kcard-btn:hover { color:var(--text); border-color:var(--muted); }
+.kcard-btn.move-right { color:var(--accent); border-color:rgba(255,107,43,.3); }
+.kcard-btn.move-right:hover { background:rgba(255,107,43,.08); }
+.kcard-btn.move-left  { color:var(--muted); }
+.kcard-btn.del { color:#555; }
+.kcard-btn.del:hover { color:#ef4444; border-color:rgba(239,68,68,.3); }
+.kcard-btn.script-k { color:var(--accent); border-color:rgba(255,107,43,.3); }
+.kcard-btn.script-k:hover { background:rgba(255,107,43,.08); }
+
+.kcol-empty {
+  text-align:center; padding:28px 12px; color:var(--muted2);
+  font-size:12px; line-height:1.6; border:1px dashed var(--border);
+  border-radius:7px;
+}
+.kcol-empty .kcol-empty-icon { font-size:22px; margin-bottom:6px; opacity:.3; }
+
+.pipe-info-bar {
+  background:rgba(96,165,250,.06); border:1px solid rgba(96,165,250,.15);
+  border-radius:8px; padding:10px 14px; margin-bottom:20px;
+  font-size:12px; color:#93c5fd; display:flex; align-items:flex-start; gap:8px; line-height:1.5;
+}
+.done-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:9px; font-weight:700; letter-spacing:1px;
+  text-transform:uppercase; font-family:'DM Mono',monospace;
+  padding:2px 7px; border-radius:10px; margin-left:auto;
+  background:rgba(34,197,94,.1); color:#22c55e; border:1px solid rgba(34,197,94,.2);
+}
+
 /* API MODAL */
 #api-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:400; align-items:center; justify-content:center; backdrop-filter:blur(6px); padding:20px; }
 .api-box { background:#111; border:1px solid #222; border-radius:14px; padding:32px; width:100%; max-width:440px; }
@@ -289,6 +376,11 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
     <button class="key-btn" onclick="showApiModal()">🔑 API Key</button>
   </div>
 </header>
+
+<div style="display:flex;gap:2px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:65px;z-index:90">
+  <button id="tab-ideas" onclick="switchMainTab('ideas')" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--text);cursor:pointer;text-transform:uppercase">Ideas</button>
+  <button id="tab-pipeline" onclick="switchMainTab('pipeline')" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;text-transform:uppercase">Pipeline <span id="pipe-badge" style="font-size:9px;background:rgba(255,107,43,.15);color:var(--accent);border:1px solid rgba(255,107,43,.25);padding:1px 5px;border-radius:8px;margin-left:3px">0</span></button>
+</div>
 
 <main>
   <div class="hero">
@@ -340,6 +432,11 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
         <div style="font-size:11px;color:var(--muted);margin-top:2px">When checked, searches the web for what's trending right now. Uses extra API tokens. Leave unchecked for evergreen ideas.</div>
       </div>
     </div>
+    <div id="pipelineStatusBar" style="display:none;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.15);border-radius:7px;font-size:11px;color:#93c5fd">
+      <span>🔒</span>
+      <span id="pipelineStatusText"></span>
+      <button onclick="switchMainTab('pipeline')" style="margin-left:auto;font-size:10px;color:#60a5fa;background:none;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:2px 8px;cursor:pointer;font-family:'DM Mono',monospace">View Pipeline →</button>
+    </div>
     <button class="gen-btn" id="genBtn" onclick="generateIdeas()">
       <span>⚡</span> GENERATE TODAY'S IDEAS
     </button>
@@ -364,6 +461,65 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
     <h3>⭐ Saved Ideas</h3>
     <div class="saved-list" id="savedList"></div>
   </div>
+
+  <!-- KANBAN PIPELINE PANEL -->
+  <div id="panel-pipeline" style="display:none">
+    <div class="pipeline-nav">
+      <div>
+        <h2>📋 CONTENT PIPELINE</h2>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">Drag cards or use arrows to move ideas through your workflow</div>
+      </div>
+      <div class="pipeline-stats">
+        <div class="pipe-stat"><div class="pipe-stat-val c-ideas" id="stat-ideas">0</div><div class="pipe-stat-label">Ideas</div></div>
+        <div class="pipe-stat"><div class="pipe-stat-val c-prog"  id="stat-prog">0</div><div class="pipe-stat-label">In Progress</div></div>
+        <div class="pipe-stat"><div class="pipe-stat-val c-done"  id="stat-done">0</div><div class="pipe-stat-label">Recorded</div></div>
+      </div>
+    </div>
+
+    <div class="pipe-info-bar">
+      <span>💡</span>
+      <span>Ideas you save here are <b>excluded from future generations</b> — so Claude always suggests fresh topics you haven't covered yet. Once you mark a video as <b>Recorded</b>, it's archived and won't affect suggestions.</span>
+    </div>
+
+    <div class="kanban-board">
+      <!-- COL 1: IDEAS SAVED -->
+      <div class="kanban-col" id="col-ideas" ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over')" ondragleave="if(!this.contains(event.relatedTarget))this.classList.remove('drag-over')" ondrop="dropCard(event,'ideas')">
+        <div class="kcol-head">
+          <div class="kcol-dot ideas"></div>
+          <div class="kcol-title">💡 Saved Ideas</div>
+          <div class="kcol-count" id="cnt-ideas">0</div>
+        </div>
+        <div id="cards-ideas">
+          <div class="kcol-empty"><div class="kcol-empty-icon">💡</div>Save ideas from the Ideas tab.<br>They'll appear here.</div>
+        </div>
+      </div>
+
+      <!-- COL 2: IN PROGRESS -->
+      <div class="kanban-col" id="col-prog" ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over')" ondragleave="if(!this.contains(event.relatedTarget))this.classList.remove('drag-over')" ondrop="dropCard(event,'prog')">
+        <div class="kcol-head">
+          <div class="kcol-dot prog"></div>
+          <div class="kcol-title">🎬 In Progress</div>
+          <div class="kcol-count" id="cnt-prog">0</div>
+        </div>
+        <div id="cards-prog">
+          <div class="kcol-empty"><div class="kcol-empty-icon">🎬</div>Move cards here when<br>you start recording.</div>
+        </div>
+      </div>
+
+      <!-- COL 3: RECORDED / DONE -->
+      <div class="kanban-col" id="col-done" ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over')" ondragleave="if(!this.contains(event.relatedTarget))this.classList.remove('drag-over')" ondrop="dropCard(event,'done')">
+        <div class="kcol-head">
+          <div class="kcol-dot done"></div>
+          <div class="kcol-title">✅ Recorded</div>
+          <div class="kcol-count" id="cnt-done">0</div>
+        </div>
+        <div id="cards-done">
+          <div class="kcol-empty"><div class="kcol-empty-icon">✅</div>Completed videos land here.<br>Won&#39;t appear in future ideas.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <div class="toast" id="toast"></div>
@@ -539,6 +695,7 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function copyRaw(text) { navigator.clipboard.writeText(text).then(() => toast('Copied!')); }
+function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
 
 // Index-based stores to avoid onclick injection
 let ideaStore = [];
@@ -803,7 +960,7 @@ function renderIdeas(data) {
       if (v.angle) html += '<div class="idea-angle">' + escHtml(v.angle) + '</div>';
       html += '<div class="idea-actions">';
       html += '<button class="chip-btn" onclick="copyIdea(' + idx + ')">Copy</button>';
-      html += '<button class="chip-btn" onclick="saveIdeaByIndex(' + idx + ')">Save</button>';
+      html += '<button class="chip-btn" style="color:#60a5fa;border-color:rgba(96,165,250,.3)" onclick="saveIdeaByIndex(' + idx + ')">+ Pipeline</button>';
       html += '<button class="chip-btn script" onclick="writeScript(' + idx + ')">Write Script</button>';
       html += '</div></div></div>';
     });
@@ -823,7 +980,7 @@ function renderIdeas(data) {
       html += '<div class="short-concept">' + escHtml(s.concept) + '</div>';
       html += '<div class="idea-actions" style="margin-top:8px">';
       html += '<button class="chip-btn" onclick="copyIdea(' + idx + ')">Copy</button>';
-      html += '<button class="chip-btn" onclick="saveIdeaByIndex(' + idx + ')">Save</button>';
+      html += '<button class="chip-btn" style="color:#60a5fa;border-color:rgba(96,165,250,.3)" onclick="saveIdeaByIndex(' + idx + ')">+ Pipeline</button>';
       html += '<button class="chip-btn script" onclick="writeShortScript(' + idx + ')">Short Script</button>';
       html += '</div></div>';
     });
@@ -840,7 +997,7 @@ function renderIdeas(data) {
       html += escHtml(h);
       html += '<div class="idea-actions" style="margin-top:7px">';
       html += '<button class="chip-btn" onclick="copyIdea(' + idx + ')">Copy</button>';
-      html += '<button class="chip-btn" onclick="saveIdeaByIndex(' + idx + ')">Save</button>';
+      html += '<button class="chip-btn" style="color:#60a5fa;border-color:rgba(96,165,250,.3)" onclick="saveIdeaByIndex(' + idx + ')">+ Pipeline</button>';
       html += '</div></div>';
     });
     html += '</div></div>';
@@ -1411,6 +1568,276 @@ function stpUpdateTime() {
   function fmt(s) { return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
   document.getElementById('stpTime').textContent = fmt(elapsedS) + ' / ~' + fmt(totalS);
 }
+
+
+// ═══════════════════════════════════════════════════════
+// KANBAN PIPELINE
+// ═══════════════════════════════════════════════════════
+
+// Storage key
+var PIPE_KEY = 'ue_pipeline_v2';
+// Load immediately so badge shows on page load
+try { pipeline = JSON.parse(localStorage.getItem(PIPE_KEY) || '[]'); } catch(e) { pipeline = []; }
+
+// Pipeline state: {id, title, type, col, addedAt}
+var pipeline = [];
+var dragId = null;
+
+function pipeLoad() {
+  try { pipeline = JSON.parse(localStorage.getItem(PIPE_KEY) || '[]'); } catch(e) { pipeline = []; }
+}
+function pipeSave() {
+  localStorage.setItem(PIPE_KEY, JSON.stringify(pipeline));
+  pipeUpdateBadge();
+}
+function updatePipelineStatusBar() {
+  var bar = document.getElementById('pipelineStatusBar');
+  var txt = document.getElementById('pipelineStatusText');
+  if (!bar || !txt) return;
+  var inPipe = pipeline.filter(function(c){ return c.col==='ideas'||c.col==='prog'; }).length;
+  var recorded = pipeline.filter(function(c){ return c.col==='done'; }).length;
+  if (inPipe > 0 || recorded > 0) {
+    bar.style.display = 'flex';
+    var parts = [];
+    if (inPipe > 0) parts.push('<b>'+inPipe+'</b> in pipeline (excluded from ideas)');
+    if (recorded > 0) parts.push('<b>'+recorded+'</b> already recorded (excluded)');
+    txt.innerHTML = parts.join(' · ');
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+function pipeUpdateBadge() {
+  var active = pipeline.filter(function(c){ return c.col !== 'done'; }).length;
+  var badge = document.getElementById('pipe-badge');
+  if (badge) badge.textContent = active;
+  // Update stats
+  var si = pipeline.filter(function(c){ return c.col==='ideas'; }).length;
+  var sp = pipeline.filter(function(c){ return c.col==='prog'; }).length;
+  var sd = pipeline.filter(function(c){ return c.col==='done'; }).length;
+  var el;
+  el = document.getElementById('stat-ideas'); if(el) el.textContent = si;
+  el = document.getElementById('stat-prog');  if(el) el.textContent = sp;
+  el = document.getElementById('stat-done');  if(el) el.textContent = sd;
+  el = document.getElementById('cnt-ideas');  if(el) el.textContent = si;
+  el = document.getElementById('cnt-prog');   if(el) el.textContent = sp;
+  el = document.getElementById('cnt-done');   if(el) el.textContent = sd;
+  updatePipelineStatusBar();
+}
+
+function pipeAddIdea(title, type) {
+  // Don't add duplicate titles
+  var exists = pipeline.some(function(c){ return c.title === title; });
+  if (exists) { toast('Already in pipeline!'); return; }
+  pipeline.push({
+    id: 'k' + Date.now() + Math.random().toString(36).slice(2,6),
+    title: title,
+    type: type || 'neutral',
+    col: 'ideas',
+    addedAt: new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'})
+  });
+  pipeSave();
+  pipeRender();
+  toast('Added to pipeline! 📋');
+  // Briefly highlight the pipeline tab
+  var pb = document.getElementById('tab-pipeline');
+  if (pb) {
+    pb.style.color = 'var(--accent)';
+    pb.style.background = 'rgba(255,107,43,.08)';
+    setTimeout(function(){ pb.style.color=''; pb.style.background=''; }, 1200);
+  }
+}
+
+function pipeMove(id, toCol) {
+  var card = pipeline.find(function(c){ return c.id===id; });
+  if (card) { card.col = toCol; pipeSave(); pipeRender(); }
+}
+
+function pipeDelete(id) {
+  pipeline = pipeline.filter(function(c){ return c.id!==id; });
+  pipeSave(); pipeRender();
+}
+
+function dropCard(event, toCol) {
+  event.preventDefault();
+  document.querySelectorAll('.kanban-col').forEach(function(col) { col.classList.remove('drag-over'); });
+  if (dragId) { pipeMove(dragId, toCol); dragId = null; }
+}
+
+function kDragStart(el) {
+  dragId = el.getAttribute('data-id');
+  el.classList.add('dragging');
+}
+
+function pipeRender() {
+  var cols = {ideas:[], prog:[], done:[]};
+  pipeline.forEach(function(card) { if(cols[card.col]) cols[card.col].push(card); });
+
+  // Store cards in window map for event handlers
+  window._kCards = {};
+  pipeline.forEach(function(card){ window._kCards[card.id] = card; });
+
+  var emptyHTML = {
+    ideas: '<div class="kcol-empty"><div class="kcol-empty-icon">&#128161;</div>Save ideas from the Ideas tab. They will appear here.</div>',
+    prog:  '<div class="kcol-empty"><div class="kcol-empty-icon">&#127916;</div>Move cards here when you start recording.</div>',
+    done:  '<div class="kcol-empty"><div class="kcol-empty-icon">&#9989;</div>Completed videos land here. Will not appear in future ideas.</div>'
+  };
+
+  Object.keys(cols).forEach(function(col) {
+    var el = document.getElementById('cards-' + col);
+    if (!el) return;
+    if (!cols[col].length) { el.innerHTML = emptyHTML[col]; return; }
+
+    el.innerHTML = '';
+    cols[col].forEach(function(card) {
+      var tc = card.type === 'growth' ? 'growth' : card.type === 'revenue' ? 'revenue' : 'neutral';
+      var tl = card.type === 'growth' ? 'Growth' : card.type === 'revenue' ? 'Revenue' : '-';
+
+      var div = document.createElement('div');
+      div.className = 'kcard ' + tc;
+      div.setAttribute('draggable','true');
+      div.setAttribute('data-id', card.id);
+      div.addEventListener('dragstart', function(){ dragId = card.id; div.classList.add('dragging'); });
+      div.addEventListener('dragend',   function(){ div.classList.remove('dragging'); });
+
+      var metaRight = card.col === 'done'
+        ? '<span class="done-badge">&#10003; Recorded</span>'
+        : '';
+
+      var actionBtns = '';
+      if (col === 'prog') actionBtns += '<button class="kcard-btn move-left"  data-move="ideas" data-id="'+card.id+'">&#8592; Ideas</button>';
+      if (col === 'done') actionBtns += '<button class="kcard-btn move-left"  data-move="prog"  data-id="'+card.id+'">&#8592; In Progress</button>';
+      if (col === 'ideas') actionBtns += '<button class="kcard-btn move-right" data-move="prog"  data-id="'+card.id+'">Start Recording &#8594;</button>';
+      if (col === 'prog')  actionBtns += '<button class="kcard-btn move-right" data-move="done"  data-id="'+card.id+'">Mark Recorded &#10003;</button>';
+      if (col !== 'done')  actionBtns += '<button class="kcard-btn script-k"  data-script="1"   data-id="'+card.id+'">Script</button>';
+      actionBtns += '<button class="kcard-btn del" data-del="1" data-id="'+card.id+'" title="Remove">&#x2715;</button>';
+
+      div.innerHTML = '<div class="kcard-title">'+escHtml(card.title)+'</div>'
+        + '<div class="kcard-meta">'
+        + '<span class="kcard-type '+tc+'">'+tl+'</span>'
+        + '<span class="kcard-date">'+(card.addedAt||'')+'</span>'
+        + metaRight
+        + '</div>'
+        + '<div class="kcard-actions">'+actionBtns+'</div>';
+
+      // Event delegation for action buttons
+      div.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-id]');
+        if (!btn || btn === div) return;
+        var id = btn.getAttribute('data-id');
+        if (btn.hasAttribute('data-move'))   { pipeMove(id, btn.getAttribute('data-move')); }
+        if (btn.hasAttribute('data-del'))    { pipeDelete(id); }
+        if (btn.hasAttribute('data-script')) {
+          var kc = window._kCards[id];
+          if (kc) openScript(kc.title, kc.type || 'neutral');
+        }
+      });
+
+      el.appendChild(div);
+    });
+  });
+  pipeUpdateBadge();
+}
+
+// ── MAIN TAB SWITCHER ─────────────────────────────────
+function switchMainTab(tab) {
+  var isIdeas = tab === 'ideas';
+  var mainEl = document.querySelector('main');
+  
+  // Toggle all direct children of main
+  Array.from(mainEl.children).forEach(function(child) {
+    if (child.id === 'panel-pipeline') {
+      child.style.display = isIdeas ? 'none' : 'block';
+    } else {
+      // Restore display for ideas panel elements (use block for divs)
+      child.style.display = isIdeas ? '' : 'none';
+    }
+  });
+  
+  // Update tab underline styles
+  var tabs = {ideas: document.getElementById('tab-ideas'), pipeline: document.getElementById('tab-pipeline')};
+  if (tabs.ideas) {
+    tabs.ideas.style.borderBottomColor   = isIdeas  ? 'var(--accent)' : 'transparent';
+    tabs.ideas.style.color               = isIdeas  ? 'var(--text)'   : 'var(--muted)';
+  }
+  if (tabs.pipeline) {
+    tabs.pipeline.style.borderBottomColor = !isIdeas ? 'var(--accent)' : 'transparent';
+    tabs.pipeline.style.color             = !isIdeas ? 'var(--text)'   : 'var(--muted)';
+  }
+  if (!isIdeas) pipeRender();
+}
+
+// ── OVERRIDE saveIdeaByIndex to go to pipeline ──────
+var _origSaveIdeaByIndex = saveIdeaByIndex;
+saveIdeaByIndex = function(i) {
+  var title = ideaStore[i];
+  var type  = ideaTypeStore[i] || 'neutral';
+  if (!title) return;
+  pipeAddIdea(title, type);
+};
+
+// Also update saveIdea for any direct calls
+var _origSaveIdea = saveIdea;
+saveIdea = function(text) {
+  pipeAddIdea(text, 'neutral');
+};
+
+// Pipeline button labels are set directly in renderIdeas HTML generation
+
+// ── EXCLUDE PIPELINE IDEAS FROM GENERATION PROMPT ───
+// Patch the ideasPrompt building to inject pipeline context
+var _origGenerateIdeas = generateIdeas;
+generateIdeas = async function() {
+  // Attach pipeline context to window so fetchIdeasPrompt can use it
+  window._pipelineContext = getPipelineExcludeContext();
+  return _origGenerateIdeas.apply(this, arguments);
+};
+
+function getPipelineExcludeContext() {
+  pipeLoad();
+  var inPipe = pipeline.filter(function(c){ return c.col === 'ideas' || c.col === 'prog'; });
+  var recorded = pipeline.filter(function(c){ return c.col === 'done'; });
+  var parts = [];
+  if (inPipe.length) {
+    parts.push('ALREADY IN PIPELINE (do NOT suggest these or similar topics):');
+    inPipe.forEach(function(c){ parts.push('  - ' + c.title); });
+  }
+  if (recorded.length) {
+    parts.push('ALREADY RECORDED (topics covered, avoid repeating):');
+    recorded.forEach(function(c){ parts.push('  - ' + c.title); });
+  }
+  return parts.length ? parts.join('\n') : '';
+}
+
+// Patch the ideasPrompt string - inject pipeline context into the prompt
+// We hook into the fetch call for ideas
+var _origFetch = window.fetch;
+window.fetch = function(url, opts) {
+  if (url && url.indexOf('api.anthropic.com') !== -1 && opts && opts.body) {
+    try {
+      var body = JSON.parse(opts.body);
+      if (body.messages && body.messages[0] && body.messages[0].content && 
+          body.messages[0].content.indexOf('Umesh Emmadishetty') !== -1 &&
+          body.messages[0].content.indexOf('videos') !== -1 &&
+          body.messages[0].content.indexOf('STRICT TITLE RULES') !== -1) {
+        var pipeCtx = window._pipelineContext || '';
+        if (pipeCtx) {
+          body.messages[0].content = body.messages[0].content.replace(
+            'STRICT TITLE RULES:',
+            pipeCtx + '\n\nSTRICT TITLE RULES:'
+          );
+          opts = Object.assign({}, opts, { body: JSON.stringify(body) });
+        }
+      }
+    } catch(e) { /* ignore parse errors */ }
+  }
+  return _origFetch.apply(this, arguments);
+};
+
+// ── INIT PIPELINE ────────────────────────────────────
+pipeLoad();
+pipeUpdateBadge();
+
 </script>
 </body>
 </html>
