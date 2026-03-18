@@ -35,11 +35,11 @@ header {
   z-index:100;
 }
 .logo { display:flex; align-items:center; gap:10px; }
-.logo-mark { width:34px; height:34px; background:var(--accent); border-radius:7px; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:17px; color:white; flex-shrink:0; }
-.logo-text { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; }
+.logo-mark { width:34px; height:34px; background:var(--accent); border-radius:7px; display:flex; align-items:center; justify-content:center; font-family:Bebas Neue,sans-serif; font-size:17px; color:white; flex-shrink:0; }
+.logo-text { font-family:Bebas Neue,sans-serif; font-size:18px; letter-spacing:2px; }
 .logo-sub { font-size:10px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
 .header-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
-.date-chip { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); background:var(--surface); border:1px solid var(--border); padding:5px 10px; border-radius:100px; white-space:nowrap; }
+.date-chip { font-family:DM Mono,monospace; font-size:11px; color:var(--muted); background:var(--surface); border:1px solid var(--border); padding:5px 10px; border-radius:100px; white-space:nowrap; }
 .key-btn { font-size:11px; color:var(--muted); background:var(--surface); border:1px solid var(--border); padding:5px 10px; border-radius:100px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; white-space:nowrap; }
 .key-btn:hover { color:var(--text); border-color:var(--muted); }
 
@@ -48,13 +48,13 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 
 /* HERO */
 .hero { margin-bottom:28px; }
-.hero h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(40px,8vw,72px); line-height:.95; letter-spacing:2px; margin-bottom:10px; }
+.hero h1 { font-family:Bebas Neue,sans-serif; font-size:clamp(40px,8vw,72px); line-height:.95; letter-spacing:2px; margin-bottom:10px; }
 .hero h1 span { color:var(--accent); }
 .hero p { color:var(--muted); font-size:14px; max-width:420px; line-height:1.6; }
 
 /* INPUT PANEL */
 .input-panel { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:28px; }
-.input-panel-title { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:2px; color:var(--muted); margin-bottom:16px; text-transform:uppercase; }
+.input-panel-title { font-family:Bebas Neue,sans-serif; font-size:15px; letter-spacing:2px; color:var(--muted); margin-bottom:16px; text-transform:uppercase; }
 .input-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px; }
 .input-group label { display:block; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; font-weight:500; }
 .input-group select, .input-group input, .input-group textarea {
@@ -69,7 +69,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 .input-group textarea::placeholder { color:var(--muted2); }
 .gen-btn {
   width:100%; background:var(--accent); color:white; border:none;
-  border-radius:9px; padding:14px; font-family:'Bebas Neue',sans-serif;
+  border-radius:9px; padding:14px; font-family:Bebas Neue,sans-serif;
   font-size:18px; letter-spacing:3px; cursor:pointer;
   transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px;
 }
@@ -89,8 +89,8 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 /* RESULTS */
 .results { display:none; }
 .results-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:8px; }
-.results-header h2 { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:2px; }
-.results-meta { font-size:11px; color:var(--muted); font-family:'DM Mono',monospace; }
+.results-header h2 { font-family:Bebas Neue,sans-serif; font-size:24px; letter-spacing:2px; }
+.results-meta { font-size:11px; color:var(--muted); font-family:DM Mono,monospace; }
 
 /* SECTION */
 .section { margin-bottom:28px; animation:fadeUp .4s ease forwards; opacity:0; }
@@ -99,8 +99,8 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 .section-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border); }
 .section-icon { font-size:16px; }
-.section-title { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
-.section-count { margin-left:auto; font-size:10px; color:var(--muted2); font-family:'DM Mono',monospace; background:var(--surface2); padding:2px 7px; border-radius:4px; }
+.section-title { font-family:Bebas Neue,sans-serif; font-size:16px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
+.section-count { margin-left:auto; font-size:10px; color:var(--muted2); font-family:DM Mono,monospace; background:var(--surface2); padding:2px 7px; border-radius:4px; }
 
 /* IDEA CARDS */
 .ideas-grid { display:flex; flex-direction:column; gap:7px; }
@@ -113,7 +113,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 .idea-card:hover { border-color:var(--muted2); background:var(--surface2); }
 .idea-card.growth::before { background:var(--growth); }
 .idea-card.revenue::before { background:var(--revenue); }
-.idea-type { flex-shrink:0; font-size:9px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:3px 7px; border-radius:4px; margin-top:2px; font-family:'DM Mono',monospace; }
+.idea-type { flex-shrink:0; font-size:9px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:3px 7px; border-radius:4px; margin-top:2px; font-family:DM Mono,monospace; }
 .idea-type.growth { background:rgba(34,197,94,.12); color:var(--growth); border:1px solid rgba(34,197,94,.2); }
 .idea-type.revenue { background:rgba(245,158,11,.12); color:var(--revenue); border:1px solid rgba(245,158,11,.2); }
 .idea-type.neutral { background:rgba(255,255,255,.05); color:var(--muted); border:1px solid var(--border); }
@@ -129,7 +129,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 .shorts-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
 .short-card { background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:14px; transition:all .15s; }
 .short-card:hover { border-color:var(--muted2); background:var(--surface2); }
-.micro-label { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+.micro-label { font-size:9px; color:var(--muted); font-family:DM Mono,monospace; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
 .short-hook { font-size:13px; line-height:1.5; color:var(--text); font-weight:500; margin-bottom:8px; }
 .short-concept { font-size:12px; color:var(--muted); line-height:1.5; }
 
@@ -140,7 +140,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 
 /* SAVED */
 .saved-section { margin-top:40px; padding-top:28px; border-top:1px solid var(--border); display:none; }
-.saved-section h3 { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; color:var(--muted); margin-bottom:14px; }
+.saved-section h3 { font-family:Bebas Neue,sans-serif; font-size:18px; letter-spacing:2px; color:var(--muted); margin-bottom:14px; }
 .saved-list { display:flex; flex-direction:column; gap:7px; }
 .saved-item { background:var(--surface); border:1px solid var(--border); border-radius:7px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .saved-item span { font-size:13px; color:var(--text); flex:1; }
@@ -162,8 +162,8 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 .script-panel.open { right:0; }
 .sp-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; gap:12px; flex-shrink:0; }
 .sp-title-box { flex:1; min-width:0; }
-.sp-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:4px; }
-.sp-title { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; color:var(--text); line-height:1.2; word-break:break-word; }
+.sp-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-family:DM Mono,monospace; margin-bottom:4px; }
+.sp-title { font-family:Bebas Neue,sans-serif; font-size:18px; letter-spacing:1px; color:var(--text); line-height:1.2; word-break:break-word; }
 .sp-close { background:none; border:1px solid var(--border); color:var(--muted); width:30px; height:30px; border-radius:5px; cursor:pointer; font-size:14px; flex-shrink:0; transition:all .15s; }
 .sp-close:hover { color:var(--text); border-color:var(--muted); }
 .sp-actions { padding:10px 20px; border-bottom:1px solid var(--border); display:flex; gap:7px; flex-shrink:0; flex-wrap:wrap; }
@@ -184,15 +184,15 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 .script-part:nth-child(5){animation-delay:.25s}.script-part:nth-child(6){animation-delay:.3s}
 .script-part:nth-child(7){animation-delay:.35s}
 .part-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
-.part-badge { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; padding:2px 7px; border-radius:3px; background:var(--surface2); border:1px solid var(--border); color:var(--muted); text-transform:uppercase; }
-.part-name { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:1.5px; text-transform:uppercase; }
-.part-timing { margin-left:auto; font-size:10px; color:var(--muted2); font-family:'DM Mono',monospace; }
+.part-badge { font-family:DM Mono,monospace; font-size:9px; letter-spacing:1px; padding:2px 7px; border-radius:3px; background:var(--surface2); border:1px solid var(--border); color:var(--muted); text-transform:uppercase; }
+.part-name { font-family:Bebas Neue,sans-serif; font-size:14px; letter-spacing:1.5px; text-transform:uppercase; }
+.part-timing { margin-left:auto; font-size:10px; color:var(--muted2); font-family:DM Mono,monospace; }
 .script-text { font-size:13px; line-height:1.95; color:#ccc; white-space:pre-wrap; border-left:2px solid var(--border); padding-left:14px; }
 .script-text b { color:var(--accent2); font-weight:600; }
 .script-text i { color:var(--muted); font-style:italic; font-size:11px; }
 .part-divider { height:1px; background:var(--surface2); margin-bottom:24px; }
 .sp-footer { padding:10px 20px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; background:var(--surface); }
-.sp-footer span { font-size:11px; color:var(--muted); font-family:'DM Mono',monospace; }
+.sp-footer span { font-size:11px; color:var(--muted); font-family:DM Mono,monospace; }
 .sp-wc { color:var(--growth); font-weight:500; }
 
 /* ===== TELEPROMPTER ===== */
@@ -220,7 +220,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
   line-height:1.85; color:#f0f0f0;
   will-change:transform;
 }
-#tp-text .tp-section-label { font-family:'Bebas Neue',sans-serif; font-size:.55em; letter-spacing:3px; color:var(--purple); margin:1.2em 0 .3em; opacity:.6; display:block; }
+#tp-text .tp-section-label { font-family:Bebas Neue,sans-serif; font-size:.55em; letter-spacing:3px; color:var(--purple); margin:1.2em 0 .3em; opacity:.6; display:block; }
 #tp-text p { margin:0 0 .5em; }
 #tp-controls {
   position:absolute; bottom:0; left:0; right:0; z-index:10;
@@ -229,10 +229,10 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
   transition:opacity .4s;
 }
 .tp-ctrl-group { display:flex; align-items:center; gap:6px; }
-.tp-ctrl-label { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; letter-spacing:1px; }
+.tp-ctrl-label { font-size:10px; color:var(--muted); font-family:DM Mono,monospace; letter-spacing:1px; }
 .tp-btn { background:#111; border:1px solid #333; color:#f0f0f0; width:32px; height:32px; border-radius:5px; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; transition:all .15s; -webkit-appearance:none; }
 .tp-btn:hover { background:#222; border-color:#555; }
-.tp-val { font-family:'DM Mono',monospace; font-size:12px; color:var(--purple); min-width:28px; text-align:center; }
+.tp-val { font-family:DM Mono,monospace; font-size:12px; color:var(--purple); min-width:28px; text-align:center; }
 #tp-play {
   background:var(--purple); border:none; color:white;
   width:52px; height:52px; border-radius:50%; cursor:pointer; font-size:20px;
@@ -242,8 +242,8 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 }
 #tp-play:hover { background:#7c3aed; }
 #tp-play.playing { background:#7c3aed; }
-.tp-time { font-family:'DM Mono',monospace; font-size:11px; color:#444; }
-#tp-hint { position:absolute; bottom:90px; left:50%; transform:translateX(-50%); font-size:10px; color:#2a2a2a; font-family:'DM Mono',monospace; letter-spacing:1px; pointer-events:none; transition:opacity .4s; white-space:nowrap; }
+.tp-time { font-family:DM Mono,monospace; font-size:11px; color:#444; }
+#tp-hint { position:absolute; bottom:90px; left:50%; transform:translateX(-50%); font-size:10px; color:#2a2a2a; font-family:DM Mono,monospace; letter-spacing:1px; pointer-events:none; transition:opacity .4s; white-space:nowrap; }
 .tp-exit { background:rgba(255,255,255,.05); border:1px solid #333; color:#aaa; padding:6px 14px; border-radius:5px; cursor:pointer; font-size:12px; font-family:'DM Sans',sans-serif; transition:all .15s; -webkit-appearance:none; }
 .tp-exit:hover { background:rgba(255,255,255,.1); }
 
@@ -262,19 +262,20 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 }
 
 
+
 /* ===== KANBAN PIPELINE ===== */
 .pipeline-nav {
   display:flex; align-items:center; justify-content:space-between;
   margin-bottom:28px; flex-wrap:wrap; gap:12px;
 }
-.pipeline-nav h2 { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; }
+.pipeline-nav h2 { font-family:Bebas Neue,sans-serif; font-size:22px; letter-spacing:2px; }
 .pipeline-stats { display:flex; gap:16px; flex-wrap:wrap; }
 .pipe-stat { text-align:center; }
-.pipe-stat-val { font-family:'Bebas Neue',sans-serif; font-size:22px; line-height:1; }
+.pipe-stat-val { font-family:Bebas Neue,sans-serif; font-size:22px; line-height:1; }
 .pipe-stat-val.c-ideas { color:#60a5fa; }
 .pipe-stat-val.c-prog  { color:#f59e0b; }
 .pipe-stat-val.c-done  { color:#22c55e; }
-.pipe-stat-label { font-size:9px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; font-family:'DM Mono',monospace; }
+.pipe-stat-label { font-size:9px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; font-family:DM Mono,monospace; }
 
 .kanban-board { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; align-items:start; }
 @media(max-width:680px) { .kanban-board { grid-template-columns:1fr; } }
@@ -293,8 +294,8 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 .kcol-dot.ideas   { background:#60a5fa; }
 .kcol-dot.prog    { background:#f59e0b; }
 .kcol-dot.done    { background:#22c55e; }
-.kcol-title { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:1.5px; color:var(--muted); text-transform:uppercase; }
-.kcol-count { margin-left:auto; font-size:10px; font-family:'DM Mono',monospace; color:var(--muted2); background:var(--surface2); padding:2px 7px; border-radius:10px; }
+.kcol-title { font-family:Bebas Neue,sans-serif; font-size:14px; letter-spacing:1.5px; color:var(--muted); text-transform:uppercase; }
+.kcol-count { margin-left:auto; font-size:10px; font-family:DM Mono,monospace; color:var(--muted2); background:var(--surface2); padding:2px 7px; border-radius:10px; }
 
 .kcard {
   background:var(--surface2); border:1px solid var(--border);
@@ -312,11 +313,11 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 .kcard.dragging { opacity:.4; cursor:grabbing; }
 .kcard-title { font-size:13px; line-height:1.4; color:var(--text); margin-bottom:8px; font-weight:500; }
 .kcard-meta { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.kcard-type { font-size:9px; font-weight:600; letter-spacing:.8px; text-transform:uppercase; padding:2px 6px; border-radius:3px; font-family:'DM Mono',monospace; }
+.kcard-type { font-size:9px; font-weight:600; letter-spacing:.8px; text-transform:uppercase; padding:2px 6px; border-radius:3px; font-family:DM Mono,monospace; }
 .kcard-type.growth  { background:rgba(34,197,94,.1); color:#22c55e; border:1px solid rgba(34,197,94,.2); }
 .kcard-type.revenue { background:rgba(245,158,11,.1); color:#f59e0b; border:1px solid rgba(245,158,11,.2); }
 .kcard-type.neutral { background:rgba(255,255,255,.05); color:var(--muted); border:1px solid var(--border); }
-.kcard-date { font-size:9px; color:var(--muted2); font-family:'DM Mono',monospace; margin-left:auto; }
+.kcard-date { font-size:9px; color:var(--muted2); font-family:DM Mono,monospace; margin-left:auto; }
 .kcard-actions { display:flex; gap:4px; margin-top:8px; }
 .kcard-btn { font-size:10px; color:var(--muted); background:none; border:1px solid var(--border); border-radius:4px; padding:3px 7px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; white-space:nowrap; }
 .kcard-btn:hover { color:var(--text); border-color:var(--muted); }
@@ -343,7 +344,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 .done-badge {
   display:inline-flex; align-items:center; gap:4px;
   font-size:9px; font-weight:700; letter-spacing:1px;
-  text-transform:uppercase; font-family:'DM Mono',monospace;
+  text-transform:uppercase; font-family:DM Mono,monospace;
   padding:2px 7px; border-radius:10px; margin-left:auto;
   background:rgba(34,197,94,.1); color:#22c55e; border:1px solid rgba(34,197,94,.2);
 }
@@ -351,13 +352,13 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 /* API MODAL */
 #api-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:400; align-items:center; justify-content:center; backdrop-filter:blur(6px); padding:20px; }
 .api-box { background:#111; border:1px solid #222; border-radius:14px; padding:32px; width:100%; max-width:440px; }
-.api-box h2 { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:2px; margin-bottom:8px; }
+.api-box h2 { font-family:Bebas Neue,sans-serif; font-size:24px; letter-spacing:2px; margin-bottom:8px; }
 .api-box p { color:var(--muted); font-size:13px; line-height:1.6; margin-bottom:20px; }
 .api-box a { color:var(--accent); }
-.api-box input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:7px; padding:11px 13px; color:var(--text); font-family:'DM Mono',monospace; font-size:12px; outline:none; margin-bottom:6px; }
+.api-box input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:7px; padding:11px 13px; color:var(--text); font-family:DM Mono,monospace; font-size:12px; outline:none; margin-bottom:6px; }
 .api-box input:focus { border-color:var(--accent); }
 .api-err { color:#f87171; font-size:11px; min-height:16px; margin-bottom:10px; }
-.api-save { width:100%; background:var(--accent); color:white; border:none; border-radius:7px; padding:12px; font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:2px; cursor:pointer; }
+.api-save { width:100%; background:var(--accent); color:white; border:none; border-radius:7px; padding:12px; font-family:Bebas Neue,sans-serif; font-size:17px; letter-spacing:2px; cursor:pointer; }
 .api-save:hover { background:#ff5500; }
 </style>
 </head>
@@ -378,8 +379,9 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 </header>
 
 <div style="display:flex;gap:2px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:65px;z-index:90">
-  <button id="tab-ideas" onclick="switchMainTab('ideas')" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--text);cursor:pointer;text-transform:uppercase">Ideas</button>
-  <button id="tab-pipeline" onclick="switchMainTab('pipeline')" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;text-transform:uppercase">Pipeline <span id="pipe-badge" style="font-size:9px;background:rgba(255,107,43,.15);color:var(--accent);border:1px solid rgba(255,107,43,.25);padding:1px 5px;border-radius:8px;margin-left:3px">0</span></button>
+  <button id="tab-ideas" onclick="switchMainTab('ideas')" style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--text);cursor:pointer;text-transform:uppercase">Ideas</button>
+  <button id="tab-pipeline" onclick="switchMainTab('pipeline')" style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;text-transform:uppercase">Pipeline <span id="pipe-badge" style="font-size:9px;background:rgba(255,107,43,.15);color:var(--accent);border:1px solid rgba(255,107,43,.25);padding:1px 5px;border-radius:8px;margin-left:3px">0</span></button>
+  <button id="tab-tutorials" onclick="switchMainTab('tutorials')" style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;text-transform:uppercase">🤖 AI Tutorials</button>
 </div>
 
 <main>
@@ -400,6 +402,8 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
           <option value="mindset">Mindset & Belief Shifts</option>
           <option value="stock">Stock Market & Investing</option>
           <option value="digital">Digital Entrepreneurship</option>
+          <option value="ai_income">🤖 AI Income (Practical)</option>
+          <option value="money">💸 Money Mastery</option>
           <option value="news">React to Today's News</option>
         </select>
       </div>
@@ -435,7 +439,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
     <div id="pipelineStatusBar" style="display:none;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.15);border-radius:7px;font-size:11px;color:#93c5fd">
       <span>🔒</span>
       <span id="pipelineStatusText"></span>
-      <button onclick="switchMainTab('pipeline')" style="margin-left:auto;font-size:10px;color:#60a5fa;background:none;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:2px 8px;cursor:pointer;font-family:'DM Mono',monospace">View Pipeline →</button>
+      <button onclick="switchMainTab('pipeline')" style="margin-left:auto;font-size:10px;color:#60a5fa;background:none;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:2px 8px;cursor:pointer;font-family:DM Mono,monospace">View Pipeline →</button>
     </div>
     <button class="gen-btn" id="genBtn" onclick="generateIdeas()">
       <span>⚡</span> GENERATE TODAY'S IDEAS
@@ -520,6 +524,64 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
     </div>
   </div>
 
+  <!-- AI TUTORIALS PANEL -->
+  <div id="panel-tutorials" style="display:none">
+
+    <div style="margin-bottom:28px">
+      <h2 style="font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:6px">🤖 AI TUTORIAL IDEAS</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6">Step-by-step AI tool tutorial videos — practical, beginner-friendly, built to go viral and convert viewers into students.</p>
+    </div>
+
+    <!-- GENERATOR CONTROLS -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px">
+      <div style="font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:2px;color:var(--muted);margin-bottom:16px;text-transform:uppercase">Generate Tutorial Ideas</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <label style="display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:500">Tool Category</label>
+          <select id="tutCat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;-webkit-appearance:none">
+            <option value="all">All AI Tools</option>
+            <option value="chatgpt">ChatGPT / Claude</option>
+            <option value="content">AI Content Creation</option>
+            <option value="design">AI Design & Video</option>
+            <option value="income">AI for Income</option>
+            <option value="business">AI for Business</option>
+            <option value="automation">AI Automation</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:500">Audience Level</label>
+          <select id="tutLevel" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;-webkit-appearance:none">
+            <option value="beginner">Complete Beginner</option>
+            <option value="intermediate">Some experience</option>
+            <option value="mixed">Mixed audience</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:500">Goal</label>
+          <select id="tutGoal" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;-webkit-appearance:none">
+            <option value="viral">Go Viral</option>
+            <option value="students">Get Students / Leads</option>
+            <option value="both">Both</option>
+          </select>
+        </div>
+      </div>
+      <div id="tutErr" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:9px;padding:12px 16px;color:#f87171;font-size:13px;display:none;margin-bottom:12px"></div>
+      <button onclick="generateTutorials()" id="tutBtn" style="width:100%;background:var(--accent);color:white;border:none;border-radius:9px;padding:14px;font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:3px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px">
+        <span>⚡</span> GENERATE TUTORIAL IDEAS
+      </button>
+    </div>
+
+    <!-- LOADING -->
+    <div id="tutLoading" style="text-align:center;padding:48px 20px;display:none">
+      <div class="spin"></div>
+      <p id="tutLoadingMsg" style="color:var(--muted);font-size:13px;font-style:italic;margin-top:12px">Generating AI tutorial ideas...</p>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="tutResults" style="display:none"></div>
+
+  </div>
+
 </main>
 
 <div class="toast" id="toast"></div>
@@ -557,7 +619,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 <div id="tp">
   <div id="tp-progress"><div id="tp-prog-fill"></div></div>
   <div id="tp-bar">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--purple)">🎬 TELEPROMPTER</div>
+    <div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:var(--purple)">🎬 TELEPROMPTER</div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
       <div class="tp-ctrl-group">
         <span class="tp-ctrl-label">SPEED</span>
@@ -571,7 +633,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
         <span class="tp-val" id="tpSizeVal">36</span>
         <button class="tp-btn" onclick="tpChangeSize(2)">+</button>
       </div>
-      <button class="tp-btn" id="mirrorBtn" onclick="tpToggleMirror()" style="width:auto;padding:0 10px;font-size:10px;letter-spacing:1px;font-family:'DM Mono',monospace">⟺ MIRROR</button>
+      <button class="tp-btn" id="mirrorBtn" onclick="tpToggleMirror()" style="width:auto;padding:0 10px;font-size:10px;letter-spacing:1px;font-family:DM Mono,monospace">⟺ MIRROR</button>
       <button class="tp-exit" onclick="closeTeleprompter()">✕ Exit</button>
     </div>
   </div>
@@ -624,7 +686,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
     <div id="stp-prog-fill" style="height:100%;background:var(--accent2);width:0%;transition:width .15s"></div>
   </div>
   <div id="stp-bar" style="position:absolute;top:0;left:0;right:0;z-index:10;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:linear-gradient(to bottom,rgba(0,0,0,.95),transparent);transition:opacity .4s">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--accent2)">⚡ SHORT TELEPROMPTER</div>
+    <div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:var(--accent2)">⚡ SHORT TELEPROMPTER</div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
       <div class="tp-ctrl-group">
         <span class="tp-ctrl-label">SPEED</span>
@@ -647,7 +709,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
   <div id="stp-scroller" style="height:100%;overflow:hidden;position:relative">
     <div id="stp-text" style="padding:50vh 8vw 80vh;max-width:820px;margin:0 auto;font-family:'DM Sans',sans-serif;font-size:40px;font-weight:400;line-height:1.85;color:#f0f0f0;will-change:transform"></div>
   </div>
-  <div style="position:absolute;bottom:80px;left:50%;transform:translateX(-50%);font-size:10px;color:#2a2a2a;font-family:'DM Mono',monospace;letter-spacing:1px;pointer-events:none;white-space:nowrap">SPACE TO PLAY · ↑↓ SPEED · ESC EXIT</div>
+  <div style="position:absolute;bottom:80px;left:50%;transform:translateX(-50%);font-size:10px;color:#2a2a2a;font-family:DM Mono,monospace;letter-spacing:1px;pointer-events:none;white-space:nowrap">SPACE TO PLAY · ↑↓ SPEED · ESC EXIT</div>
   <div id="stp-controls" style="position:absolute;bottom:0;left:0;right:0;z-index:10;padding:16px 20px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;background:linear-gradient(to top,rgba(0,0,0,.95),transparent);transition:opacity .4s">
     <button id="stp-play" onclick="stpTogglePlay()" style="background:var(--accent2);border:none;color:#000;width:52px;height:52px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .15s;box-shadow:0 0 20px rgba(255,179,71,.3)">▶</button>
     <button class="tp-btn" onclick="stpReset()" style="width:36px;height:36px;border-radius:50%;font-size:14px">↺</button>
@@ -775,7 +837,7 @@ async function generateIdeas() {
   loading.style.display = 'block';
   results.style.display = 'none';
   errorBox.style.display = 'none';
-  const focusLabels = {mixed:'Mixed Growth+Revenue',growth:'Growth/Viral',revenue:'Revenue/Course Sales',mindset:'Mindset & Belief Shifts',stock:'Stock Market & Investing',digital:'Digital Entrepreneurship',news:'React to Today\'s News'};
+  const focusLabels = {mixed:'Mixed Growth+Revenue',growth:'Growth/Viral',revenue:'Revenue/Course Sales',mindset:'Mindset & Belief Shifts',stock:'Stock Market & Investing',digital:'Digital Entrepreneurship',ai_income:'AI Income (Practical)',money:'Money Mastery',news:'React to Today\'s News'};
   const today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
   const todayShort = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
 
@@ -796,7 +858,9 @@ async function generateIdeas() {
     growth:  ['viral YouTube India money mindset 2026', 'what worries Indian middle class 2026'],
     revenue: ['AI freelancing digital income India 2026', 'online business India opportunities 2026'],
     mindset: ['middle class India salary inflation 2026', 'wealth gap India urban 2026'],
-    digital: ['AI jobs impact India professionals 2026', 'tech layoffs India 2026 ChatGPT']
+    digital: ['AI jobs impact India professionals 2026', 'tech layoffs India 2026 ChatGPT'],
+    ai_income: ['AI tools make money online India 2026 practical', 'ChatGPT freelancing income India rupees real examples'],
+    money: ['personal finance money management India 2026', 'Indians saving investing money habits 2026']
   };
 
   const queries = searchStrategies[focus] || searchStrategies['mixed'];
@@ -871,7 +935,11 @@ async function generateIdeas() {
       ? 'SPECIAL MODE - REACT TO TODAY\'S NEWS:\nYou have real news headlines from today. For EACH major news item, generate a video idea showing Umesh\'s audience what this news means FOR THEM - their money, job, business, future. Frame every idea as: "Here\'s what [news event] means for your wallet/career/business." Make it urgent - this is TODAY\'s news.'
       : isStockMode
         ? 'SPECIAL MODE - STOCK MARKET:\nYou have live market numbers. Use EXACT index levels, exact % moves, exact stock names from the data. Ideas should help audience understand what today\'s market moves mean for their SIPs, portfolios, and investment decisions. Include a mix of: market explainer, stock analysis, investor psychology, and actionable tips for today.'
-        : 'Generate ideas grounded in the trending context above. Every idea must feel like it was written today in 2026.';
+        : focus === 'ai_income'
+          ? 'AI INCOME MODE: Generate ideas about PRACTICAL ways Indians are earning money using AI tools right now. Focus on: real tools (ChatGPT, Claude, Midjourney, Canva AI), real income streams (freelancing, content, automation services), real barriers Indians face (English, pricing in USD, client finding). Avoid theory. Every idea must have a "you can start this week" angle.'
+          : focus === 'money'
+            ? 'MONEY MASTERY MODE: Generate ideas about real money behaviour, psychology, and decisions Indians face. Cover: savings habits, avoiding money mistakes, understanding where money goes, building financial discipline, practical budgeting, overcoming money mindset blocks. Ground everything in Indian costs, Indian salaries, Indian family financial pressures.'
+            : 'Generate ideas grounded in the trending context above. Every idea must feel like it was written today in 2026.';
 
     // Build pipeline exclusion context inline — no wrapper needed
     const pipeCtxParts = [];
@@ -1076,32 +1144,59 @@ async function fetchScript(title, type) {
   try {
     loading.innerHTML = '<div class="spin"></div><p>Writing your script...<br><span style="font-size:11px;opacity:.6">Hook · Story · Value · CTA</span></p>';
 
+    // Build topic-specific script context based on focus
+    const topicContext = (function() {
+      if (focus === 'ai_income') return [
+        '',
+        'TOPIC CONTEXT — AI INCOME:',
+        'This is a practical "how to earn with AI" video for Indian audience.',
+        '- Name actual tools: ChatGPT, Claude, Midjourney, Canva AI, Eleven Labs, Descript, etc.',
+        '- Name actual income streams: freelance writing, thumbnail design, video editing with AI, prompt engineering services, AI automation for small businesses, content creation',
+        '- Address real Indian barriers: how to get paid in USD (Wise, Payoneer, Razorpay), how to find clients (Fiverr, Upwork, LinkedIn, local businesses), what to charge',
+        '- Show realistic income ranges in INR — not hype numbers',
+        '- Practical > Theoretical. If you mention a tool, show HOW to use it for income.',
+      ].join('\n');
+      if (focus === 'money') return [
+        '',
+        'TOPIC CONTEXT — MONEY MASTERY:',
+        'This is about real money behaviour and decisions, not investment products.',
+        '- Talk about the psychology of spending, saving, and financial decisions Indians actually face',
+        '- Real Indian financial situations: joint family money, marriage expenses, parents expecting money, lifestyle inflation with salary hikes',
+        '- Practical money frameworks, not theory — things the viewer can apply this week',
+        '- Avoid recommending specific funds/stocks unless the title is specifically about that',
+      ].join('\n');
+      return '';
+    })();
+
     const prompt = [
-      'Write a punchy YouTube video script for Umesh Emmadishetty, Telugu creator. TODAY IS ' + today + '.',
+      'Write a YouTube video script for Umesh Emmadishetty, Telugu creator.',
       '',
       'VIDEO TITLE: "' + title + '"',
-      'TYPE: ' + ctype + ' | AUDIENCE: Telugu 20s-40s middle class | TONE: Straight-talking big brother, Telugu+English mix',
+      'TYPE: ' + ctype,
       '',
-      '2026 INDIA CONTEXT (weave in naturally where relevant):',
-      '- AI disrupting IT jobs, freshers struggling to get placed 2025-26',
-      '- New income tax regime confusion, SIP investors nervous',
-      '- Gig economy: Zepto/Blinkit pay vs IT salary debate',
-      '- NRI dream being questioned, YouTube now accepted career',
+      'VOICE: Umesh speaks like a knowledgeable older brother — direct, warm, no corporate fluff.',
+      'LANGUAGE: Telugu + English naturally mixed. Not forced. Code-switch where it feels natural.',
+      'AUDIENCE: Telugu speakers who follow Umesh for his specific take on this topic.',
       '',
-      'SCRIPT STRUCTURE (label each part):',
-      '[HOOK - 0:00-0:45] No greeting. Start mid-sentence with a shocking fact or question. Make viewer feel: "this is about ME."',
-      '[SETUP - 0:45-2:30] Validate their pain. 2-3 specific examples a Telugu middle-class person recognises instantly.',
-      '[CORE VALUE - 2:30-7:00] The actual lesson. Real examples, specific numbers where possible. Teach like a brilliant older brother.',
-      '[PROOF - 7:00-8:30] Story or case study making the lesson real. Named city, named situation, real-feeling outcome.',
-      '[CTA - 8:30-9:30] Warm close. Subscribe ask feels like a genuine recommendation, not a demand.',
+      'SCRIPT STRUCTURE:',
+      '[HOOK - 0:00-0:45] Open with the most interesting, surprising, or provocative thing about THIS specific topic. No greeting. No Namaskar. First sentence should make the viewer think "I need to hear this."',
+      '[CONTEXT - 0:45-2:30] Set up why this topic matters RIGHT NOW. Use facts, observations, or a trend directly relevant to the title. ONLY bring in salary/finance/career context if the video is actually about those things.',
+      '[CORE - 2:30-7:00] Teach the main point. Be specific to the title. Use real examples, data, frameworks — whatever fits THIS topic best. Do not force unrelated examples.',
+      '[PERSPECTIVE - 7:00-8:30] Umesh personal take. What does he actually think? What would he tell a friend? Keep it honest and grounded — no fabricated stories.',
+      '[CTA - 8:30-9:30] Close warmly. One clear ask. Make it feel like advice from a friend, not a sales pitch.',
       '',
-      'WRITING RULES:',
-      '- NEVER start with Namaskar, Hello, or any greeting',
-      '- If using numbers/salaries: give ranges not exact, e.g. "Rs40,000 to Rs70,000"',
-      '- Add [director note: lean forward] or [show on screen: X] at key moments',
-      '- Code-switch Telugu naturally: "idi choodandi", "meeru", "kaani", "avutundi"',
-      '- Each section ends with a question or cliffhanger pulling to the next',
-      '- Target: 1200-1400 words total',
+      'CREATOR CONTEXT — draw from this ONLY when it fits the topic naturally:',
+      'Umesh background: Quit 9-6 job in 2020, built digital agency, made 2.5 Crores, won 2 Comma Club X awards for clients, mentored 2500+ people. Knows the frustration of salary disappointments and working for others vision. Had 2 business failures before succeeding. Currently facing health challenges (kidney dialysis) but still building. Core purpose: FREEDOM and FAMILY.',
+      'USE THIS when relevant: salary frustration, job trap, building side income, entrepreneurship mindset, financial freedom journey.',
+      'DO NOT force this story into every script. If the video is about stocks or AI tools, do not drag in his personal journey unless it truly fits.',
+      '',
+      'STRICT RULES:',
+      '- Write ONLY about what the title promises. If the title is about sales, write about sales. If it is about mindset, write about mindset. Do not force EMI, SIP, or software salary into a video that has nothing to do with those.',
+      '- NO fabricated stories. No "meet Ravi from Hyderabad who..." invented characters. Use real observations, real data, real principles instead.',
+      '- NO filler phrases like "in todays fast-paced world", "as we all know", "let me tell you something"',
+      '- Numbers and facts: only use them if you actually know them. Ranges are fine. Vague is better than wrong.',
+      '- Director notes like [lean in] or [show on screen: X] only where genuinely useful — do not pepper the script with them.',
+      '- Target: 1200-1400 words.',
     ].join('\n');
 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -1585,6 +1680,268 @@ function stpUpdateTime() {
 }
 
 
+
+
+// ═══════════════════════════════════════════════════════
+// AI TUTORIALS TAB
+// ═══════════════════════════════════════════════════════
+
+var tutIdeaStore = [];
+
+async function generateTutorials() {
+  if (currentTab !== 'tutorials') return;
+  var btn = document.getElementById('tutBtn');
+  var loading = document.getElementById('tutLoading');
+  var results = document.getElementById('tutResults');
+  var errEl = document.getElementById('tutErr');
+  var cat = document.getElementById('tutCat').value;
+  var level = document.getElementById('tutLevel').value;
+  var goal = document.getElementById('tutGoal').value;
+
+  btn.disabled = true;
+  loading.style.display = 'block';
+  results.style.display = 'none';
+  errEl.style.display = 'none';
+  document.getElementById('tutLoadingMsg').textContent = 'Generating AI tutorial ideas for Telugu audience...';
+
+  var catLabels = {all:'All AI Tools',chatgpt:'ChatGPT & Claude',content:'AI Content Creation',design:'AI Design & Video',income:'AI for Income',business:'AI for Business',automation:'AI Automation'};
+  var goalInstr = goal === 'viral'
+    ? 'Optimise for VIRALITY: titles that non-tech Telugu people cannot scroll past. Focus on shock, curiosity, "I can do this too" feeling.'
+    : goal === 'students'
+    ? 'Optimise for LEAD GENERATION: tutorials that naturally lead viewers to want coaching, a course, or more help from Umesh. End of each tutorial should create a clear "I need to learn more" moment.'
+    : 'Balance virality AND lead generation. Viral hook to get views, practical depth to build trust and get students.';
+
+  var catInstr = {
+    all: 'Mix of: ChatGPT, Claude, Midjourney, Canva AI, Eleven Labs, Descript, Make.com, Zapier AI, Google Gemini, Perplexity',
+    chatgpt: 'ChatGPT and Claude — prompting, custom GPTs, automations, business use cases',
+    content: 'AI for YouTube scripts, thumbnails, captions, voiceovers, blog posts, social media',
+    design: 'Midjourney, Canva AI, Adobe Firefly, RunwayML, Pika Labs for video and image creation',
+    income: 'Practical ways to earn money using AI — freelancing, services, products, automation',
+    business: 'AI tools for running a business: customer service bots, email automation, sales, CRM',
+    automation: 'Make.com, Zapier, n8n, AI agents — automate repetitive work and save time'
+  }[cat] || 'All AI tools';
+
+  var today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+
+  var prompt = 'You are a YouTube content strategist for Umesh Emmadishetty, Telugu creator who teaches AI tools and digital income to Indian audience.' +
+    '\n\nToday is ' + today + '. Generate 6 practical AI tutorial video ideas.' +
+    '\n\nTOOL FOCUS: ' + catLabels[cat] + ' — specifically: ' + catInstr +
+    '\n\nAUDIENCE LEVEL: ' + level + ' — Telugu professionals, small business owners, content creators. Most have a smartphone and basic internet. Many are intimidated by technology but motivated by income potential.' +
+    '\n\nGOAL: ' + goalInstr +
+    '\n\nCREATOR CONTEXT: Umesh built a 2.5 Crore agency using digital tools. He teaches from real experience, not theory. His audience trusts him because he shows exactly what he does, step by step.' +
+    '\n\nFOR EACH TUTORIAL IDEA provide:' +
+    '\n- title: Compelling Telugu-audience-friendly title (max 9 words). Make it feel urgent and achievable.' +
+    '\n- tool: The specific AI tool being taught' +
+    '\n- outcome: What the viewer can DO after watching — very specific (e.g. "Generate 30 social media posts in 10 minutes" not "use AI for content")' +
+    '\n- hook: First 10 seconds of the video — the one thing that makes them stay' +
+    '\n- steps: Exactly 5 step titles for the tutorial (the on-screen chapter markers)' +
+    '\n- indianAngle: Why this matters specifically for Indians — income in INR, Indian platforms, Indian business context' +
+    '\n- leadMagnet: One sentence CTA at the end that naturally leads to wanting more coaching from Umesh' +
+    '\n- viral: Why this specific idea will get shared — what makes non-subscribers click' +
+    '\n\nINDIAN CONTEXT TO WEAVE IN:' +
+    '\n- Tools available free or low cost in India' +
+    '\n- Income potential in INR (realistic, not hype)' +
+    '\n- Use cases Indian small businesses, freelancers, and professionals actually need' +
+    '\n- Language barrier awareness — many viewers are more comfortable in Telugu/Hindi than English' +
+    '\n\nRespond ONLY with valid JSON (no markdown):\n{"tutorials":[{"title":"...","tool":"...","outcome":"...","hook":"...","steps":["step1","step2","step3","step4","step5"],"indianAngle":"...","leadMagnet":"..."}]}';
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:3500, messages:[{role:'user',content:prompt}]})
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error ? data.error.message : 'API error ' + res.status);
+    var raw = data.content && data.content[0] ? data.content[0].text : '';
+    if (!raw) throw new Error('Empty response. Try again.');
+    var parsed = safeParseJSON(raw);
+    renderTutorials(parsed.tutorials || []);
+  } catch(err) {
+    errEl.textContent = 'Error: ' + err.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    loading.style.display = 'none';
+  }
+}
+
+function renderTutorials(tutorials) {
+  tutIdeaStore = tutorials;
+  var results = document.getElementById('tutResults');
+
+  if (!tutorials.length) {
+    results.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">No tutorials generated. Try again.</div>';
+    results.style.display = 'block';
+    return;
+  }
+
+  var html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px">'
+    + '<div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px">' + tutorials.length + ' TUTORIAL IDEAS</div>'
+    + '<div style="font-size:11px;color:var(--muted);font-family:DM Mono,monospace">' + new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + '</div>'
+    + '</div>';
+
+  tutorials.forEach(function(t, i) {
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px;position:relative;overflow:hidden;">'
+      // Top bar
+      + '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#a78bfa)"></div>'
+      // Header row
+      + '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px">'
+      + '<div style="font-family:Bebas Neue,sans-serif;font-size:28px;color:var(--muted2);line-height:1;flex-shrink:0">' + String(i+1).padStart(2,'0') + '</div>'
+      + '<div style="flex:1">'
+      + '<div style="font-size:15px;font-weight:600;line-height:1.35;margin-bottom:5px;color:var(--text)">' + escHtml(t.title) + '</div>'
+      + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+      + '<span style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:3px;background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.25);font-family:DM Mono,monospace">🤖 ' + escHtml(t.tool || '') + '</span>'
+      + '</div></div></div>'
+
+      // Outcome
+      + '<div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:7px;padding:9px 13px;margin-bottom:12px">'
+      + '<div style="font-size:9px;color:#22c55e;letter-spacing:1.2px;text-transform:uppercase;font-family:DM Mono,monospace;margin-bottom:3px">Viewer Outcome</div>'
+      + '<div style="font-size:12px;color:var(--text);font-weight:500">' + escHtml(t.outcome || '') + '</div>'
+      + '</div>'
+
+      // Hook
+      + '<div style="margin-bottom:12px">'
+      + '<div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:DM Mono,monospace;margin-bottom:5px">Opening Hook (first 10 sec)</div>'
+      + '<div style="font-size:12px;color:#ccc;font-style:italic;border-left:2px solid var(--accent);padding-left:10px;line-height:1.6">' + escHtml(t.hook || '') + '</div>'
+      + '</div>'
+
+      // Steps
+      + '<div style="margin-bottom:12px">'
+      + '<div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:DM Mono,monospace;margin-bottom:8px">5-Step Tutorial Structure</div>'
+      + '<div style="display:flex;flex-direction:column;gap:5px">'
+      + (t.steps || []).map(function(step, si) {
+          return '<div style="display:flex;align-items:center;gap:9px;font-size:12px;color:var(--text)">'
+            + '<span style="width:20px;height:20px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-family:DM Mono,monospace;flex-shrink:0;color:var(--accent)">' + (si+1) + '</span>'
+            + escHtml(step) + '</div>';
+        }).join('')
+      + '</div></div>'
+
+      // Indian angle + Lead magnet in 2 cols
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">'
+      + '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px 12px">'
+      + '<div style="font-size:9px;color:#f59e0b;letter-spacing:1px;text-transform:uppercase;font-family:DM Mono,monospace;margin-bottom:4px">🇮🇳 Indian Angle</div>'
+      + '<div style="font-size:11px;color:var(--muted);line-height:1.5">' + escHtml(t.indianAngle || '') + '</div>'
+      + '</div>'
+      + '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px 12px">'
+      + '<div style="font-size:9px;color:#60a5fa;letter-spacing:1px;text-transform:uppercase;font-family:DM Mono,monospace;margin-bottom:4px">🎯 Lead Magnet CTA</div>'
+      + '<div style="font-size:11px;color:var(--muted);font-style:italic;line-height:1.5">' + escHtml(t.leadMagnet || '') + '</div>'
+      + '</div></div>'
+
+      // Actions
+      + '<div style="display:flex;gap:7px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--border)">'
+      + '<button class="chip-btn" onclick="copyRaw(tutIdeaStore[' + i + '].title)">Copy Title</button>'
+      + '<button class="chip-btn" style="color:#60a5fa;border-color:rgba(96,165,250,.3)" onclick="pipeAddIdea(tutIdeaStore[' + i + '].title, &quot;growth&quot;)">+ Pipeline</button>'
+      + '<button class="chip-btn script" onclick="openTutorialScript(' + i + ')">Write Full Script</button>'
+      + '</div>'
+      + '</div>';
+  });
+
+  results.innerHTML = html;
+  results.style.display = 'block';
+  results.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function openTutorialScript(idx) {
+  var t = tutIdeaStore[idx];
+  if (!t) return;
+  // Build a rich title + context for the script writer
+  var scriptTitle = t.title;
+  // Store steps as context for fetchScript
+  window._tutorialContext = t;
+  openScript(scriptTitle, 'growth');
+  // Intercept the script prompt by overriding window temporarily
+  window._pendingTutorial = t;
+}
+
+// ── TUTORIAL SCRIPT HOOK ─────────────────────────────────────
+// Override fetchScript to inject tutorial structure when coming from tutorial tab
+var _origFetchScript = fetchScript;
+fetchScript = async function(title, type) {
+  var tut = window._pendingTutorial;
+  // Only use tutorial context if title matches
+  if (tut && tut.title === title) {
+    window._pendingTutorial = null;
+    await fetchTutorialScript(title, tut);
+  } else {
+    await _origFetchScript(title, type);
+  }
+};
+
+async function fetchTutorialScript(title, tut) {
+  var today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+  var loading = document.getElementById('spLoading');
+
+  if (window._scriptGenerating) return;
+  window._scriptGenerating = true;
+
+  try {
+    loading.innerHTML = '<div class="spin"></div><p>Writing step-by-step tutorial script...<br><span style="font-size:11px;opacity:.6">Building your ' + escHtml(tut.tool || 'AI') + ' tutorial</span></p>';
+
+    var stepsText = (tut.steps || []).map(function(s, i){ return (i+1) + '. ' + s; }).join('\n');
+
+    var prompt = [
+      'Write a complete step-by-step YouTube tutorial script for Umesh Emmadishetty, Telugu creator. TODAY IS ' + today + '.',
+      '',
+      'VIDEO TITLE: "' + title + '"',
+      'AI TOOL BEING TAUGHT: ' + (tut.tool || 'AI tool'),
+      'VIEWER OUTCOME: After watching, the viewer can: ' + (tut.outcome || ''),
+      'AUDIENCE: Telugu professionals and small business owners. Many are beginners with AI tools. They are motivated by income, saving time, and not being left behind.',
+      '',
+      'OPENING HOOK (use this exactly or improve it):',
+      tut.hook || '',
+      '',
+      'TUTORIAL STRUCTURE — follow these 5 steps exactly:',
+      stepsText,
+      '',
+      'INDIAN CONTEXT TO INCLUDE:',
+      tut.indianAngle || '',
+      '',
+      'END WITH THIS LEAD MAGNET CTA:',
+      tut.leadMagnet || '',
+      '',
+      'SCRIPT PARTS (label each):',
+      '[HOOK - 0:00-0:45] Use the hook above. No greeting. First sentence must make them feel "this will save me time / make me money."',
+      '[WHY THIS MATTERS - 0:45-1:30] Why THIS tool, why NOW, why for Indians specifically. Keep short and punchy.',
+      '[STEP 1 - 1:30-3:00] ' + ((tut.steps||[])[0] || 'First step'),
+      '[STEP 2 - 3:00-4:30] ' + ((tut.steps||[])[1] || 'Second step'),
+      '[STEP 3 - 4:30-6:00] ' + ((tut.steps||[])[2] || 'Third step'),
+      '[STEP 4 - 6:00-7:30] ' + ((tut.steps||[])[3] || 'Fourth step'),
+      '[STEP 5 - 7:30-9:00] ' + ((tut.steps||[])[4] || 'Fifth step'),
+      '[CTA - 9:00-9:30] ' + (tut.leadMagnet || 'Warm close with subscribe ask'),
+      '',
+      'TUTORIAL WRITING RULES:',
+      '- Each step must be genuinely teachable — tell them exactly what to click, type, or do',
+      '- Add [show screen: what to show] notes so Umesh knows exactly what to display',
+      '- Use Telugu naturally when explaining concepts: "idi choodandi", "ee step lo", "meeru ee button click cheyyandi"',
+      '- When mentioning costs: always convert to INR and note if there is a free option',
+      '- No fabricated student success stories. Use "imagine if you could..." instead',
+      '- Each step ends with what the viewer has achieved so far — progress markers keep them watching',
+      '- Target: 1300-1500 words',
+    ].join('\n');
+
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:2500, messages:[{role:'user',content:prompt}]})
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error ? data.error.message : 'API error ' + res.status);
+    currentScriptRaw = data.content && data.content[0] ? data.content[0].text : '';
+    if (!currentScriptRaw) throw new Error('Empty response. Try again.');
+    renderScript(currentScriptRaw);
+  } catch(err) {
+    document.getElementById('spLoading').innerHTML = '<p style="color:#f87171;text-align:center;padding:20px">' + escHtml(err.message) + '<br><br><button class="sp-btn primary" onclick="regenScript()" style="margin:0 auto">Try Again</button></p>';
+  } finally {
+    window._scriptGenerating = false;
+  }
+}
+
 // ═══════════════════════════════════════════════════════
 // KANBAN PIPELINE
 // ═══════════════════════════════════════════════════════
@@ -1756,31 +2113,28 @@ function pipeRender() {
 
 // ── MAIN TAB SWITCHER ─────────────────────────────────
 function switchMainTab(tab) {
-  currentTab = tab; // track explicitly
-  var isIdeas = tab === 'ideas';
+  currentTab = tab;
   var mainEl = document.querySelector('main');
-  
-  // Toggle all direct children of main
+  var panels = ['panel-pipeline', 'panel-tutorials'];
+
+  // Show/hide main children
   Array.from(mainEl.children).forEach(function(child) {
-    if (child.id === 'panel-pipeline') {
-      child.style.display = isIdeas ? 'none' : 'block';
+    if (panels.indexOf(child.id) !== -1) {
+      child.style.display = (child.id === 'panel-' + tab) ? 'block' : 'none';
     } else {
-      // Restore display for ideas panel elements (use block for divs)
-      child.style.display = isIdeas ? '' : 'none';
+      child.style.display = (tab === 'ideas') ? '' : 'none';
     }
   });
-  
-  // Update tab underline styles
-  var tabs = {ideas: document.getElementById('tab-ideas'), pipeline: document.getElementById('tab-pipeline')};
-  if (tabs.ideas) {
-    tabs.ideas.style.borderBottomColor   = isIdeas  ? 'var(--accent)' : 'transparent';
-    tabs.ideas.style.color               = isIdeas  ? 'var(--text)'   : 'var(--muted)';
-  }
-  if (tabs.pipeline) {
-    tabs.pipeline.style.borderBottomColor = !isIdeas ? 'var(--accent)' : 'transparent';
-    tabs.pipeline.style.color             = !isIdeas ? 'var(--text)'   : 'var(--muted)';
-  }
-  if (!isIdeas) pipeRender();
+
+  // Update all tab styles
+  ['ideas', 'pipeline', 'tutorials'].forEach(function(t) {
+    var el = document.getElementById('tab-' + t);
+    if (!el) return;
+    el.style.borderBottomColor = (t === tab) ? 'var(--accent)' : 'transparent';
+    el.style.color = (t === tab) ? 'var(--text)' : 'var(--muted)';
+  });
+
+  if (tab === 'pipeline') pipeRender();
 }
 
 // ── OVERRIDE saveIdeaByIndex to go to pipeline ──────
