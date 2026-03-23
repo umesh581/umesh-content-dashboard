@@ -931,32 +931,90 @@ async function generateIdeas() {
         ? 'Generating ideas from live market data...'
         : 'Step 2/2: Generating fresh 2026 ideas...';
 
-    const modeInstructions = isNewsMode
-      ? 'SPECIAL MODE - REACT TO TODAY\'S NEWS:\nYou have real news headlines from today. For EACH major news item, generate a video idea showing Umesh\'s audience what this news means FOR THEM - their money, job, business, future. Frame every idea as: "Here\'s what [news event] means for your wallet/career/business." Make it urgent - this is TODAY\'s news.'
-      : isStockMode
-        ? 'SPECIAL MODE - STOCK MARKET:\nYou have live market numbers. Use EXACT index levels, exact % moves, exact stock names from the data. Ideas should help audience understand what today\'s market moves mean for their SIPs, portfolios, and investment decisions. Include a mix of: market explainer, stock analysis, investor psychology, and actionable tips for today.'
-        : focus === 'ai_income'
-          ? 'AI INCOME MODE: Generate ideas about PRACTICAL ways Indians are earning money using AI tools right now. Focus on: real tools (ChatGPT, Claude, Midjourney, Canva AI), real income streams (freelancing, content, automation services), real barriers Indians face (English, pricing in USD, client finding). Avoid theory. Every idea must have a "you can start this week" angle.'
-          : focus === 'money'
-            ? 'MONEY MASTERY MODE: Generate ideas about real money behaviour, psychology, and decisions Indians face. Cover: savings habits, avoiding money mistakes, understanding where money goes, building financial discipline, practical budgeting, overcoming money mindset blocks. Ground everything in Indian costs, Indian salaries, Indian family financial pressures.'
-            : 'Generate ideas grounded in the trending context above. Every idea must feel like it was written today in 2026.';
-
+    var focusModeMap = {
+      news: 'REACT TO NEWS: For each news item in the live data, generate a video idea showing what it means for the audience — their money, job, business. Be specific to the actual news. Urgent and timely.',
+      stock: 'STOCK MARKET: Use exact index levels and stock names from live data. Help audience understand what market moves mean for their SIPs and portfolios. Mix: explainer, analysis, investor psychology, actionable tips.',
+      ai_income: 'AI INCOME — PRACTICAL ONLY: Ideas about real ways Indians earn money with AI tools. Each idea must name a specific tool and a specific income method. Examples: offer ChatGPT prompting as a freelance service, use Canva AI for client social media, automate small business workflows with Make.com and charge for it. Every idea must have a clear how-to-start angle. Zero theory.',
+      money: 'MONEY MASTERY: Ideas about real money behaviour Indians face. Why people spend before saving, how to track spending, breaking bad money habits, budgeting on an Indian salary, lifestyle inflation. Real Indian numbers and family situations. NOT investment product advice.',
+      digital: 'DIGITAL ENTREPRENEURSHIP — PRACTICAL BUSINESS IDEAS: Generate ideas about starting and running online businesses from home. Think: top 5 business models to start under Rs 10,000, how to get your first client online, how to price your skills, which platforms work for Indian freelancers, how to turn a skill into a service business. Format: practical how-to and listicle style. NOT mindset warnings. NOT financial doom. Think: what can someone START or DO after watching this video.',
+      growth: 'VIRAL GROWTH: Ideas designed to get shares and subscribers. Uncomfortable truths about jobs and money, beliefs the audience holds that are wrong, things society tells them that are lies. Should provoke: I need to share this. Genuinely challenging, not just motivational.',
+      revenue: 'REVENUE AND COURSE SALES: Ideas that lead viewers to want Umesh coaching. Specific skill gaps, sales and digital marketing techniques, how to build a high-ticket offer, funnel strategy explained simply, how to find clients consistently. Leave viewer thinking: I need to learn more from this person.',
+      mindset: 'MINDSET: Ideas about mental patterns that keep people stuck. Why people self-sabotage, how society programs mediocrity, psychology of not starting, breaking limiting beliefs about money and success. Specific patterns, not generic motivation.',
+      mixed: 'MIXED: Balanced variety — some viral shareable ideas, some practical business how-to, some mindset-challenging pieces. Different angles and formats.'
+    };
+    const modeInstructions = focusModeMap[focus] || focusModeMap['mixed'];
     // Build pipeline exclusion context inline — no wrapper needed
     const pipeCtxParts = [];
     const pipeActive = pipeline.filter(function(p){ return p.col==='ideas'||p.col==='prog'; });
     const pipeDone   = pipeline.filter(function(p){ return p.col==='done'; });
     if (pipeActive.length) {
-      pipeCtxParts.push('ALREADY IN PIPELINE — do NOT suggest these or similar topics:');
+      pipeCtxParts.push('CONTENT ALREADY IN PIPELINE (being planned or recorded):');
+      pipeCtxParts.push('Do NOT suggest the same title or the same specific angle. But the broader topic is still fair game — suggest a different angle, a different framing, or a complementary idea that would make sense as a follow-up or companion video.');
+      pipeCtxParts.push('For example: if "Why Middle Class Trap Kills Your Wealth" is in pipeline, do not suggest that again. But you can suggest "How To Escape The Middle Class Trap in 12 Months" — different angle, same territory.');
+      pipeCtxParts.push('Pipeline items:');
       pipeActive.forEach(function(p){ pipeCtxParts.push('  - ' + p.title); });
+      pipeCtxParts.push('');
     }
     if (pipeDone.length) {
-      pipeCtxParts.push('ALREADY RECORDED — topics already covered, avoid repeating:');
+      pipeCtxParts.push('ALREADY RECORDED — these exact angles have been covered:');
+      pipeCtxParts.push('Do NOT repeat the same angle. You CAN suggest a new angle on the same topic if it makes sense — a part 2, a deeper dive, an opposite perspective, or a related aspect not covered yet.');
+      pipeCtxParts.push('Recorded items:');
       pipeDone.forEach(function(p){ pipeCtxParts.push('  - ' + p.title); });
+      pipeCtxParts.push('');
     }
     const pipelineExclude = pipeCtxParts.length ? pipeCtxParts.join('\n') + '\n\n' : '';
 
-    const ideasPrompt = pipelineExclude + 'You are a content strategist for Umesh Emmadishetty, Telugu YouTube creator. TODAY IS ' + today + '.\n\nCHANNEL: Telugu audience 20s-40s, middle class, financial freedom + digital entrepreneurship\nTOP VIDEO: "Save Yourself From Middle Class Trap" 94K views\nTONE: Straight-talking big brother, no fluff, culturally Telugu\nTWO TYPES: GROWTH (mindset/viral) | REVENUE (digital skills, course sales)\n\nFocus: ' + focusLabels[focus] + ' | Goal: ' + goal + ' | Count: ' + count + '\n\n' + modeInstructions + '\n\nLIVE DATA FETCHED RIGHT NOW:\n' + trendingContext + '\n\n' + (userContext ? 'CREATOR NOTES: ' + userContext + '\n\n' : '') + '2026 INDIA CONTEXT (weave in naturally):\n- AI tools (Claude, ChatGPT, Gemini) used daily by Indian professionals\n- IT layoffs, freshers struggling to get placed 2025-26\n- New income tax regime confusion - salaried class anxious\n- SIP investors nervous after market swings\n- Gig economy: Zepto/Blinkit pay vs IT salary debate\n- NRI dream being questioned - abroad vs India cost of living\n- YouTube now accepted career by Telugu families\n- Rupee weakness, US tariffs hitting Indian exports\n\nSTRICT TITLE RULES:\n- Max 8 words\n- Must name a villain, expose a lie, or challenge a belief\n- Must feel written TODAY - reader thinks "this is current"\n- NO generic titles like "How To Save Money"\n- Style reference (do not copy): "AI Just Killed Your IT Career", "Your SIP Is Not Enough Anymore", "The NRI Dream Is Dead"\n\nRespond ONLY with valid JSON (no markdown):\n{"videos":[{"title":"...","type":"growth|revenue","angle":"why this hits in 2026"}],"shorts":[{"hook":"scroll-stopping opening line","concept":"what the short shows"}],"hooks":["opening line for a video"]}\n\nGenerate ' + Math.round(count*0.5) + ' videos, ' + Math.round(count*0.25) + ' shorts, ' + Math.round(count*0.25) + ' hooks.';
-
+    const ideasPrompt = [
+      pipelineExclude,
+      'You are a content strategist for Umesh Emmadishetty, Telugu YouTube creator. TODAY IS ' + today + '.',
+      '',
+      'CHANNEL DATA — TOP 5 VIDEOS BY SUBSCRIBER CONVERSION (last 28 days):',
+      '1. How Gujaratis Make More Profits in Stock Market — 599 subs, 14,247 views, 4.2% conversion',
+      '2. Why Middle-Class Families Lose Money in Global Crises — 207 subs, 4,313 views, 4.8% conversion',
+      '3. Only These People Survive By 2031 AI Boom — 87 subs, 5,964 views, 1.5% conversion',
+      '4. Freelancing is the New Government Job! — 38 subs, 2,170 views, 1.75% conversion',
+      '5. Is Zerodha Making Us Poor? — 36 subs, 2,675 views, 1.35% conversion',
+      '',
+      'PROVEN TITLE FORMULAS — use these patterns, not the exact titles:',
+      'Formula A: How [Wealthy Community] [Do Something Better] — community comparison, 4.2% conversion',
+      'Formula B: Why [Audience Identity] [Lose/Fail/Get Trapped] — fear of loss, 4.8% conversion',
+      'Formula C: Only These People [Survive/Win] By [Year] — urgency and exclusivity',
+      'Formula D: [Aspiration] is the New [Safe Thing] — status reframe',
+      'Formula E: Is [Trusted Brand] Making You Poor? — trust disruption',
+      '',
+      'COMMUNITY ANGLE — ONLY use when there is a real, well-known truth behind the pairing:',
+      'Gujaratis + Stock Market works because they genuinely have a strong investing and business culture — everyone knows this.',
+      'NRIs + Money works because they genuinely earn in foreign currency and have different financial habits.',
+      'Marwaris + Business works because they are genuinely known for frugality and business acumen.',
+      'DO NOT randomly assign communities to topics. "Why Jains Survive AI" or "Why Sindhis Stay Rich While NRIs Return" is nonsense — do not write this.',
+      'Ask: is there a real, widely known cultural or behavioral truth connecting this community to this topic? If no, do not use the formula.',
+      '',
+      'EMOTIONAL TRIGGERS — use in every title:',
+      'Fear of loss: lose, trap, dying, finished, poor, behind',
+      'Urgency: only these people, by 2031, before it is too late',
+      'Identity: middle class, salary people, job holders',
+      'Trust disruption: Is [X] Making You Poor? Is [X] Lying?',
+      'Status gap: why they win and why we lose',
+      '',
+      'FOCUS: ' + focusLabels[focus] + ' | GOAL: ' + goal + ' | COUNT: ' + count,
+      '',
+      modeInstructions,
+      trendingContext ? 'LIVE DATA: ' + trendingContext : '',
+      userContext ? 'CREATOR NOTES: ' + userContext : '',
+      '',
+      '2026 INDIA CONTEXT:',
+      'AI tools disrupting IT jobs. New tax regime confusion. SIP investors nervous. Zepto vs IT salary debate. NRI dream questioned. Rupee weak.',
+      '',
+      'STRICT TITLE RULES:',
+      'Max 8 words. Name a villain, expose a lie, or challenge a belief. No generic titles.',
+      'The 5 formulas are PATTERNS to learn from, not templates to mechanically fill. Use them only when the topic naturally fits the formula — never force a formula onto a topic just to use it.',
+      'A title must make immediate sense to a Telugu viewer. If someone reads it and thinks "what does that even mean?" — it is wrong.',
+      'Community angle: only when a real cultural truth exists between that community and the topic. 1-2 per batch max.',
+      '',
+      'Respond ONLY with valid JSON, no markdown:',
+      '{"videos":[{"title":"...","type":"growth|revenue","angle":"formula used and why it converts"}],"shorts":[{"hook":"...","concept":"..."}],"hooks":["..."]}',
+      'Generate ' + Math.round(count*0.5) + ' videos, ' + Math.round(count*0.25) + ' shorts, ' + Math.round(count*0.25) + ' hooks.',
+    ].filter(Boolean).join('\n');
     const ideasRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
