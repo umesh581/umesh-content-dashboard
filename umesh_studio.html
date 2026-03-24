@@ -263,6 +263,49 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 
 
 
+
+/* ===== 100K SPRINT ===== */
+.gtab {
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px;
+  padding:8px 14px; background:none; border:none;
+  border-bottom:2px solid transparent; color:var(--muted);
+  cursor:pointer; text-transform:uppercase; transition:all .15s;
+  white-space:nowrap;
+}
+.gtab:hover { color:var(--text); }
+.active-gtab { border-bottom-color:var(--accent) !important; color:var(--text) !important; }
+
+.tracker-day {
+  aspect-ratio:1; border-radius:4px; background:var(--surface2);
+  border:1px solid var(--border); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-family:'DM Mono',monospace; color:var(--muted2);
+  transition:all .15s; position:relative;
+}
+.tracker-day:hover { filter:brightness(1.2); transform:scale(1.05); }
+.tracker-day.published { background:var(--accent) !important; border-color:var(--accent) !important; color:white !important; }
+.tracker-day.today { border-color:var(--accent); color:var(--accent); }
+.tracker-day.scheduled { opacity:.85; }
+
+.ab-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; padding:16px; margin-bottom:10px;
+  transition:all .15s; position:relative; overflow:hidden;
+}
+.ab-card:hover { border-color:var(--muted2); }
+.ab-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.ab-card.formula-a::before { background:var(--accent); }
+.ab-card.formula-b::before { background:#22c55e; }
+.ab-card.formula-c::before { background:#a78bfa; }
+.ab-card.formula-d::before { background:#f59e0b; }
+.ab-card.formula-e::before { background:#60a5fa; }
+
+.score-bar { height:6px; border-radius:3px; background:var(--surface2); margin-top:4px; }
+.score-fill { height:100%; border-radius:3px; transition:width .5s ease; }
+.score-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.score-label { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; width:120px; flex-shrink:0; }
+.score-val { font-size:11px; font-family:'DM Mono',monospace; width:30px; text-align:right; flex-shrink:0; }
+
 /* ===== KANBAN PIPELINE ===== */
 .pipeline-nav {
   display:flex; align-items:center; justify-content:space-between;
@@ -382,6 +425,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
   <button id="tab-ideas" onclick="switchMainTab('ideas')" style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--text);cursor:pointer;text-transform:uppercase">Ideas</button>
   <button id="tab-pipeline" onclick="switchMainTab('pipeline')" style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;text-transform:uppercase">Pipeline <span id="pipe-badge" style="font-size:9px;background:rgba(255,107,43,.15);color:var(--accent);border:1px solid rgba(255,107,43,.25);padding:1px 5px;border-radius:8px;margin-left:3px">0</span></button>
   <button id="tab-tutorials" onclick="switchMainTab('tutorials')" style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;text-transform:uppercase">🤖 AI Tutorials</button>
+  <button id="tab-growth" onclick="switchMainTab('growth')" style="font-family:DM Mono,monospace;font-size:11px;letter-spacing:1px;padding:10px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;text-transform:uppercase">🚀 100K Sprint</button>
 </div>
 
 <main>
@@ -404,6 +448,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
           <option value="digital">Digital Entrepreneurship</option>
           <option value="ai_income">🤖 AI Income (Practical)</option>
           <option value="money">💸 Money Mastery</option>
+          <option value="geo">🌍 Geopolitics & Economy</option>
           <option value="news">React to Today's News</option>
         </select>
       </div>
@@ -579,6 +624,160 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
 
     <!-- RESULTS -->
     <div id="tutResults" style="display:none"></div>
+
+  </div>
+
+  <!-- 100K SPRINT PANEL -->
+  <div id="panel-growth" style="display:none">
+
+    <div style="margin-bottom:24px">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:4px">🚀 100K SPRINT</h2>
+      <p style="font-size:13px;color:var(--muted)">4 tools to get from 12K to 100K in 90 days.</p>
+    </div>
+
+    <!-- SUB-TABS -->
+    <div style="display:flex;gap:2px;margin-bottom:24px;border-bottom:1px solid var(--border)">
+      <button id="gtab-tracker"  onclick="switchGTab('tracker')"  class="gtab active-gtab">📅 90-Day Tracker</button>
+      <button id="gtab-titles"   onclick="switchGTab('titles')"   class="gtab">🎯 Title A/B Tester</button>
+      <button id="gtab-doubledown" onclick="switchGTab('doubledown')" class="gtab">🔁 Double Down</button>
+      <button id="gtab-series"   onclick="switchGTab('series')"   class="gtab">📺 Series + Hook</button>
+    </div>
+
+    <!-- ── 90-DAY TRACKER ── -->
+    <div id="gpanel-tracker">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px">90-DAY PUBLISHING TRACKER</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">At 100K pace you need 3-4 videos/week. Track every publish.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div id="tracker-stats" style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace"></div>
+          <button onclick="trackerAddToday()" style="background:var(--accent);color:white;border:none;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">+ Log Video</button>
+        </div>
+      </div>
+
+      <!-- Goal progress bar -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:12px;color:var(--muted)">Subscriber Goal</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span style="font-size:11px;color:var(--muted)">Current:</span>
+            <input id="tracker-current-subs" type="number" value="12000" style="width:80px;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:4px 8px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none" oninput="trackerRender()">
+            <span style="font-size:11px;color:var(--muted)">Target: 100,000</span>
+          </div>
+        </div>
+        <div style="height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+          <div id="tracker-progress-bar" style="height:100%;background:var(--accent);border-radius:4px;transition:width .3s"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <span id="tracker-pct" style="font-size:11px;color:var(--accent);font-family:'DM Mono',monospace"></span>
+          <span id="tracker-needed" style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace"></span>
+        </div>
+      </div>
+
+      <!-- 90-day grid -->
+      <div id="tracker-grid" style="display:grid;grid-template-columns:repeat(13,1fr);gap:4px;margin-bottom:16px"></div>
+
+      <!-- Schedule legend -->
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;font-size:10px;font-family:'DM Mono',monospace">
+        <span style="color:var(--muted)">SCHEDULE:</span>
+        <span style="color:#185FA5">&#9632; Community</span>
+        <span style="color:#993C1D">&#9632; Fear/Loss</span>
+        <span style="color:#534AB7">&#9632; AI/Digital</span>
+        <span style="color:#854F0B">&#9632; Geopolitics</span>
+        <span style="color:#993556">&#9632; Series</span>
+        <span style="color:var(--accent)">&#9632; Published</span>
+        <span style="color:var(--muted);margin-left:4px">Click any scheduled day to log it</span>
+      </div>
+
+      <!-- Log modal -->
+      <div id="tracker-log-form" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px">Log a Video</div>
+        <input id="tlog-title" placeholder="Video title" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;margin-bottom:8px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+          <div>
+            <label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">DATE</label>
+            <input id="tlog-date" type="date" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none">
+          </div>
+          <div>
+            <label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">SUBS GAINED</label>
+            <input id="tlog-subs" type="number" placeholder="0" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none">
+          </div>
+          <div>
+            <label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">VIEWS</label>
+            <input id="tlog-views" type="number" placeholder="0" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="trackerSaveLog()" style="flex:1;background:var(--accent);color:white;border:none;border-radius:6px;padding:9px;font-size:13px;font-weight:700;cursor:pointer">Save</button>
+          <button onclick="document.getElementById('tracker-log-form').style.display='none'" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:9px 16px;font-size:13px;cursor:pointer">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Video log list -->
+      <div id="tracker-video-list"></div>
+    </div>
+
+    <!-- ── A/B TITLE TESTER ── -->
+    <div id="gpanel-titles" style="display:none">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;margin-bottom:6px">A/B TITLE TESTER</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Enter your video idea. Get 3 title variations using your proven formulas. Pick the strongest one before you record.</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <label style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:6px">What is your video about?</label>
+        <textarea id="ab-topic" placeholder="e.g. Why most Indian freelancers fail to get clients, or How to use ChatGPT to write client emails..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:none;height:80px;line-height:1.5;margin-bottom:10px"></textarea>
+        <div id="ab-err" style="color:#f87171;font-size:12px;display:none;margin-bottom:8px"></div>
+        <button onclick="generateABTitles()" id="ab-btn" style="width:100%;background:var(--accent);color:white;border:none;border-radius:7px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;cursor:pointer">GENERATE 3 TITLE OPTIONS</button>
+      </div>
+      <div id="ab-results" style="display:none"></div>
+    </div>
+
+    <!-- ── DOUBLE DOWN ── -->
+    <div id="gpanel-doubledown" style="display:none">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;margin-bottom:6px">DOUBLE DOWN ON WHAT WORKED</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Enter a video that performed well. Get 8 follow-up angles to squeeze maximum value from that topic.</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <label style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:6px">Your best performing video title</label>
+        <input id="dd-title" placeholder="e.g. How Gujaratis Make More Profits in Stock Market" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;margin-bottom:8px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div>
+            <label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">SUBS IT GAINED</label>
+            <input id="dd-subs" type="number" placeholder="e.g. 599" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none">
+          </div>
+          <div>
+            <label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">VIEWS</label>
+            <input id="dd-views" type="number" placeholder="e.g. 14247" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none">
+          </div>
+        </div>
+        <div id="dd-err" style="color:#f87171;font-size:12px;display:none;margin-bottom:8px"></div>
+        <button onclick="generateDoubleDown()" id="dd-btn" style="width:100%;background:var(--accent);color:white;border:none;border-radius:7px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;cursor:pointer">FIND 8 FOLLOW-UP ANGLES</button>
+      </div>
+      <div id="dd-results" style="display:none"></div>
+    </div>
+
+    <!-- ── SERIES PLANNER + HOOK SCORER ── -->
+    <div id="gpanel-series" style="display:none">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;margin-bottom:6px">SERIES PLANNER + HOOK SCORER</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Plan a multi-part series OR score your opening hook before you record.</div>
+
+      <!-- Series planner -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text)">📺 Series Planner</div>
+        <input id="series-topic" placeholder="Topic or your best-performing video title..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;margin-bottom:10px">
+        <div id="series-err" style="color:#f87171;font-size:12px;display:none;margin-bottom:8px"></div>
+        <button onclick="generateSeries()" id="series-btn" style="width:100%;background:var(--accent);color:white;border:none;border-radius:7px;padding:11px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer">PLAN A 5-PART SERIES</button>
+      </div>
+
+      <!-- Hook scorer -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text)">🎣 Hook Scorer</div>
+        <textarea id="hook-text" placeholder="Paste your opening 2-3 sentences here..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:none;height:90px;line-height:1.5;margin-bottom:10px"></textarea>
+        <div id="hook-err" style="color:#f87171;font-size:12px;display:none;margin-bottom:8px"></div>
+        <button onclick="scoreHook()" id="hook-btn" style="width:100%;background:var(--purple);color:white;border:none;border-radius:7px;padding:11px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer">SCORE MY HOOK</button>
+      </div>
+
+      <div id="series-results" style="display:none"></div>
+      <div id="hook-results" style="display:none"></div>
+    </div>
 
   </div>
 
@@ -837,13 +1036,19 @@ async function generateIdeas() {
   loading.style.display = 'block';
   results.style.display = 'none';
   errorBox.style.display = 'none';
-  const focusLabels = {mixed:'Mixed Growth+Revenue',growth:'Growth/Viral',revenue:'Revenue/Course Sales',mindset:'Mindset & Belief Shifts',stock:'Stock Market & Investing',digital:'Digital Entrepreneurship',ai_income:'AI Income (Practical)',money:'Money Mastery',news:'React to Today\'s News'};
+  const focusLabels = {mixed:'Mixed Growth+Revenue',growth:'Growth/Viral',revenue:'Revenue/Course Sales',mindset:'Mindset & Belief Shifts',stock:'Stock Market & Investing',digital:'Digital Entrepreneurship',ai_income:'AI Income (Practical)',money:'Money Mastery',geo:'Geopolitics & Economy',news:'React to Today\'s News'};
   const today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
   const todayShort = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  const currentYear = new Date().getFullYear();
 
   // Build multi-search strategy per focus
   // For 'news' and 'stock' we run multiple targeted searches for real-time data
   const searchStrategies = {
+    geo: [
+      'USD INR dollar rupee exchange rate today ' + todayShort,
+      'global geopolitical crisis India economy impact ' + todayShort,
+      'crude oil price today India impact ' + todayShort
+    ],
     news: [
       'India business economy news today ' + todayShort,
       'India personal finance stock market news today ' + todayShort,
@@ -851,24 +1056,25 @@ async function generateIdeas() {
     ],
     stock: [
       'Sensex Nifty live today ' + todayShort + ' points',
-      'top gaining losing stocks NSE BSE today ' + todayShort,
-      'India stock market news analysis today ' + todayShort
+      'USD INR exchange rate today ' + todayShort,
+      'top gaining losing stocks NSE BSE today ' + todayShort
     ],
-    mixed:   ['India personal finance trending 2026', 'middle class wealth India news 2026'],
-    growth:  ['viral YouTube India money mindset 2026', 'what worries Indian middle class 2026'],
-    revenue: ['AI freelancing digital income India 2026', 'online business India opportunities 2026'],
-    mindset: ['middle class India salary inflation 2026', 'wealth gap India urban 2026'],
-    digital: ['AI jobs impact India professionals 2026', 'tech layoffs India 2026 ChatGPT'],
-    ai_income: ['AI tools make money online India 2026 practical', 'ChatGPT freelancing income India rupees real examples'],
-    money: ['personal finance money management India 2026', 'Indians saving investing money habits 2026']
+    mixed:   ['India personal finance trending ' + currentYear, 'middle class wealth India news ' + currentYear],
+    growth:  ['viral YouTube India money mindset ' + currentYear, 'what worries Indian middle class ' + currentYear],
+    revenue: ['AI freelancing digital income India ' + currentYear, 'online business India opportunities ' + currentYear],
+    mindset: ['middle class India salary inflation ' + currentYear, 'wealth gap India urban ' + currentYear],
+    digital: ['AI jobs impact India professionals ' + currentYear, 'tech layoffs India ' + currentYear + ' ChatGPT'],
+    ai_income: ['AI tools make money online India ' + currentYear + ' practical', 'ChatGPT freelancing income India rupees real examples'],
+    money: ['personal finance money management India ' + currentYear, 'Indians saving investing money habits ' + currentYear]
   };
 
   const queries = searchStrategies[focus] || searchStrategies['mixed'];
   const isNewsMode = focus === 'news';
   const isStockMode = focus === 'stock';
+  const isGeoMode = focus === 'geo';
   const liveTrendChecked = document.getElementById('liveTrendChk') && document.getElementById('liveTrendChk').checked;
   // Only do live search if checkbox is ticked, OR if news/stock mode (always needs live data)
-  const needsMultiSearch = liveTrendChecked || isNewsMode || isStockMode;
+  const needsMultiSearch = liveTrendChecked || isNewsMode || isStockMode || isGeoMode;
 
   try {
     // ── STEP 1: Fetch live data ────────────────────────────────────────────
@@ -876,9 +1082,11 @@ async function generateIdeas() {
       ? 'Fetching today\'s top news from India...'
       : isStockMode
         ? 'Fetching live market data: Sensex, Nifty, top movers...'
-        : needsMultiSearch
-          ? 'Fetching live trending topics...'
-          : 'Generating evergreen ideas for your channel...';
+        : isGeoMode
+          ? 'Fetching live geopolitical and economic news...'
+          : needsMultiSearch
+            ? 'Fetching live trending topics...'
+            : 'Generating evergreen ideas for your channel...';
 
     let trendingContext = '';
 
@@ -887,6 +1095,13 @@ async function generateIdeas() {
       const parallelPrompts = queries.map(function(q) {
         if (isStockMode) {
           return 'Search web for: ' + q + '\nReturn exact numbers: index level, points change, % change, top 3 gaining stocks with price & % gain, top 3 losing stocks with price & % loss. Today is ' + today + '. Numbers only, no fluff.';
+        } else if (isGeoMode) {
+          var geoInstr = q.indexOf('USD INR') !== -1 || q.indexOf('dollar') !== -1 || q.indexOf('exchange rate') !== -1
+            ? 'Search web for: ' + q + '\nReturn: (1) exact USD/INR rate right now, (2) how much it has moved in the last 7 days, (3) what is driving the move, (4) what this means for Indians — NRI remittances, import costs, petrol prices, IT sector earnings. Give actual numbers. Today is ' + today + '.'
+            : q.indexOf('oil') !== -1 || q.indexOf('crude') !== -1
+            ? 'Search web for: ' + q + '\nReturn: (1) exact Brent crude price per barrel right now, (2) direction and % change this week, (3) what is causing it, (4) exact impact on India — petrol price, transport, inflation. Numbers only. Today is ' + today + '.'
+            : 'Search web for: ' + q + '\nReturn the top 5 most significant global events right now affecting India. For each: what is happening, countries involved, specific India impact (rupee, oil, IT, exports, jobs). Real names, real numbers. Today is ' + today + '.';
+          return geoInstr;
         } else {
           return 'Search web for: ' + q + '\nReturn top 5 actual news headlines with 1-line summaries from today or this week. Focus on India business, money, jobs, economy. Today is ' + today + '. Be specific - real company names, real numbers.';
         }
@@ -919,7 +1134,7 @@ async function generateIdeas() {
         trendingContext = 'No live data retrieved.';
       } else {
         // Evergreen mode - inject static 2026 India context instead of live search
-        trendingContext = '2026 INDIA: AI disrupting IT jobs, freshers struggling, new tax regime confusion, Zepto vs IT salary debate, NRI dream questioned, SIP anxiety, Rupee weak, YouTube as career accepted by Telugu families.';
+        trendingContext = currentYear + ' INDIA: AI tools disrupting IT jobs and replacing entry-level work. Freshers struggling to get placed. New income tax regime has salaried class anxious. SIP investors nervous. Dollar strengthening — Rupee under pressure. Gig economy pay being compared to IT salaries. NRI dream questioned. YouTube and digital income now accepted career path in Telugu families. US tariffs and global tensions hitting Indian exports and costs.';
       }
     }
     lastTrendingContext = trendingContext;
@@ -929,7 +1144,7 @@ async function generateIdeas() {
       ? 'Generating video ideas from today\'s headlines...'
       : isStockMode
         ? 'Generating ideas from live market data...'
-        : 'Step 2/2: Generating fresh 2026 ideas...';
+        : 'Step 2/2: Generating ideas grounded in today context...';
 
     var focusModeMap = {
       news: 'REACT TO NEWS: For each news item in the live data, generate a video idea showing what it means for the audience — their money, job, business. Be specific to the actual news. Urgent and timely.',
@@ -940,6 +1155,7 @@ async function generateIdeas() {
       growth: 'VIRAL GROWTH: Ideas designed to get shares and subscribers. Uncomfortable truths about jobs and money, beliefs the audience holds that are wrong, things society tells them that are lies. Should provoke: I need to share this. Genuinely challenging, not just motivational.',
       revenue: 'REVENUE AND COURSE SALES: Ideas that lead viewers to want Umesh coaching. Specific skill gaps, sales and digital marketing techniques, how to build a high-ticket offer, funnel strategy explained simply, how to find clients consistently. Leave viewer thinking: I need to learn more from this person.',
       mindset: 'MINDSET: Ideas about mental patterns that keep people stuck. Why people self-sabotage, how society programs mediocrity, psychology of not starting, breaking limiting beliefs about money and success. Specific patterns, not generic motivation.',
+      geo: 'GEOPOLITICS AND ECONOMY MODE: Generate ideas about global events and what they mean for ordinary Indians — their money, job, business, savings, and future. This is the most important instruction: ALWAYS connect the global event to a specific Indian impact. Not just what is happening in the world — but exactly how it hits an Indian middle-class person in their wallet, career, or daily life. Examples of the angle: Strait of Hormuz closure means oil prices rise means petrol costs more means transport inflation means your grocery bill goes up. US recession means IT projects get cut means Indian IT employees face bench or layoff. Cover events like: oil supply disruptions, US-China trade war, Middle East conflicts, dollar strengthening, global banking crises, commodity price shocks, shipping route disruptions, sanctions on major economies. Every idea must have: the global trigger, the chain of impact, and the specific Indian consequence.',
       mixed: 'MIXED: Balanced variety — some viral shareable ideas, some practical business how-to, some mindset-challenging pieces. Different angles and formats.'
     };
     const modeInstructions = focusModeMap[focus] || focusModeMap['mixed'];
@@ -968,19 +1184,36 @@ async function generateIdeas() {
       pipelineExclude,
       'You are a content strategist for Umesh Emmadishetty, Telugu YouTube creator. TODAY IS ' + today + '.',
       '',
-      'CHANNEL DATA — TOP 5 VIDEOS BY SUBSCRIBER CONVERSION (last 28 days):',
-      '1. How Gujaratis Make More Profits in Stock Market — 599 subs, 14,247 views, 4.2% conversion',
-      '2. Why Middle-Class Families Lose Money in Global Crises — 207 subs, 4,313 views, 4.8% conversion',
-      '3. Only These People Survive By 2031 AI Boom — 87 subs, 5,964 views, 1.5% conversion',
-      '4. Freelancing is the New Government Job! — 38 subs, 2,170 views, 1.75% conversion',
-      '5. Is Zerodha Making Us Poor? — 36 subs, 2,675 views, 1.35% conversion',
+      'REAL CHANNEL DATA (from lifetime YouTube analytics — 433 videos, 538K views, 12,770 subs):',
       '',
-      'PROVEN TITLE FORMULAS — use these patterns, not the exact titles:',
-      'Formula A: How [Wealthy Community] [Do Something Better] — community comparison, 4.2% conversion',
-      'Formula B: Why [Audience Identity] [Lose/Fail/Get Trapped] — fear of loss, 4.8% conversion',
-      'Formula C: Only These People [Survive/Win] By [Year] — urgency and exclusivity',
-      'Formula D: [Aspiration] is the New [Safe Thing] — status reframe',
-      'Formula E: Is [Trusted Brand] Making You Poor? — trust disruption',
+      'TOP PERFORMING VIDEOS BY SUBSCRIBERS:',
+      '1. Save Yourself From Middle Class Trap — 3,308 subs, 94,835 views, 3.5% conv, 5.4% CTR',
+      '2. 7 Marketing Books That Made Crores For Me — 1,383 subs, 34,266 views, 4.0% conv, 5.5% CTR',
+      '3. How Gujaratis Make More Profits in Stock Market — 599 subs, 14,274 views, 4.2% conv, 4.9% CTR',
+      '4. Top 5 Financial Mistakes To Avoid In Your 30s — 496 subs, 16,071 views, 3.1% conv, 4.4% CTR',
+      '5. How Society Brainwashed You About Money — 422 subs, 12,706 views, 3.3% conv, 5.8% CTR',
+      '6. Why Middle-Class Families Lose Money in Global Crises — 207 subs, 4,313 views, 4.8% conv',
+      '7. Make Money Using ChatGPT Selling Digital Products — 179 subs, 4,627 views, 3.9% conv',
+      '8. Earn In Lakhs Starting Digital Marketing Agency — 354 subs, 9,219 views, 3.8% conv',
+      '',
+      'WHAT ACTUALLY CONVERTS SUBSCRIBERS (real data):',
+      'Community comparison (Gujarati formula): 4.2-4.8% — best format',
+      'Books and resources lists: 4.0% conversion',
+      'AI and ChatGPT income: 3.9% conversion',
+      'Digital marketing agency and skills: 3.8% conversion',
+      'Middle class identity and fear: 3.3-3.5% conversion',
+      'Listicles (5 ways, 4 skills, 7 mistakes): 3.1-3.5% conversion',
+      '',
+      'AVOID THESE (real data shows low conversion despite views):',
+      'Personal travel or experience content — USA Visa video got 41K views but only 1.0% conversion',
+      'High CTR does not equal subscribers — XIRR vs CAGR had 11.4% CTR but only 1.9% conversion',
+      '',
+      'PROVEN TITLE FORMULAS:',
+      'Formula A — Community comparison: How [Wealthy Community] [Do Something Better] — only when culturally true',
+      'Formula B — Books and resources: X [Type] That [Big Outcome] e.g. 7 Books That Made Crores',
+      'Formula C — Fear and identity: Why [Middle Class/Group] [Lose/Fail/Get Trapped]',
+      'Formula D — AI income: Make Money Using [Specific Tool] by [Specific Method]',
+      'Formula E — Trust disruption: Is [Trusted Brand/System] Making You Poor?',
       '',
       'COMMUNITY ANGLE — ONLY use when there is a real, well-known truth behind the pairing:',
       'Gujaratis + Stock Market works because they genuinely have a strong investing and business culture — everyone knows this.',
@@ -1002,8 +1235,8 @@ async function generateIdeas() {
       trendingContext ? 'LIVE DATA: ' + trendingContext : '',
       userContext ? 'CREATOR NOTES: ' + userContext : '',
       '',
-      '2026 INDIA CONTEXT:',
-      'AI tools disrupting IT jobs. New tax regime confusion. SIP investors nervous. Zepto vs IT salary debate. NRI dream questioned. Rupee weak.',
+      'INDIA CONTEXT (' + currentYear + '):',
+      'AI replacing entry-level IT work. Freshers struggling for placements. New tax regime anxiety. SIP investors nervous. Dollar strengthening — Rupee under pressure. Gig economy vs IT salary debate. NRI dream questioned. US tariffs and oil prices hitting Indian costs directly.',
       '',
       'STRICT TITLE RULES:',
       'Max 8 words. Name a villain, expose a lie, or challenge a belief. No generic titles.',
@@ -1290,13 +1523,22 @@ async function fetchScript(title, type) {
       'USE when relevant: job trap, salary frustration, side income, entrepreneur mindset, financial freedom.',
       'DO NOT force into every script — only when genuinely relevant.',
       '',
+      'CURRENT INDIA REALITY — ground the script in this (as of ' + today + '):',
+      'Rupee under dollar pressure — affecting imports, petrol, NRI remittances.',
+      'IT sector layoffs continuing — freshers struggling to get placed.',
+      'New income tax regime — salaried class anxious about which regime to pick.',
+      'SIP investors nervous after stock market volatility.',
+      'AI tools disrupting jobs — ChatGPT changing which skills are safe.',
+      'Global events (US tariffs, oil prices) directly hitting Indian costs.',
+      'NOTE: Do not state specific dollar rates or market numbers unless you know the exact current figure. Say "current levels" or "right now" instead.',
+      '',
       'STRICT RULES:',
       '- Write ONLY about what the title promises.',
-      '- NO fabricated stories. No "meet Raju from Hyderabad who..." invented characters. Use real observations, real data, real principles.',
-      '- NO corporate filler: "in todays fast-paced world", "as we all know", "believe in yourself", "stay positive".',
-      '- ALWAYS end with the exact outro: "I hope you enjoy this video. Like, share, and subscribe to learn more about financial freedom. All right, thanks for joining, I will see you in the next video."',
-      '- Numbers: only use if you actually know them. Ranges fine. Vague is better than wrong.',
-      '- [show on screen: X] notes only where genuinely needed.',
+      '- NO fabricated stories. No invented characters. Use real observations and real principles.',
+      '- NO corporate filler: "in todays fast-paced world", "as we all know", "believe in yourself".',
+      '- NEVER reference a past year as if current. Say "right now", "today", "this year" — not "in 2024" or "back in 2026".',
+      '- ALWAYS end with: "I hope you enjoy this video. Like, share, and subscribe to learn more about financial freedom. All right, thanks for joining, I will see you in the next video."',
+      '- Numbers: only use if you know them. Ranges fine. Vague beats wrong.',
       '- Target: 1200-1400 words.',
     ].join('\n');
 
@@ -1435,6 +1677,8 @@ async function fetchShortScript(hook) {
       'RULES:',
       '- Total word count: 150-180 words ONLY (60 seconds at natural speaking pace)',
       '- Every sentence must earn its place — cut anything that slows momentum',
+      '- NEVER say "in 2024" or "back in 2026" — say "right now", "today", "ee rojullo"',
+      '- Today is ' + today + '. Ground in current India: Rupee pressure, AI disrupting jobs, IT layoffs.',
       '- Use specific numbers where natural: "Rs45,000 salary" not "a good salary"',
       '- Write in the Umesh hybrid style: Telugu+English mix, natural conversational flow. Use his signature terms: Bhayya, Gorrela manda, Financial Freedom, Script leni jeevitham. Short punchy sentences. End with: "I hope you enjoy this video. Like share and subscribe. All right, thanks for joining, I will see you in the next video."',
       '- End each section pulling forward — no full stops that feel like endings',
@@ -2020,6 +2264,8 @@ async function fetchTutorialScript(title, tut) {
       '- Each step must be genuinely teachable — tell them exactly what to click, type, or do',
       '- Add [show screen: what to show] notes so Umesh knows exactly what to display',
       '- Write fully in Telugu transliterated in English letters. Tutorial steps should be spoken like how Umesh would explain it to a friend sitting next to him. Simple Telugu, technical words like button, click, screen, app, tool can stay in English.',
+      '- Today is ' + today + '. Ground the WHY in current reality: AI tools are changing jobs and income opportunities right now.',
+      '- NEVER reference a past year. Say "ippudu", "ee rojullo", "right now".',
       '- When mentioning costs: always convert to INR and note if there is a free option',
       '- No fabricated student success stories. Use "imagine if you could..." instead',
       '- Each step ends with what the viewer has achieved so far — progress markers keep them watching',
@@ -2216,7 +2462,7 @@ function pipeRender() {
 function switchMainTab(tab) {
   currentTab = tab;
   var mainEl = document.querySelector('main');
-  var panels = ['panel-pipeline', 'panel-tutorials'];
+  var panels = ['panel-pipeline', 'panel-tutorials', 'panel-growth'];
 
   // Show/hide main children
   Array.from(mainEl.children).forEach(function(child) {
@@ -2228,7 +2474,7 @@ function switchMainTab(tab) {
   });
 
   // Update all tab styles
-  ['ideas', 'pipeline', 'tutorials'].forEach(function(t) {
+  ['ideas', 'pipeline', 'tutorials', 'growth'].forEach(function(t) {
     var el = document.getElementById('tab-' + t);
     if (!el) return;
     el.style.borderBottomColor = (t === tab) ? 'var(--accent)' : 'transparent';
@@ -2264,6 +2510,596 @@ saveIdea = function(text) {
 // ── INIT PIPELINE ────────────────────────────────────
 pipeLoad();
 pipeUpdateBadge();
+
+
+// ═══════════════════════════════════════════════════════
+// 100K SPRINT — Sub-tab switcher
+// ═══════════════════════════════════════════════════════
+
+function switchGTab(tab) {
+  ['tracker','titles','doubledown','series'].forEach(function(t) {
+    var btn = document.getElementById('gtab-' + t);
+    var panel = document.getElementById('gpanel-' + t);
+    if (btn)   btn.className   = 'gtab' + (t === tab ? ' active-gtab' : '');
+    if (panel) panel.style.display = t === tab ? 'block' : 'none';
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// 90-DAY TRACKER
+// ═══════════════════════════════════════════════════════
+
+
+// ═══════════════════════════════════════════════════════
+// 90-DAY SCHEDULE — 52 videos pre-planned
+// ═══════════════════════════════════════════════════════
+
+var SCHEDULE_90 = [
+  // WEEK 1 — Foundation
+  { day: 0,  title: 'How Marwaris Never Lose Money in a Crash',            tag: 'community' },
+  { day: 2,  title: 'Your Salary Is Not Growing. Your Expenses Are.',      tag: 'fear' },
+  { day: 4,  title: '5 AI Businesses You Can Start With Rs 0',             tag: 'ai' },
+  { day: 6,  title: 'What the Current Dollar Rate Means for Your Savings', tag: 'geo' },
+  // WEEK 2
+  { day: 7,  title: 'Why Middle Class Families Will Never Own a Home',     tag: 'fear' },
+  { day: 9,  title: 'How I Made Rs 50,000 Using ChatGPT This Month',       tag: 'ai' },
+  { day: 11, title: 'What NRIs Know About Saving That We Do Not',          tag: 'community' },
+  { day: 13, title: 'Is India Safe from the Next Global Banking Crisis',   tag: 'geo' },
+  // WEEK 3
+  { day: 14, title: 'Middle Class Money Trap — Part 1: The Job Lie',       tag: 'series' },
+  { day: 16, title: 'The Exact Steps to Get Your First Fiverr Client',     tag: 'ai' },
+  { day: 18, title: 'Is Your SIP Actually Making You Poorer',              tag: 'fear' },
+  { day: 20, title: 'Why Jain Businessmen Stay Rich in Every Recession',   tag: 'community' },
+  // WEEK 4
+  { day: 21, title: 'Middle Class Money Trap — Part 2: The EMI Trap',      tag: 'series' },
+  { day: 23, title: 'How US Tariffs Are Making Your Grocery Bill Bigger',  tag: 'geo' },
+  { day: 25, title: 'Telugu vs Tamils: Who Manages Money Better',          tag: 'community' },
+  { day: 27, title: 'Only These People Will Have a Job by 2028',           tag: 'fear' },
+  // WEEK 5
+  { day: 28, title: 'Middle Class Money Trap — Part 3: The Degree Lie',    tag: 'series' },
+  { day: 30, title: 'How to Charge Rs 20,000 for a Skill You Already Have',tag: 'ai' },
+  { day: 32, title: 'Why Hyderabadis Are Richer Than Vijayawadans',        tag: 'community' },
+  { day: 34, title: 'What Happens to Your IT Job When the US Slows Down',  tag: 'geo' },
+  // WEEK 6
+  { day: 35, title: 'Middle Class Money Trap — Part 4: The Show-Off Trap', tag: 'series' },
+  { day: 37, title: 'AI Tools That Are Actually Making Indians Money Now',  tag: 'ai' },
+  { day: 39, title: 'The Middle Class Is the Most Taxed Group in India',   tag: 'fear' },
+  { day: 41, title: 'How Chettiars Built Wealth Without a Job',            tag: 'community' },
+  // WEEK 7
+  { day: 42, title: 'Middle Class Money Trap — Part 5: The Retirement Lie',tag: 'series' },
+  { day: 44, title: 'From Job to Freelancer in 90 Days — Part 1',         tag: 'series' },
+  { day: 46, title: 'Why Oil Prices Always Hit the Poor Hardest in India', tag: 'geo' },
+  { day: 48, title: 'Is Your Employer Lying to You About Your Future',     tag: 'fear' },
+  // WEEK 8
+  { day: 49, title: 'From Job to Freelancer in 90 Days — Part 2',         tag: 'series' },
+  { day: 51, title: 'How to Use Claude AI to Run a Freelance Business',    tag: 'ai' },
+  { day: 53, title: 'What Recession in the US Means for Your Job in India',tag: 'geo' },
+  { day: 55, title: 'Why 95% of Telugu Freelancers Quit in Year One',      tag: 'fear' },
+  // WEEK 9
+  { day: 56, title: 'From Job to Freelancer in 90 Days — Part 3',         tag: 'series' },
+  { day: 58, title: 'Sindhi Business Secrets That Schools Never Teach',    tag: 'community' },
+  { day: 60, title: 'How to Build a Rs 1 Lakh Per Month AI Agency',        tag: 'ai' },
+  { day: 62, title: 'Is the Indian Rupee Heading to 90 Per Dollar',        tag: 'geo' },
+  // WEEK 10
+  { day: 63, title: 'From Job to Freelancer in 90 Days — Part 4',         tag: 'series' },
+  { day: 65, title: 'Why Your Parents Financial Advice Is Wrong in 2025',  tag: 'fear' },
+  { day: 67, title: 'How to Get Clients from LinkedIn Without Ads',        tag: 'ai' },
+  { day: 69, title: 'What Global Shipping Crisis Means for Indian Prices', tag: 'geo' },
+  // WEEK 11
+  { day: 70, title: 'From Job to Freelancer in 90 Days — Part 5',         tag: 'series' },
+  { day: 72, title: 'Money Mastery — Part 1: Why You Spend Before Saving', tag: 'series' },
+  { day: 74, title: 'The Digital Skills India Is Desperately Short Of',    tag: 'ai' },
+  { day: 76, title: 'How NRI Remittances Are Keeping India Afloat',        tag: 'geo' },
+  // WEEK 12
+  { day: 77, title: 'Money Mastery — Part 2: The Lifestyle Inflation Trap',tag: 'series' },
+  { day: 79, title: 'How Gujarati Business Culture Can Make You Wealthy',  tag: 'community' },
+  { day: 81, title: 'Build a Passive Income Stream Using AI in 30 Days',   tag: 'ai' },
+  { day: 83, title: 'If a Global Recession Hits India Who Survives',       tag: 'geo' },
+  // WEEK 13 — Go for the spike
+  { day: 84, title: 'Money Mastery — Part 3: The One Money Rule That Changed Everything', tag: 'series' },
+  { day: 86, title: 'The Truth About Getting Rich in India Nobody Tells You',             tag: 'fear' },
+  { day: 88, title: 'How I Would Build Rs 10 Lakh Per Month Income From Zero Today',      tag: 'ai' },
+  { day: 90, title: 'Why India Is at a Financial Crossroads Right Now',                   tag: 'geo' },
+];
+
+// Map day offset -> schedule item for fast lookup
+var scheduleByDay = {};
+SCHEDULE_90.forEach(function(item) { scheduleByDay[item.day] = item; });
+
+// Tag colors for schedule cells
+var TAG_COLORS = {
+  community: '#185FA5',
+  fear:      '#993C1D',
+  ai:        '#534AB7',
+  geo:       '#854F0B',
+  series:    '#993556'
+};
+var TAG_BG = {
+  community: 'rgba(24,95,165,.12)',
+  fear:      'rgba(153,60,29,.12)',
+  ai:        'rgba(83,74,183,.12)',
+  geo:       'rgba(133,79,11,.12)',
+  series:    'rgba(153,53,86,.12)'
+};
+
+var TRACKER_KEY = 'ue_tracker_v1';
+var trackerData = { startDate: null, videos: [] };
+
+(function initTracker() {
+  try {
+    var saved = localStorage.getItem(TRACKER_KEY);
+    if (saved) trackerData = JSON.parse(saved);
+    if (!trackerData.startDate) {
+      trackerData.startDate = new Date().toISOString().split('T')[0];
+      localStorage.setItem(TRACKER_KEY, JSON.stringify(trackerData));
+    }
+  } catch(e) { trackerData = { startDate: new Date().toISOString().split('T')[0], videos: [] }; }
+  // Set today as default date in log form when it loads
+  var dateEl = document.getElementById('tlog-date');
+  if (dateEl) dateEl.value = new Date().toISOString().split('T')[0];
+})();
+
+function trackerSave() {
+  localStorage.setItem(TRACKER_KEY, JSON.stringify(trackerData));
+}
+
+function trackerResetSchedule() {
+  if (!confirm('Reset the 90-day start date to today? Your logged videos will be kept.')) return;
+  trackerData.startDate = new Date().toISOString().split('T')[0];
+  trackerSave();
+  trackerRender();
+  toast('Schedule reset to today');
+}
+
+function trackerAddToday() {
+  var form = document.getElementById('tracker-log-form');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  document.getElementById('tlog-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('tlog-title').value = '';
+  document.getElementById('tlog-subs').value = '';
+  document.getElementById('tlog-views').value = '';
+}
+
+function trackerSaveLog() {
+  var title = document.getElementById('tlog-title').value.trim();
+  var date  = document.getElementById('tlog-date').value;
+  var subs  = parseInt(document.getElementById('tlog-subs').value) || 0;
+  var views = parseInt(document.getElementById('tlog-views').value) || 0;
+  if (!title || !date) { toast('Enter title and date'); return; }
+  trackerData.videos.push({ title: title, date: date, subs: subs, views: views });
+  trackerSave();
+  document.getElementById('tracker-log-form').style.display = 'none';
+  trackerRender();
+  toast('Video logged!');
+}
+
+function trackerRender() {
+  var start = new Date(trackerData.startDate);
+  var today = new Date();
+  var currentSubs = parseInt(document.getElementById('tracker-current-subs').value) || 12000;
+  var target = 100000;
+  var needed = target - currentSubs;
+  var pct = Math.min(100, Math.round((currentSubs / target) * 100));
+
+  // Progress bar
+  document.getElementById('tracker-progress-bar').style.width = pct + '%';
+  document.getElementById('tracker-pct').textContent = pct + '% of 100K';
+  document.getElementById('tracker-needed').textContent = needed.toLocaleString('en-IN') + ' subs to go';
+
+  // Build 90-day grid
+  var grid = document.getElementById('tracker-grid');
+  grid.innerHTML = '';
+  var publishedDates = {};
+  trackerData.videos.forEach(function(v) { publishedDates[v.date] = v; });
+
+  var totalPublished = 0;
+  for (var d = 0; d < 90; d++) {
+    var date = new Date(start);
+    date.setDate(start.getDate() + d);
+    var dateStr = date.toISOString().split('T')[0];
+    var isToday = dateStr === today.toISOString().split('T')[0];
+    var isPast  = date < today;
+    var vid     = publishedDates[dateStr];
+
+    var scheduled = scheduleByDay[d];
+    var cell = document.createElement('div');
+    var classes = 'tracker-day';
+    if (vid)              classes += ' published';
+    else if (scheduled)   classes += ' scheduled';
+    if (isToday && !vid)  classes += ' today';
+    cell.className = classes;
+
+    // Tooltip: always show scheduled title if available
+    var tooltipText = (d+1) + ' — ' + date.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    if (vid)       tooltipText += ': ' + vid.title + ' (published)';
+    else if (scheduled) tooltipText += ': ' + scheduled.title;
+    cell.title = tooltipText;
+
+    if (vid) {
+      cell.innerHTML = '<span style="font-size:10px">&#10003;</span>';
+      totalPublished++;
+    } else if (scheduled) {
+      // Show day number + colour dot for the tag
+      var tagColor = TAG_COLORS[scheduled.tag] || '#888';
+      var tagBg    = TAG_BG[scheduled.tag]    || 'rgba(128,128,128,.12)';
+      cell.style.background = tagBg;
+      cell.style.borderColor = tagColor;
+      cell.innerHTML = '<span style="font-size:9px;color:' + tagColor + ';font-weight:600">' + (d+1) + '</span>';
+    } else {
+      cell.textContent = d + 1;
+    }
+
+    // Click to log this specific day
+    (function(dayOffset, scheduledItem) {
+      cell.addEventListener('click', function() {
+        var logDate = new Date(start);
+        logDate.setDate(start.getDate() + dayOffset);
+        document.getElementById('tlog-date').value = logDate.toISOString().split('T')[0];
+        document.getElementById('tlog-title').value = scheduledItem ? scheduledItem.title : '';
+        document.getElementById('tlog-subs').value = '';
+        document.getElementById('tlog-views').value = '';
+        document.getElementById('tracker-log-form').style.display = 'block';
+        document.getElementById('tracker-log-form').scrollIntoView({behavior:'smooth'});
+      });
+    })(d, scheduled);
+
+    grid.appendChild(cell);
+  }
+
+  // Stats
+  var daysElapsed = Math.max(1, Math.floor((today - start) / 86400000));
+  var pace = Math.round(totalPublished / daysElapsed * 7);
+  document.getElementById('tracker-stats').textContent =
+    totalPublished + ' published · ' + pace + '/week pace · Day ' + Math.min(90, daysElapsed) + ' of 90';
+
+  // Video list
+  var list = document.getElementById('tracker-video-list');
+  var sorted = trackerData.videos.slice().sort(function(a,b){ return b.subs - a.subs; });
+  if (!sorted.length) { list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px">No videos logged yet. Click + Log Video to start.</div>'; return; }
+
+  var totalSubs = sorted.reduce(function(a,v){ return a + (v.subs||0); }, 0);
+  list.innerHTML = '<div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:\'DM Mono\',monospace;margin-bottom:8px">Logged Videos — ' + totalSubs.toLocaleString('en-IN') + ' total subs gained</div>'
+    + sorted.map(function(v) {
+      var rate = v.views ? ((v.subs/v.views)*100).toFixed(1) : '—';
+      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:12px">'
+        + '<div style="flex:1;font-size:13px;font-weight:500">' + escHtml(v.title) + '</div>'
+        + '<div style="display:flex;gap:12px;flex-shrink:0;flex-wrap:wrap">'
+        + '<span style="font-size:11px;font-family:\'DM Mono\',monospace;color:var(--accent)">+' + (v.subs||0) + ' subs</span>'
+        + '<span style="font-size:11px;font-family:\'DM Mono\',monospace;color:var(--muted)">' + (v.views||0).toLocaleString('en-IN') + ' views</span>'
+        + '<span style="font-size:11px;font-family:\'DM Mono\',monospace;color:var(--muted)">' + rate + '% conv</span>'
+        + '<span style="font-size:10px;color:var(--muted2)">' + v.date + '</span>'
+        + '</div></div>';
+    }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// A/B TITLE TESTER
+// ═══════════════════════════════════════════════════════
+
+async function generateABTitles() {
+  var topic = document.getElementById('ab-topic').value.trim();
+  var errEl = document.getElementById('ab-err');
+  var btn   = document.getElementById('ab-btn');
+  var results = document.getElementById('ab-results');
+  if (!topic) { errEl.textContent = 'Enter your video topic first'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Generating...';
+  results.style.display = 'none';
+
+  var prompt = [
+    'Generate exactly 3 title options for a Telugu YouTube video by Umesh Emmadishetty.',
+    'Video topic: ' + topic,
+    '',
+    'Use these proven formulas (one per title, pick the 3 most natural fits):',
+    'Formula A — Community comparison: "How [Wealthy Group] [Do Better]" — only use if a real cultural truth exists',
+    'Formula B — Fear/loss: "Why [Identity Group] [Lose/Fail/Get Trapped]"',
+    'Formula C — Urgency/survival: "Only These People [Win] By [Year]"',
+    'Formula D — Status reframe: "[Aspiration] is the New [Safe Thing]"',
+    'Formula E — Trust disruption: "Is [Trusted Brand/System] Making You Poor?"',
+    '',
+    'Rules: max 8 words per title. Must make immediate sense to a Telugu viewer. No generic titles. No forced community angle unless it is genuinely true for this topic.',
+    '',
+    'For each title also give: which formula, why this specific title will convert, and a thumbnail text (3-5 bold words for the thumbnail graphic).',
+    '',
+    'Respond ONLY in valid JSON:',
+    '{"titles":[{"title":"...","formula":"A/B/C/D/E","formulaName":"...","whyItConverts":"...","thumbnailText":"..."}]}'
+  ].join('\n');
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:800, messages:[{role:'user',content:prompt}]})
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error ? data.error.message : 'API error');
+    var parsed = safeParseJSON(data.content[0].text);
+    renderABResults(parsed.titles || [], topic);
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'GENERATE 3 TITLE OPTIONS';
+  }
+}
+
+function renderABResults(titles, topic) {
+  var formulaColors = {A:'formula-a', B:'formula-b', C:'formula-c', D:'formula-d', E:'formula-e'};
+  var results = document.getElementById('ab-results');
+  var html = '<div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:\'DM Mono\',monospace;margin-bottom:12px">3 Title Options for: ' + escHtml(topic.slice(0,50)) + '</div>';
+
+  titles.forEach(function(t, i) {
+    var cls = formulaColors[t.formula] || 'formula-a';
+    html += '<div class="ab-card ' + cls + '">'
+      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px">'
+      + '<div style="font-size:15px;font-weight:700;line-height:1.3;flex:1">' + escHtml(t.title) + '</div>'
+      + '<span style="font-size:9px;font-family:\'DM Mono\',monospace;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;white-space:nowrap;flex-shrink:0">Formula ' + escHtml(t.formula) + '</span>'
+      + '</div>'
+      + '<div style="background:var(--surface2);border-radius:6px;padding:8px 10px;margin-bottom:8px">'
+      + '<div style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:\'DM Mono\',monospace;margin-bottom:3px">Thumbnail Text</div>'
+      + '<div style="font-size:14px;font-weight:800;letter-spacing:1px;color:var(--accent)">' + escHtml(t.thumbnailText || '') + '</div>'
+      + '</div>'
+      + '<div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5"><b style="color:rgba(255,255,255,.5)">Why it converts: </b>' + escHtml(t.whyItConverts || '') + '</div>'
+      + '<div style="display:flex;gap:6px">'
+      + '<button class="chip-btn script" onclick="copyRaw(' + JSON.stringify(t.title) + ')">Copy Title</button>'
+      + '<button class="chip-btn" style="color:#60a5fa;border-color:rgba(96,165,250,.3)" onclick="pipeAddIdea(' + JSON.stringify(t.title) + ', \'growth\')">+ Pipeline</button>'
+      + '</div></div>';
+  });
+
+  results.innerHTML = html;
+  results.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════
+// DOUBLE DOWN
+// ═══════════════════════════════════════════════════════
+
+async function generateDoubleDown() {
+  var title = document.getElementById('dd-title').value.trim();
+  var subs  = document.getElementById('dd-subs').value;
+  var views = document.getElementById('dd-views').value;
+  var errEl = document.getElementById('dd-err');
+  var btn   = document.getElementById('dd-btn');
+  if (!title) { errEl.textContent = 'Enter the video title'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Analysing...';
+  document.getElementById('dd-results').style.display = 'none';
+
+  var convRate = (subs && views) ? ((parseInt(subs)/parseInt(views))*100).toFixed(1) + '% conversion' : '';
+
+  var prompt = [
+    'Umesh Emmadishetty (Telugu YouTube, 12K subs, financial freedom + digital entrepreneurship) had a video perform well:',
+    '"' + title + '"' + (convRate ? ' — ' + convRate + ', ' + subs + ' subscribers gained' : ''),
+    '',
+    'Generate 8 follow-up video ideas that squeeze maximum value from this success.',
+    'Each idea must be a genuinely different angle — not a repeat. Think: deeper dive, opposite view, specific subset, part 2, comparison, common mistake, advanced version, beginner version.',
+    '',
+    'For each idea:',
+    '- title: compelling, max 8 words, uses one of his proven formulas',
+    '- angle: what makes this different from the original video',
+    '- connection: one sentence on why this follow-up will pull back viewers of the original',
+    '',
+    'IMPORTANT: The 8 ideas must make logical sense as follow-ups. No random tangents. Each must feel like: "of course, after watching the first video, I would want to watch this next."',
+    '',
+    'Respond ONLY in valid JSON: {"followups":[{"title":"...","angle":"...","connection":"..."}]}'
+  ].join('\n');
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1200, messages:[{role:'user',content:prompt}]})
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error ? data.error.message : 'API error');
+    var parsed = safeParseJSON(data.content[0].text);
+    renderDoubleDown(parsed.followups || [], title);
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'FIND 8 FOLLOW-UP ANGLES';
+  }
+}
+
+function renderDoubleDown(ideas, originalTitle) {
+  var html = '<div style="background:rgba(255,107,43,.06);border:1px solid rgba(255,107,43,.15);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--muted)">'
+    + '<b style="color:var(--accent)">Original:</b> ' + escHtml(originalTitle) + ' — 8 follow-up angles below'
+    + '</div>';
+
+  ideas.forEach(function(idea, i) {
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:13px 15px;margin-bottom:8px">'
+      + '<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">'
+      + '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;color:var(--muted2);line-height:1;flex-shrink:0">' + String(i+1).padStart(2,'0') + '</div>'
+      + '<div style="flex:1">'
+      + '<div style="font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px">' + escHtml(idea.title) + '</div>'
+      + '<div style="font-size:11px;color:var(--muted);margin-bottom:3px"><b style="color:rgba(255,255,255,.4)">Angle: </b>' + escHtml(idea.angle||'') + '</div>'
+      + '<div style="font-size:11px;color:var(--muted)"><b style="color:rgba(255,255,255,.4)">Why viewers return: </b>' + escHtml(idea.connection||'') + '</div>'
+      + '</div></div>'
+      + '<div style="display:flex;gap:6px">'
+      + '<button class="chip-btn" onclick="copyRaw(' + JSON.stringify(idea.title) + ')">Copy</button>'
+      + '<button class="chip-btn" style="color:#60a5fa;border-color:rgba(96,165,250,.3)" onclick="pipeAddIdea(' + JSON.stringify(idea.title) + ', \'growth\')">+ Pipeline</button>'
+      + '<button class="chip-btn script" onclick="openScript(' + JSON.stringify(idea.title) + ', \'growth\')">Write Script</button>'
+      + '</div></div>';
+  });
+
+  var r = document.getElementById('dd-results');
+  r.innerHTML = html; r.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════
+// SERIES PLANNER
+// ═══════════════════════════════════════════════════════
+
+async function generateSeries() {
+  var topic = document.getElementById('series-topic').value.trim();
+  var errEl = document.getElementById('series-err');
+  var btn   = document.getElementById('series-btn');
+  if (!topic) { errEl.textContent = 'Enter a topic first'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Planning...';
+  document.getElementById('series-results').style.display = 'none';
+
+  var prompt = [
+    'Plan a 5-part YouTube video series for Umesh Emmadishetty (Telugu creator, 12K subs, financial freedom + digital income).',
+    'Series topic or anchor video: "' + topic + '"',
+    '',
+    'Create a 5-part series where each video builds on the previous. The series should:',
+    '- Start with a wide viral hook (part 1 catches new viewers)',
+    '- Go deeper with each part (rewards subscribers who watch the whole series)',
+    '- End with a clear action or transformation',
+    '',
+    'For the overall series: seriesName, seriesHook (one line why someone would watch all 5)',
+    'For each part: title (max 8 words), what it covers, cliffhanger (what makes them click the next part), estimatedSubs (rough subscriber potential based on Umesh channel data: his best videos get 100-600 subs)',
+    '',
+    'Respond ONLY in valid JSON: {"seriesName":"...","seriesHook":"...","parts":[{"partNumber":1,"title":"...","covers":"...","cliffhanger":"...","estimatedSubs":0}]}'
+  ].join('\n');
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{role:'user',content:prompt}]})
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error ? data.error.message : 'API error');
+    var parsed = safeParseJSON(data.content[0].text);
+    renderSeries(parsed);
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'PLAN A 5-PART SERIES';
+  }
+}
+
+function renderSeries(data) {
+  var parts = data.parts || [];
+  var totalSubs = parts.reduce(function(a,p){ return a + (p.estimatedSubs||0); }, 0);
+  var html = '<div style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">'
+    + '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--purple);margin-bottom:4px">' + escHtml(data.seriesName||'Series') + '</div>'
+    + '<div style="font-size:12px;color:var(--muted);margin-bottom:6px">' + escHtml(data.seriesHook||'') + '</div>'
+    + '<div style="font-size:11px;font-family:\'DM Mono\',monospace;color:var(--purple)">Estimated series total: ~' + totalSubs + ' subs if all 5 perform</div>'
+    + '</div>';
+
+  parts.forEach(function(p) {
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:13px 15px;margin-bottom:8px;display:flex;gap:12px">'
+      + '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:var(--purple);line-height:1;flex-shrink:0;opacity:.6">P' + p.partNumber + '</div>'
+      + '<div style="flex:1">'
+      + '<div style="font-size:14px;font-weight:600;margin-bottom:5px">' + escHtml(p.title) + '</div>'
+      + '<div style="font-size:11px;color:var(--muted);margin-bottom:4px;line-height:1.5">' + escHtml(p.covers||'') + '</div>'
+      + '<div style="font-size:11px;color:var(--accent);font-style:italic">Next: ' + escHtml(p.cliffhanger||'') + '</div>'
+      + '<div style="margin-top:8px;display:flex;gap:6px">'
+      + '<button class="chip-btn" onclick="copyRaw(' + JSON.stringify(p.title) + ')">Copy</button>'
+      + '<button class="chip-btn" style="color:#60a5fa;border-color:rgba(96,165,250,.3)" onclick="pipeAddIdea(' + JSON.stringify(p.title) + ', \'growth\')">+ Pipeline</button>'
+      + '<button class="chip-btn script" onclick="openScript(' + JSON.stringify(p.title) + ', \'growth\')">Write Script</button>'
+      + '</div></div>'
+      + '<div style="font-size:11px;font-family:\'DM Mono\',monospace;color:var(--growth);flex-shrink:0;text-align:right">~' + (p.estimatedSubs||0) + '<br><span style="font-size:9px;color:var(--muted)">subs</span></div>'
+      + '</div>';
+  });
+
+  var r = document.getElementById('series-results');
+  r.innerHTML = html; r.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════
+// HOOK SCORER
+// ═══════════════════════════════════════════════════════
+
+async function scoreHook() {
+  var hook = document.getElementById('hook-text').value.trim();
+  var errEl = document.getElementById('hook-err');
+  var btn   = document.getElementById('hook-btn');
+  if (!hook) { errEl.textContent = 'Paste your hook first'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Scoring...';
+  document.getElementById('hook-results').style.display = 'none';
+
+  var prompt = [
+    'Score this YouTube video opening hook for Umesh Emmadishetty (Telugu creator, financial freedom + digital income niche):',
+    '',
+    '"' + hook + '"',
+    '',
+    'Score it on these 5 criteria, each 0-10:',
+    '1. Pattern interrupt — does it immediately break the viewer out of scroll mode?',
+    '2. Speaks to pain — does the viewer feel "this is about ME"?',
+    '3. Creates knowledge gap — does it make them need to keep watching to find out something?',
+    '4. No fluff — zero wasted words, no greeting, no "in this video I will show you"?',
+    '5. Telugu audience fit — does the energy, language, and reference match Umesh audience?',
+    '',
+    'Also give: totalScore (sum of 5), grade (A/B/C/D/F), verdict (one punchy sentence), rewrite (an improved version of the hook).',
+    '',
+    'Respond ONLY in valid JSON: {"scores":{"patternInterrupt":0,"speaksToPain":0,"knowledgeGap":0,"noFluff":0,"audienceFit":0},"totalScore":0,"grade":"...","verdict":"...","rewrite":"..."}'
+  ].join('\n');
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:600, messages:[{role:'user',content:prompt}]})
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error ? data.error.message : 'API error');
+    var parsed = safeParseJSON(data.content[0].text);
+    renderHookScore(parsed, hook);
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'SCORE MY HOOK';
+  }
+}
+
+function renderHookScore(data, originalHook) {
+  var scores = data.scores || {};
+  var total  = data.totalScore || 0;
+  var grade  = data.grade || '?';
+  var gradeColor = {A:'#22c55e', B:'#a3e635', C:'#f59e0b', D:'#f97316', F:'#ef4444'}[grade] || '#666';
+  var scoreItems = [
+    { key:'patternInterrupt', label:'Pattern Interrupt' },
+    { key:'speaksToPain',     label:'Speaks to Pain'    },
+    { key:'knowledgeGap',     label:'Knowledge Gap'     },
+    { key:'noFluff',          label:'No Fluff'          },
+    { key:'audienceFit',      label:'Telugu Audience Fit'},
+  ];
+
+  var html = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px">'
+    // Grade + total
+    + '<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">'
+    + '<div style="width:60px;height:60px;border-radius:50%;border:3px solid ' + gradeColor + ';display:flex;align-items:center;justify-content:center;font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:' + gradeColor + ';flex-shrink:0">' + escHtml(grade) + '</div>'
+    + '<div><div style="font-size:18px;font-weight:700;color:' + gradeColor + '">' + total + '/50</div>'
+    + '<div style="font-size:12px;color:var(--muted)">' + escHtml(data.verdict || '') + '</div></div>'
+    + '</div>'
+    // Score bars
+    + scoreItems.map(function(item) {
+        var val = scores[item.key] || 0;
+        var fillColor = val >= 8 ? '#22c55e' : val >= 5 ? '#f59e0b' : '#ef4444';
+        return '<div class="score-row">'
+          + '<div class="score-label">' + item.label + '</div>'
+          + '<div style="flex:1"><div class="score-bar"><div class="score-fill" style="width:' + (val*10) + '%;background:' + fillColor + '"></div></div></div>'
+          + '<div class="score-val" style="color:' + fillColor + '">' + val + '</div>'
+          + '</div>';
+      }).join('')
+    + '</div>';
+
+  // Rewrite
+  if (data.rewrite) {
+    html += '<div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:14px">'
+      + '<div style="font-size:10px;color:#22c55e;letter-spacing:1px;text-transform:uppercase;font-family:\'DM Mono\',monospace;margin-bottom:8px">Improved Version</div>'
+      + '<div style="font-size:14px;color:var(--text);font-style:italic;line-height:1.6;margin-bottom:10px">' + escHtml(data.rewrite) + '</div>'
+      + '<button class="chip-btn" onclick="copyRaw(' + JSON.stringify(data.rewrite) + ')">Copy Improved Hook</button>'
+      + '</div>';
+  }
+
+  var r = document.getElementById('hook-results');
+  r.innerHTML = html; r.style.display = 'block';
+}
+
+// Init tracker render when growth tab opens
+var _origSwitchMainTab = switchMainTab;
+switchMainTab = function(tab) {
+  _origSwitchMainTab(tab);
+  if (tab === 'growth') {
+    trackerRender();
+    switchGTab('tracker');
+  }
+};
 
 </script>
 </body>
