@@ -1094,21 +1094,21 @@ async function generateIdeas() {
       // Run up to 3 parallel searches for news/stock modes
       const parallelPrompts = queries.map(function(q) {
         if (isStockMode) {
-          return 'Search web for: ' + q + '\nReturn exact numbers: index level, points change, % change, top 3 gaining stocks with price & % gain, top 3 losing stocks with price & % loss. Today is ' + today + '. Numbers only, no fluff.';
+          return 'Search web for: ' + q + '\nReturn: index level, % change today, top 2 gainers, top 2 losers. Numbers only. Today is ' + today + '.';
         } else if (isGeoMode) {
           var geoInstr = q.indexOf('USD INR') !== -1 || q.indexOf('dollar') !== -1 || q.indexOf('exchange rate') !== -1
-            ? 'Search web for: ' + q + '\nReturn: (1) exact USD/INR rate right now, (2) how much it has moved in the last 7 days, (3) what is driving the move, (4) what this means for Indians — NRI remittances, import costs, petrol prices, IT sector earnings. Give actual numbers. Today is ' + today + '.'
+            ? 'Search web for: ' + q + '\nReturn: exact USD/INR rate now, 7-day change, main driver, India impact in one line. Today is ' + today + '.'
             : q.indexOf('oil') !== -1 || q.indexOf('crude') !== -1
-            ? 'Search web for: ' + q + '\nReturn: (1) exact Brent crude price per barrel right now, (2) direction and % change this week, (3) what is causing it, (4) exact impact on India — petrol price, transport, inflation. Numbers only. Today is ' + today + '.'
-            : 'Search web for: ' + q + '\nReturn the top 5 most significant global events right now affecting India. For each: what is happening, countries involved, specific India impact (rupee, oil, IT, exports, jobs). Real names, real numbers. Today is ' + today + '.';
+            ? 'Search web for: ' + q + '\nReturn: Brent crude price now, % change this week, cause, India petrol impact. Numbers only. Today is ' + today + '.'
+            : 'Search web for: ' + q + '\nReturn top 3 global events affecting India right now. One line each with India impact. Today is ' + today + '.';
           return geoInstr;
         } else {
-          return 'Search web for: ' + q + '\nReturn top 5 actual news headlines with 1-line summaries from today or this week. Focus on India business, money, jobs, economy. Today is ' + today + '. Be specific - real company names, real numbers.';
+          return 'Search web for: ' + q + '\nReturn top 3 news headlines from today or this week. One line each. India business, money, jobs only. Today is ' + today + '.';
         }
       });
 
       // Sequential searches with delay to stay under 30K tokens/min rate limit
-      var maxSearches = Math.min(parallelPrompts.length, isNewsMode ? 2 : 1);
+      var maxSearches = 1; // Always 1 search to stay well under rate limit
       loadingMsg.textContent = isStockMode ? 'Fetching live market data...' : 'Searching live India news...';
       for (var qi = 0; qi < maxSearches; qi++) {
         if (qi > 0) await sleep(1200);
@@ -1116,7 +1116,7 @@ async function generateIdeas() {
           var sqRes = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: { 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' },
-            body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:300, tools:[{"type":"web_search_20250305","name":"web_search"}], messages:[{role:'user',content:parallelPrompts[qi]}] })
+            body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:200, tools:[{"type":"web_search_20250305","name":"web_search"}], messages:[{role:'user',content:parallelPrompts[qi]}] })
           });
           var sqData = await sqRes.json();
           if (sqData.content) sqData.content.forEach(function(block){ if (block.type==='text') trendingContext += block.text + '\n\n'; });
@@ -1129,6 +1129,13 @@ async function generateIdeas() {
     }
 
     trendingContext = trendingContext.trim();
+
+    // Rate limit protection: wait between search and ideas call
+    // Both calls share the same 60s token window — space them out
+    if (needsMultiSearch && trendingContext) {
+      loadingMsg.textContent = 'Got live data. Generating ideas in 8 seconds...';
+      await sleep(8000);
+    }
     if (!trendingContext) {
       if (needsMultiSearch) {
         trendingContext = 'No live data retrieved.';
@@ -1256,7 +1263,7 @@ async function generateIdeas() {
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1800, messages:[{role:'user',content:ideasPrompt}]})
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1400, messages:[{role:'user',content:ideasPrompt}]})
     });
 
     const ideasData = await ideasRes.json();
