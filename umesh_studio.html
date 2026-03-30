@@ -471,16 +471,10 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
       </div>
     </div>
     <div class="input-group" style="margin-bottom:12px">
-      <label>Today's Context (optional)</label>
-      <textarea id="contextInput" placeholder="Paste today's news, a topic, or what's on your mind... e.g. 'Sensex fell 1500 points' or 'want to talk about why people quit SIPs'"></textarea>
+      <label>Today's Context — paste any news or topic here</label>
+      <textarea id="contextInput" placeholder="Type today's context here — e.g. 'Petrol bunks closed in Hyderabad', 'Dollar at 87 rupees', 'Sensex fell 1500 points', 'IT layoffs at TCS'... The more specific, the better the ideas."></textarea>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer" onclick="document.getElementById('liveTrendChk').click()">
-      <input type="checkbox" id="liveTrendChk" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0" onclick="event.stopPropagation()">
-      <div>
-        <div style="font-size:13px;font-weight:600;color:var(--text)">Fetch live trending topics <span style="font-size:10px;color:var(--accent);background:rgba(255,107,43,0.12);border:1px solid rgba(255,107,43,0.25);padding:2px 7px;border-radius:4px;font-weight:700;letter-spacing:0.5px;margin-left:4px">LIVE SEARCH</span></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px">When checked, searches the web for what's trending right now. Uses extra API tokens. Leave unchecked for evergreen ideas.</div>
-      </div>
-    </div>
+
     <div id="pipelineStatusBar" style="display:none;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.15);border-radius:7px;font-size:11px;color:#93c5fd">
       <span>🔒</span>
       <span id="pipelineStatusText"></span>
@@ -923,6 +917,7 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
     <p>Enter your Anthropic API key to power idea generation and script writing. Get yours at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>. Stored locally on your device only.</p>
     <input id="apiKeyInput" type="password" placeholder="sk-ant-api03-..." />
     <div class="api-err" id="apiErr"></div>
+
     <button class="api-save" onclick="saveApiKey()">SAVE & CONTINUE</button>
   </div>
 </div>
@@ -943,6 +938,8 @@ function saveApiKey() {
   if (!v.startsWith('sk-ant-')) { document.getElementById('apiErr').textContent = 'Key must start with sk-ant-...'; return; }
   apiKey = v;
   localStorage.setItem('ue_api_key', apiKey);
+  var newsKey = document.getElementById('newsApiKeyInput').value.trim();
+  if (newsKey) { localStorage.setItem('ue_newsapi_key', newsKey); }
   document.getElementById('api-modal').style.display = 'none';
 }
 
@@ -1018,9 +1015,15 @@ function renderSaved() {
     throw new Error('Response was cut off. Try reducing ideas count or try again.');
   }
 
+var _ideasRunning = false;
+// Reset on load in case previous session left it stuck
+window.addEventListener('load', function(){ _ideasRunning = false; });
 async function generateIdeas() {
   // Only run when the Ideas tab is active
   if (currentTab !== 'ideas') { return; }
+  // Prevent double-fire
+  if (_ideasRunning) { return; }
+  _ideasRunning = true;
 
   const btn = document.getElementById('genBtn');
   const loading = document.getElementById('loading');
@@ -1043,115 +1046,28 @@ async function generateIdeas() {
 
   // Build multi-search strategy per focus
   // For 'news' and 'stock' we run multiple targeted searches for real-time data
-  const searchStrategies = {
-    geo: [
-      'USD INR dollar rupee exchange rate today ' + todayShort,
-      'global geopolitical crisis India economy impact ' + todayShort,
-      'crude oil price today India impact ' + todayShort
-    ],
-    news: [
-      'India business economy news today ' + todayShort,
-      'India personal finance stock market news today ' + todayShort,
-      'India startup layoff salary job news today ' + todayShort
-    ],
-    stock: [
-      'Sensex Nifty live today ' + todayShort + ' points',
-      'USD INR exchange rate today ' + todayShort,
-      'top gaining losing stocks NSE BSE today ' + todayShort
-    ],
-    mixed:   ['India personal finance trending ' + currentYear, 'middle class wealth India news ' + currentYear],
-    growth:  ['viral YouTube India money mindset ' + currentYear, 'what worries Indian middle class ' + currentYear],
-    revenue: ['AI freelancing digital income India ' + currentYear, 'online business India opportunities ' + currentYear],
-    mindset: ['middle class India salary inflation ' + currentYear, 'wealth gap India urban ' + currentYear],
-    digital: ['AI jobs impact India professionals ' + currentYear, 'tech layoffs India ' + currentYear + ' ChatGPT'],
-    ai_income: ['AI tools make money online India ' + currentYear + ' practical', 'ChatGPT freelancing income India rupees real examples'],
-    money: ['personal finance money management India ' + currentYear, 'Indians saving investing money habits ' + currentYear]
-  };
 
-  const queries = searchStrategies[focus] || searchStrategies['mixed'];
-  const isNewsMode = focus === 'news';
-  const isStockMode = focus === 'stock';
-  const isGeoMode = focus === 'geo';
-  const liveTrendChecked = document.getElementById('liveTrendChk') && document.getElementById('liveTrendChk').checked;
+
+
+
+
   // Only do live search if checkbox is ticked, OR if news/stock mode (always needs live data)
-  const needsMultiSearch = liveTrendChecked || isNewsMode || isStockMode || isGeoMode;
+
 
   try {
     // ── STEP 1: Fetch live data ────────────────────────────────────────────
-    loadingMsg.textContent = isNewsMode
-      ? 'Fetching today\'s top news from India...'
-      : isStockMode
-        ? 'Fetching live market data: Sensex, Nifty, top movers...'
-        : isGeoMode
-          ? 'Fetching live geopolitical and economic news...'
-          : needsMultiSearch
-            ? 'Fetching live trending topics...'
-            : 'Generating evergreen ideas for your channel...';
+    loadingMsg.textContent = 'Generating ideas...';
 
     let trendingContext = '';
 
-    if (needsMultiSearch) {  // only search if checkbox ticked or news/stock mode
-      // Run up to 3 parallel searches for news/stock modes
-      const parallelPrompts = queries.map(function(q) {
-        if (isStockMode) {
-          return 'Search web for: ' + q + '\nReturn: index level, % change today, top 2 gainers, top 2 losers. Numbers only. Today is ' + today + '.';
-        } else if (isGeoMode) {
-          var geoInstr = q.indexOf('USD INR') !== -1 || q.indexOf('dollar') !== -1 || q.indexOf('exchange rate') !== -1
-            ? 'Search web for: ' + q + '\nReturn: exact USD/INR rate now, 7-day change, main driver, India impact in one line. Today is ' + today + '.'
-            : q.indexOf('oil') !== -1 || q.indexOf('crude') !== -1
-            ? 'Search web for: ' + q + '\nReturn: Brent crude price now, % change this week, cause, India petrol impact. Numbers only. Today is ' + today + '.'
-            : 'Search web for: ' + q + '\nReturn top 3 global events affecting India right now. One line each with India impact. Today is ' + today + '.';
-          return geoInstr;
-        } else {
-          return 'Search web for: ' + q + '\nReturn top 3 news headlines from today or this week. One line each. India business, money, jobs only. Today is ' + today + '.';
-        }
-      });
+    // No live search — user types today's context in the box above
+    trendingContext = '';
 
-      // Sequential searches with delay to stay under 30K tokens/min rate limit
-      var maxSearches = 1; // Always 1 search to stay well under rate limit
-      loadingMsg.textContent = isStockMode ? 'Fetching live market data...' : 'Searching live India news...';
-      for (var qi = 0; qi < maxSearches; qi++) {
-        if (qi > 0) await sleep(1200);
-        try {
-          var sqRes = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' },
-            body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:200, tools:[{"type":"web_search_20250305","name":"web_search"}], messages:[{role:'user',content:parallelPrompts[qi]}] })
-          });
-          var sqData = await sqRes.json();
-          if (sqData.content) sqData.content.forEach(function(block){ if (block.type==='text') trendingContext += block.text + '\n\n'; });
-        } catch(sqErr) { /* skip failed search, continue */ }
-      }
 
-    } else {
-      // Checkbox unchecked — skip ALL live searches
-      trendingContext = '';
-    }
-
-    trendingContext = trendingContext.trim();
-
-    // Rate limit protection: wait between search and ideas call
-    // Both calls share the same 60s token window — space them out
-    if (needsMultiSearch && trendingContext) {
-      loadingMsg.textContent = 'Got live data. Generating ideas in 8 seconds...';
-      await sleep(8000);
-    }
-    if (!trendingContext) {
-      if (needsMultiSearch) {
-        trendingContext = 'No live data retrieved.';
-      } else {
-        // Evergreen mode - inject static 2026 India context instead of live search
-        trendingContext = currentYear + ' INDIA: AI tools disrupting IT jobs and replacing entry-level work. Freshers struggling to get placed. New income tax regime has salaried class anxious. SIP investors nervous. Dollar strengthening — Rupee under pressure. Gig economy pay being compared to IT salaries. NRI dream questioned. YouTube and digital income now accepted career path in Telugu families. US tariffs and global tensions hitting Indian exports and costs.';
-      }
-    }
     lastTrendingContext = trendingContext;
 
     // ── STEP 2: Generate ideas grounded in live data ──────────────────────
-    loadingMsg.textContent = isNewsMode
-      ? 'Generating video ideas from today\'s headlines...'
-      : isStockMode
-        ? 'Generating ideas from live market data...'
-        : 'Step 2/2: Generating ideas grounded in today context...';
+    loadingMsg.textContent = 'Building ideas from your context...';
 
     var focusModeMap = {
       news: 'REACT TO NEWS: For each news item in the live data, generate a video idea showing what it means for the audience — their money, job, business. Be specific to the actual news. Urgent and timely.',
@@ -1189,100 +1105,62 @@ async function generateIdeas() {
 
     const ideasPrompt = [
       pipelineExclude,
-      'You are a content strategist for Umesh Emmadishetty, Telugu YouTube creator. TODAY IS ' + today + '.',
-      '',
-      'REAL CHANNEL DATA (from lifetime YouTube analytics — 433 videos, 538K views, 12,770 subs):',
-      '',
-      'TOP PERFORMING VIDEOS BY SUBSCRIBERS:',
-      '1. Save Yourself From Middle Class Trap — 3,308 subs, 94,835 views, 3.5% conv, 5.4% CTR',
-      '2. 7 Marketing Books That Made Crores For Me — 1,383 subs, 34,266 views, 4.0% conv, 5.5% CTR',
-      '3. How Gujaratis Make More Profits in Stock Market — 599 subs, 14,274 views, 4.2% conv, 4.9% CTR',
-      '4. Top 5 Financial Mistakes To Avoid In Your 30s — 496 subs, 16,071 views, 3.1% conv, 4.4% CTR',
-      '5. How Society Brainwashed You About Money — 422 subs, 12,706 views, 3.3% conv, 5.8% CTR',
-      '6. Why Middle-Class Families Lose Money in Global Crises — 207 subs, 4,313 views, 4.8% conv',
-      '7. Make Money Using ChatGPT Selling Digital Products — 179 subs, 4,627 views, 3.9% conv',
-      '8. Earn In Lakhs Starting Digital Marketing Agency — 354 subs, 9,219 views, 3.8% conv',
-      '',
-      'WHAT ACTUALLY CONVERTS SUBSCRIBERS (real data):',
-      'Community comparison (Gujarati formula): 4.2-4.8% — best format',
-      'Books and resources lists: 4.0% conversion',
-      'AI and ChatGPT income: 3.9% conversion',
-      'Digital marketing agency and skills: 3.8% conversion',
-      'Middle class identity and fear: 3.3-3.5% conversion',
-      'Listicles (5 ways, 4 skills, 7 mistakes): 3.1-3.5% conversion',
-      '',
-      'AVOID THESE (real data shows low conversion despite views):',
-      'Personal travel or experience content — USA Visa video got 41K views but only 1.0% conversion',
-      'High CTR does not equal subscribers — XIRR vs CAGR had 11.4% CTR but only 1.9% conversion',
-      '',
-      'PROVEN TITLE FORMULAS:',
-      'Formula A — Community comparison: How [Wealthy Community] [Do Something Better] — only when culturally true',
-      'Formula B — Books and resources: X [Type] That [Big Outcome] e.g. 7 Books That Made Crores',
-      'Formula C — Fear and identity: Why [Middle Class/Group] [Lose/Fail/Get Trapped]',
-      'Formula D — AI income: Make Money Using [Specific Tool] by [Specific Method]',
-      'Formula E — Trust disruption: Is [Trusted Brand/System] Making You Poor?',
-      '',
-      'COMMUNITY ANGLE — ONLY use when there is a real, well-known truth behind the pairing:',
-      'Gujaratis + Stock Market works because they genuinely have a strong investing and business culture — everyone knows this.',
-      'NRIs + Money works because they genuinely earn in foreign currency and have different financial habits.',
-      'Marwaris + Business works because they are genuinely known for frugality and business acumen.',
-      'DO NOT randomly assign communities to topics. "Why Jains Survive AI" or "Why Sindhis Stay Rich While NRIs Return" is nonsense — do not write this.',
-      'Ask: is there a real, widely known cultural or behavioral truth connecting this community to this topic? If no, do not use the formula.',
-      '',
-      'EMOTIONAL TRIGGERS — use in every title:',
-      'Fear of loss: lose, trap, dying, finished, poor, behind',
-      'Urgency: only these people, by 2031, before it is too late',
-      'Identity: middle class, salary people, job holders',
-      'Trust disruption: Is [X] Making You Poor? Is [X] Lying?',
-      'Status gap: why they win and why we lose',
-      '',
+      'Telugu YouTube content strategist for Umesh Emmadishetty. TODAY: ' + today,
+      'CHANNEL: 12,770 subs. Best performing formats: community comparison (4.2%), fear/loss (4.8%), books lists (4.0%), AI income (3.9%), listicles (3.5%)',
       'FOCUS: ' + focusLabels[focus] + ' | GOAL: ' + goal + ' | COUNT: ' + count,
-      '',
       modeInstructions,
-      trendingContext ? 'LIVE DATA: ' + trendingContext : '',
-      userContext ? 'CREATOR NOTES: ' + userContext : '',
-      '',
-      'INDIA CONTEXT (' + currentYear + '):',
-      'AI replacing entry-level IT work. Freshers struggling for placements. New tax regime anxiety. SIP investors nervous. Dollar strengthening — Rupee under pressure. Gig economy vs IT salary debate. NRI dream questioned. US tariffs and oil prices hitting Indian costs directly.',
-      '',
-      'STRICT TITLE RULES:',
-      'Max 8 words. Name a villain, expose a lie, or challenge a belief. No generic titles.',
-      'The 5 formulas are PATTERNS to learn from, not templates to mechanically fill. Use them only when the topic naturally fits the formula — never force a formula onto a topic just to use it.',
-      'A title must make immediate sense to a Telugu viewer. If someone reads it and thinks "what does that even mean?" — it is wrong.',
-      'Community angle: only when a real cultural truth exists between that community and the topic. 1-2 per batch max.',
-      '',
-      'Respond ONLY with valid JSON, no markdown:',
-      '{"videos":[{"title":"...","type":"growth|revenue","angle":"formula used and why it converts"}],"shorts":[{"hook":"...","concept":"..."}],"hooks":["..."]}',
+      userContext ? 'TODAY CONTEXT (build ideas around this): ' + userContext : '',
+      'INDIA NOW: AI disrupting IT jobs, freshers struggling, tax regime anxiety, SIP nervousness, Rupee pressure, US tariffs hitting costs',
+      'TITLE RULES: Max 8 words. Name a villain or expose a lie. Community angle only when culturally true. No generic titles.',
+      'Respond ONLY valid JSON: {"videos":[{"title":"...","type":"growth|revenue","angle":"..."}],"shorts":[{"hook":"...","concept":"..."}],"hooks":["..."]}',
       'Generate ' + Math.round(count*0.5) + ' videos, ' + Math.round(count*0.25) + ' shorts, ' + Math.round(count*0.25) + ' hooks.',
     ].filter(Boolean).join('\n');
-    const ideasRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1400, messages:[{role:'user',content:ideasPrompt}]})
-    });
+    loadingMsg.textContent = 'Calling API...';
+    
+    var fetchResponse;
+    try {
+      fetchResponse = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1400, messages:[{role:'user',content:ideasPrompt}]})
+      });
+    } catch(fetchErr) {
+      throw new Error('Network error: ' + fetchErr.message + '. Check your internet connection.');
+    }
 
-    const ideasData = await ideasRes.json();
-    if (!ideasRes.ok) throw new Error(ideasData.error ? ideasData.error.message : 'API error ' + ideasRes.status);
-    const raw = ideasData.content && ideasData.content[0] ? ideasData.content[0].text : '';
-    if (!raw) throw new Error('Empty response from API. Try again.');
-    const parsed = safeParseJSON(raw);
+    loadingMsg.textContent = 'Got response (HTTP ' + fetchResponse.status + '). Parsing...';
+    
+    var ideasData;
+    try {
+      ideasData = await fetchResponse.json();
+    } catch(parseErr) {
+      throw new Error('Could not parse API response. Status was: ' + fetchResponse.status);
+    }
+
+    if (!fetchResponse.ok) {
+      var errMsg = ideasData.error ? ideasData.error.message : ('API error ' + fetchResponse.status);
+      throw new Error('API returned error ' + fetchResponse.status + ': ' + errMsg);
+    }
+
+    var raw = ideasData.content && ideasData.content[0] ? ideasData.content[0].text : '';
+    if (!raw) {
+      throw new Error('API returned OK but no content. Full response: ' + JSON.stringify(ideasData).slice(0, 200));
+    }
+    
+    loadingMsg.textContent = 'Parsing ideas...';
+    var parsed = safeParseJSON(raw);
     renderIdeas(parsed);
 
   } catch(err) {
-    if (err.message && err.message.indexOf('401') !== -1) {
-      errorBox.innerHTML = 'Invalid API key. <a href="#" onclick="showApiModal()" style="color:var(--accent)">Update</a>';
-    } else if (err.message && (err.message.indexOf('rate limit') !== -1 || err.message.indexOf('30,000') !== -1 || err.message.indexOf('tokens per minute') !== -1)) {
-      errorBox.innerHTML = '<b>⏱ Rate limit hit.</b> You are sending too many requests. Wait 60 seconds, then click Generate again.';
-    } else {
-      errorBox.textContent = 'Error: ' + (err.message || 'Something went wrong.');
-    }
+    errorBox.textContent = 'Error: ' + err.message;
     errorBox.style.display = 'block';
   } finally {
+    _ideasRunning = false;
     btn.disabled = false;
     loading.style.display = 'none';
     loadingMsg.textContent = 'Analyzing your brand and generating fresh ideas...';
@@ -1485,10 +1363,12 @@ async function fetchScript(title, type) {
       'LANGUAGE — THE UMESH HYBRID FLOW:',
       'Use natural conversational Telugu+English mix — exactly like how educated Telugu people speak in Hyderabad. NOT formal literary Telugu (Grandhika). Use English for technical terms: Financial Literacy, High-income skills, Mindset shift, Cash flow, Portfolio, Multiple streams of income.',
       '',
-      'SENTENCE STARTERS — use these exact openers:',
-      '"Ivaala manam oka dharidramaina rogam gurinchi maatladukundaam..." (Today let us talk about a wretched disease)',
-      '"Asalu vishayam entante..." (The real thing is...)',
-      '"Nenu eppatikappudu cheptha untaanu..." (I keep saying this all the time...)',
+      'SENTENCE STARTERS — use naturally, do not force all three into every script:',
+      '"Asalu vishayam entante..." (The real thing is...) — use to cut through noise and get to the point',
+      '"Nenu eppatikappudu cheptha untaanu..." (I keep saying this all the time...) — use when sharing a conviction',
+      '"Ivaala manam [TOPIC] gurinchi maatladukundaam..." — use for serious problem topics only, not for how-to or inspiration videos',
+      '"Bhayya, oka vishayam cheppalante..." — casual opener for practical how-to videos',
+      '"Meeru ila chestunnara? Adi thappu." — use for common-mistake videos',
       '',
       'DIRECT ADDRESS — use these frequently:',
       'Bhayya, Bro, Friends — keeps it personal and grounded',
@@ -1516,28 +1396,67 @@ async function fetchScript(title, type) {
       '',
       'AUDIENCE: Telugu speakers, 20s-40s, stuck in the middle-class trap. They follow Umesh because he tells them what nobody else will say out loud.',
       '',
-      'SCRIPT STRUCTURE — UMESH 5-STEP LOGIC:',
-      '[HOOK - 0:00-0:45] The Blunt Hook. Start with a hard-hitting question or observation tied to THIS topic. No greeting. No Namaskar. No "Friends, today we will learn...". Slap them with the truth in the first sentence.',
-      '[WHY - 0:45-2:30] The Root Cause. Link the problem to lack of financial literacy OR societal brainwashing OR the middle-class script. Make them feel seen — "idi nee problem matrame kaadu, system ala chesindi."',
-      '[EVIDENCE - 2:30-6:30] The Proof. Real-world data, numbers, book references (Rich Dad Poor Dad, etc.), actual examples. Mention 20% CAGR, High Income Skills (Sales, Digital Marketing) where relevant. Be specific.',
-      '[SOLUTION - 6:30-8:30] The Actionable Fix. Give 3-5 clear no-nonsense steps. No fluff. No vague advice. Each step must be something they can do.',
-      '[OUTRO - 8:30-9:00] ALWAYS end with this exact line: "I hope you enjoy this video. Like, share, and subscribe to learn more about financial freedom. All right, thanks for joining, I will see you in the next video."',
+      'SCRIPT STRUCTURE — pick the format that fits THIS specific topic:',
       '',
-      'CREATOR CONTEXT — draw from this ONLY when it fits naturally:',
-      'Umesh quit 9-6 job in 2020 after reading "10 Commandments for Financial Freedom". Built digital agency. Made 2.5 Crores. Won 2 Comma Club X awards for clients. Mentored 2500+ entrepreneurs. Had 2 business failures before succeeding. Now faces health challenges (kidney dialysis) but still building. Core purpose: FREEDOM and FAMILY.',
-      'He was trained by Dan Lok, Russell Brunson, Brendon Burchard, Peng Joon, Dev Gadhvi.',
-      'His community: Internet Entrepreneurs Club. His brand: Coach Funnels.',
-      'USE when relevant: job trap, salary frustration, side income, entrepreneur mindset, financial freedom.',
-      'DO NOT force into every script — only when genuinely relevant.',
+      'For COMMUNITY / INSIGHT videos (e.g. "How Gujaratis Invest", "What NRIs Know"):',
+      '[HOOK] Surprising contrast or question about the community. Make viewer curious — "why do they do better?"',
+      '[THE TRUTH] What this community actually does differently. Specific, cultural, real.',
+      '[THE EVIDENCE] Data, examples, anecdotes. Prove it is real, not a stereotype.',
+      '[WHAT YOU CAN STEAL] Exact behaviours the viewer can adopt. Practical.',
+      '[OUTRO] Standard outro.',
       '',
-      'CURRENT INDIA REALITY — ground the script in this (as of ' + today + '):',
-      'Rupee under dollar pressure — affecting imports, petrol, NRI remittances.',
-      'IT sector layoffs continuing — freshers struggling to get placed.',
-      'New income tax regime — salaried class anxious about which regime to pick.',
-      'SIP investors nervous after stock market volatility.',
-      'AI tools disrupting jobs — ChatGPT changing which skills are safe.',
-      'Global events (US tariffs, oil prices) directly hitting Indian costs.',
-      'NOTE: Do not state specific dollar rates or market numbers unless you know the exact current figure. Say "current levels" or "right now" instead.',
+      'For BOOK / RESOURCE videos (e.g. "7 Books That Made Me Crores"):',
+      '[HOOK] Why these books changed everything — be specific.',
+      '[BOOK 1-7] Each book: one core insight + one real-world Indian application.',
+      '[PATTERN] What connects all the books — the meta-lesson.',
+      '[OUTRO] Standard outro.',
+      '',
+      'For HOW-TO / PRACTICAL videos (e.g. "How to Get Your First Client", "5 AI Tools"):',
+      '[HOOK] The result the viewer wants — make them feel it is achievable.',
+      '[THE PROBLEM] Why most people fail at this. One specific reason.',
+      '[THE STEPS] 3-5 concrete, actionable steps. Each one must be doable this week.',
+      '[COMMON MISTAKES] One or two things that kill progress — warn them.',
+      '[OUTRO] Standard outro.',
+      '',
+      'For MINDSET / FEAR videos (e.g. "Middle Class Trap", "Society Brainwashed You"):',
+      '[HOOK] The uncomfortable truth. Hard-hitting, no greeting.',
+      '[ROOT CAUSE] Why the system works this way. Not personal failure — systemic design.',
+      '[EVIDENCE] Real data and examples that prove the point.',
+      '[THE WAY OUT] Specific alternative thinking or action.',
+      '[OUTRO] Standard outro.',
+      '',
+      'MATCH THE FORMAT TO THE TITLE. Do not force the "middle class trap / societal brainwashing" frame into community, book, or how-to videos.',
+      '',
+      // Creator story — inject only when topic fits
+      (function() {
+        var t = title.toLowerCase();
+        if (/job|salary|freedom|income|entrepreneur|business|agency|quit|career|money|crore|lakh|earn/.test(t))
+          return 'CREATOR CONTEXT (use ONCE if relevant, not in every section): Umesh quit his 9-5 in 2020, built a digital agency, made 2.5 Crores, mentored 2500+. Now building despite health challenges. His brand: Internet Entrepreneurs Club / Coach Funnels. Only use this if it naturally fits the topic.';
+        return 'DO NOT insert Umesh personal story in this script — it does not fit the topic.';
+      })(),
+      '',
+      // Only inject India context that is RELEVANT to the title
+      (function() {
+        var t = title.toLowerCase();
+        var ctx = [];
+        if (/salary|job|layoff|fresher|it sector|employ|career|work/.test(t))
+          ctx.push('RELEVANT CONTEXT: IT sector layoffs ongoing. Freshers struggling for placements. Salary growth lagging inflation.');
+        if (/rupee|dollar|nri|remit|import|petrol|oil|global|geopolit|crisis|recession|tariff/.test(t))
+          ctx.push('RELEVANT CONTEXT: Rupee under pressure. US tariffs affecting Indian exports. Oil prices hitting transport costs.');
+        if (/sip|mutual fund|invest|stock|sensex|nifty|portfolio|cagr|xirr/.test(t))
+          ctx.push('RELEVANT CONTEXT: SIP investors nervous after market volatility. Many questioning returns vs inflation.');
+        if (/tax|regime|itr|income tax|80c/.test(t))
+          ctx.push('RELEVANT CONTEXT: New vs old income tax regime confusion. Salaried class anxious about which to pick.');
+        if (/ai|chatgpt|claude|automation|tool|digital|freelanc|online income/.test(t))
+          ctx.push('RELEVANT CONTEXT: AI tools reshaping which skills are valuable. Indian freelancers finding new income streams.');
+        if (/middle class|trap|society|brainwash|degree|education/.test(t))
+          ctx.push('RELEVANT CONTEXT: Middle class squeeze — costs rising faster than salaries. Education system not teaching financial literacy.');
+        if (/gujarati|marwari|jain|sindhi|nri|community/.test(t))
+          ctx.push('RELEVANT CONTEXT: Community-specific money habits are real and well-documented. Stick to what is genuinely true about this community.');
+        if (/book|read|author/.test(t))
+          ctx.push('RELEVANT CONTEXT: Ground book references in how they apply to the Indian middle class situation specifically.');
+        return ctx.length ? ctx.join('\n') : '';
+      })(),
       '',
       'STRICT RULES:',
       '- Write ONLY about what the title promises.',
