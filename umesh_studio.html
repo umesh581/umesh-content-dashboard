@@ -1106,14 +1106,70 @@ async function generateIdeas() {
     const ideasPrompt = [
       pipelineExclude,
       'Telugu YouTube content strategist for Umesh Emmadishetty. TODAY: ' + today,
-      'CHANNEL: 12,770 subs. Best performing formats: community comparison (4.2%), fear/loss (4.8%), books lists (4.0%), AI income (3.9%), listicles (3.5%)',
+      '',
+      '=== CHANNEL INTELLIGENCE (last 28 days real data) ===',
+      'Total: 1,008 subs from 67,495 views. CTR 4.2%. Channel now at ~13,800 subs.',
+      '',
+      '3 PROVEN FORMULAS — ranked by actual conversion. Generate ideas ONLY within these buckets:',
+      '',
+      '--- BUCKET 1: COMMUNITY COMPARISON (highest converter — 326 subs from ONE video) ---',
+      'Formula: "How [Wealthy/Successful Community] [Do Something Better Than Average Indians]"',
+      'Proof: Gujarati + Stock Market = 326 subs, 4.2% conversion. Best video of the month.',
+      'Rules: ONLY use when a real, well-known cultural truth connects the community to the topic.',
+      'Valid communities: Marwaris (frugality+business), Jains (wealth preservation), Chettiars (banking/business),',
+      '  NRIs (dollar income+saving habits), Sindhis (entrepreneurship), Parsis (generational wealth),',
+      '  Telugu vs Tamil (money habits comparison), Rajasthanis (desert economy mindset).',
+      'NEVER invent a community angle. If no real truth exists between community and topic — do not use it.',
+      'Target: 2-3 community ideas per batch minimum.',
+      '',
+      '--- BUCKET 2: SURVIVAL URGENCY + AI + IDENTITY (104 subs from ONE video this month) ---',
+      'Formula: "Only These [People/Skills] Will [Survive/Win/Matter] When [Threat] Hits India"',
+      'Proof: "Only These People Survive AI Boom" = 104 subs, 7,564 views.',
+      'Variations that work:',
+      '  - "Only These 3 Skills Will Be Worth Paying For By 2027"',
+      '  - "Only These People Will Have a Job When AI Takes Over India"',
+      '  - "Indians Who Will Get Rich From the AI Boom (Not Who You Think)"',
+      '  - "These Are the Last Safe Jobs in India — Everything Else Is Dying"',
+      'Trigger: AI disruption + IT job fear + income anxiety = peak current anxiety for Telugu audience.',
+      'Target: 2-3 survival/AI ideas per batch.',
+      '',
+      '--- BUCKET 3: TRUST DISRUPTION (37 subs, 6.1% CTR — highest CTR this month) ---',
+      'Formula: "Is [Trusted Institution/Product/Habit] Actually Making You Poor?"',
+      'Proof: "Is Zerodha Making Us Poor?" = 37 subs, 6.1% CTR — highest CTR of all videos.',
+      'Valid targets: PF/EPF (everyone has it deducted), LIC policies, Fixed Deposits, Mutual Fund managers,',
+      '  Education loans, Home loans, Corporate jobs, Health insurance, Gold investments, UPI cashback.',
+      'Must feel like an uncomfortable truth — not a conspiracy. Real data must back it up.',
+      'Target: 1-2 trust disruption ideas per batch.',
+      '',
+      '--- SECONDARY FORMATS (use when focus mode matches) ---',
+      'Books/resources: "X [Books/Tools/People] That [Big Outcome]" — 4.0% conversion',
+      'Middle class identity: "Why [Middle Class/Salary People] [Lose/Fail/Get Trapped]" — 3.5% conversion',
+      'Practical AI income: "How to Make Rs [Specific Amount] Using [Specific Tool] in [Specific Time]" — 3.9%',
+      '',
+      '=== WHAT TO AVOID (from real data) ===',
+      'Generic motivation: "Build Creator Mindset", "Work Smarter to Succeed" — 2-5 subs each, waste of time.',
+      'Shorts under 60 sec: "Stop Chasing 2015 Success" (0:30) = 4 subs. Kill this format.',
+      'Vague AI titles: "AI Is the New Opportunity" = 7 subs. Needs specificity — name the tool, the income.',
+      'EMI/insurance generic: "How EMI Trap Became Modern Slavery" = 5 subs. Too generic.',
+      '',
+      '=== TITLE RULES (non-negotiable) ===',
+      'Max 8 words. Every title must have: a villain OR a victim OR a winner the audience wants to be.',
+      'Urgency words: only, never, before it is too late, by 2027, dying, last.',
+      'Identity words: middle class, salary people, job holders, freshers, IT professionals, Telugu people.',
+      'NO generic titles. If someone can replace "India" with any country and it still works — it is too generic.',
+      '',
       'FOCUS: ' + focusLabels[focus] + ' | GOAL: ' + goal + ' | COUNT: ' + count,
+      '',
       modeInstructions,
-      userContext ? 'TODAY CONTEXT (build ideas around this): ' + userContext : '',
-      'INDIA NOW: AI disrupting IT jobs, freshers struggling, tax regime anxiety, SIP nervousness, Rupee pressure, US tariffs hitting costs',
-      'TITLE RULES: Max 8 words. Name a villain or expose a lie. Community angle only when culturally true. No generic titles.',
-      'Respond ONLY valid JSON: {"videos":[{"title":"...","type":"growth|revenue","angle":"..."}],"shorts":[{"hook":"...","concept":"..."}],"hooks":["..."]}',
+      userContext ? 'TODAY CONTEXT (build ideas FIRST around this, then fill remaining with bucket formulas): ' + userContext : '',
+      '',
+      'INDIA NOW (' + currentYear + '): Dollar strengthening vs Rupee. IT layoffs continuing. AI replacing entry-level work.',
+      'New tax regime anxiety. SIP investors nervous. US tariffs hitting Indian exports. Freshers unable to get placed.',
+      '',
+      'OUTPUT: Respond ONLY with valid JSON, no markdown:',
+      '{"videos":[{"title":"...","bucket":"community|survival|trust|books|middleclass|ai_income","type":"growth|revenue","angle":"which formula used and exactly why it will convert for this audience"}],"shorts":[{"hook":"...","concept":"..."}],"hooks":["..."]}',
       'Generate ' + Math.round(count*0.5) + ' videos, ' + Math.round(count*0.25) + ' shorts, ' + Math.round(count*0.25) + ' hooks.',
+      'Distribute videos: at least 2 community + 2 survival/AI + 1 trust disruption in every batch.',
     ].filter(Boolean).join('\n');
     loadingMsg.textContent = 'Calling API...';
     
@@ -1217,8 +1273,13 @@ function renderIdeas(data) {
       ideaTypeStore.push(v.type || 'neutral');
       const cls = v.type === 'growth' ? 'growth' : v.type === 'revenue' ? 'revenue' : 'neutral';
       const lbl = v.type === 'growth' ? 'Growth' : v.type === 'revenue' ? 'Revenue' : '-';
+      const bucketColors = {community:'#185FA5',survival:'#993C1D',trust:'#854F0B',books:'#3B6D11',middleclass:'#712B13',ai_income:'#534AB7'};
+      const bucketLabels = {community:'Community',survival:'Survival/AI',trust:'Trust Disrupt',books:'Books/Resources',middleclass:'Middle Class',ai_income:'AI Income'};
+      const bucketColor = v.bucket ? (bucketColors[v.bucket] || '#888') : null;
+      const bucketLabel = v.bucket ? (bucketLabels[v.bucket] || v.bucket) : null;
       html += '<div class="idea-card ' + cls + '">';
       html += '<span class="idea-type ' + cls + '">' + lbl + '</span>';
+      if (bucketLabel) html += '<span style="font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:' + bucketColor + '22;color:' + bucketColor + ';border:1px solid ' + bucketColor + '44;margin-top:2px;display:block;font-family:DM Mono,monospace">' + bucketLabel + '</span>';
       html += '<div style="flex:1">';
       html += '<div class="idea-text">' + escHtml(v.title) + '</div>';
       if (v.angle) html += '<div class="idea-angle">' + escHtml(v.angle) + '</div>';
