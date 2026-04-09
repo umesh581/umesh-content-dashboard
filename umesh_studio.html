@@ -434,6 +434,23 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
     <p>Fresh content ideas, scripts & teleprompter — your full content workflow in one place.</p>
   </div>
 
+  <!-- QUICK SCRIPT BOX — paste any title from VidIQ, TubeBuddy, or anywhere -->
+  <div style="background:var(--surface);border:1px solid #2a2a2a;border-left:3px solid var(--accent);border-radius:10px;padding:16px 18px;margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--text)">QUICK SCRIPT</span>
+      <span style="font-size:10px;background:rgba(255,107,43,.12);color:var(--accent);border:1px solid rgba(255,107,43,.25);padding:2px 8px;border-radius:4px;font-weight:700;letter-spacing:.5px;font-family:'DM Mono',monospace">PASTE ANY TITLE</span>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Got an idea from VidIQ, TubeBuddy, or anywhere? Paste the title and go straight to script — skip idea generation entirely.</div>
+    <div style="display:flex;gap:8px;align-items:stretch">
+      <input id="quickScriptInput" type="text" placeholder="e.g. How Marwaris Never Go Broke in a Recession..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')quickScript()">
+      <div style="display:flex;gap:6px">
+        <button onclick="quickScript()" style="background:var(--accent);color:white;border:none;border-radius:7px;padding:10px 16px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:background .15s" onmouseover="this.style.background='#ff5500'" onmouseout="this.style.background='var(--accent)'">WRITE SCRIPT</button>
+        <button onclick="quickShortScript()" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:7px;padding:10px 14px;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer;white-space:nowrap;transition:all .15s" onmouseover="this.style.borderColor='var(--muted)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">SHORT SCRIPT</button>
+      </div>
+    </div>
+    <div id="quickScriptErr" style="color:#f87171;font-size:11px;margin-top:6px;display:none"></div>
+  </div>
+
   <div class="input-panel">
     <div class="input-panel-title">What are we generating today?</div>
     <div class="input-grid">
@@ -450,6 +467,9 @@ main { max-width:900px; margin:0 auto; padding:28px 20px 80px; }
           <option value="money">💸 Money Mastery</option>
           <option value="geo">🌍 Geopolitics & Economy</option>
           <option value="news">React to Today's News</option>
+          <option value="biz_mba">🎓 Online Business MBA</option>
+          <option value="copywriting">✍️ Copywriting / Persuasion</option>
+          <option value="sales_closing">🤝 Sales Closing & Objections</option>
         </select>
       </div>
       <div class="input-group">
@@ -1018,6 +1038,22 @@ function renderSaved() {
 var _ideasRunning = false;
 // Reset on load in case previous session left it stuck
 window.addEventListener('load', function(){ _ideasRunning = false; });
+function quickScript() {
+  var title = document.getElementById('quickScriptInput').value.trim();
+  var err = document.getElementById('quickScriptErr');
+  if (!title) { err.textContent = 'Paste a title first'; err.style.display='block'; return; }
+  err.style.display = 'none';
+  openScript(title, 'growth');
+}
+
+function quickShortScript() {
+  var title = document.getElementById('quickScriptInput').value.trim();
+  var err = document.getElementById('quickScriptErr');
+  if (!title) { err.textContent = 'Paste a title first'; err.style.display='block'; return; }
+  err.style.display = 'none';
+  openShortScript(title);
+}
+
 async function generateIdeas() {
   // Only run when the Ideas tab is active
   if (currentTab !== 'ideas') { return; }
@@ -1039,7 +1075,7 @@ async function generateIdeas() {
   loading.style.display = 'block';
   results.style.display = 'none';
   errorBox.style.display = 'none';
-  const focusLabels = {mixed:'Mixed Growth+Revenue',growth:'Growth/Viral',revenue:'Revenue/Course Sales',mindset:'Mindset & Belief Shifts',stock:'Stock Market & Investing',digital:'Digital Entrepreneurship',ai_income:'AI Income (Practical)',money:'Money Mastery',geo:'Geopolitics & Economy',news:'React to Today\'s News'};
+  const focusLabels = {mixed:'Mixed Growth+Revenue',growth:'Growth/Viral',revenue:'Revenue/Course Sales',mindset:'Mindset & Belief Shifts',stock:'Stock Market & Investing',digital:'Digital Entrepreneurship',ai_income:'AI Income (Practical)',money:'Money Mastery',geo:'Geopolitics & Economy',news:'React to Today\'s News',biz_mba:'Online Business MBA',copywriting:'Copywriting & Persuasion',sales_closing:'Sales Closing & Objections'};
   const today = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
   const todayShort = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
   const currentYear = new Date().getFullYear();
@@ -1079,7 +1115,16 @@ async function generateIdeas() {
       revenue: 'REVENUE AND COURSE SALES: Ideas that lead viewers to want Umesh coaching. Specific skill gaps, sales and digital marketing techniques, how to build a high-ticket offer, funnel strategy explained simply, how to find clients consistently. Leave viewer thinking: I need to learn more from this person.',
       mindset: 'MINDSET: Ideas about mental patterns that keep people stuck. Why people self-sabotage, how society programs mediocrity, psychology of not starting, breaking limiting beliefs about money and success. Specific patterns, not generic motivation.',
       geo: 'GEOPOLITICS AND ECONOMY MODE: Generate ideas about global events and what they mean for ordinary Indians — their money, job, business, savings, and future. This is the most important instruction: ALWAYS connect the global event to a specific Indian impact. Not just what is happening in the world — but exactly how it hits an Indian middle-class person in their wallet, career, or daily life. Examples of the angle: Strait of Hormuz closure means oil prices rise means petrol costs more means transport inflation means your grocery bill goes up. US recession means IT projects get cut means Indian IT employees face bench or layoff. Cover events like: oil supply disruptions, US-China trade war, Middle East conflicts, dollar strengthening, global banking crises, commodity price shocks, shipping route disruptions, sanctions on major economies. Every idea must have: the global trigger, the chain of impact, and the specific Indian consequence.',
-      mixed: 'MIXED: Balanced variety — some viral shareable ideas, some practical business how-to, some mindset-challenging pieces. Different angles and formats.'
+
+      biz_mba: 'ONLINE BUSINESS MBA: Generate ideas that teach the real fundamentals of building an online business — the stuff MBA colleges never teach. Every idea must feel like insider knowledge that gives the viewer an unfair advantage. Focus areas: business models (agency, consulting, info-products, SaaS, freelancing), client acquisition, pricing and packaging services, building systems and SOPs, scaling from 1 lakh to 10 lakh per month, partnerships and joint ventures, business failures and lessons, cash flow management for small businesses, building a personal brand that attracts clients. Titles should feel like leaked secrets or contrarian truths: "The Business Model MBAs Never Learn", "Why Most Online Businesses Fail in Year 2", "How to Price Your Services So Clients Stop Negotiating". Every idea must have a clear lesson, not just a topic.',
+
+      copywriting: 'COPYWRITING AND PERSUASION SECRETS: Generate ideas that teach the hidden psychology behind words that sell, persuade, and convert. These are practical, immediately usable techniques — not theory. Focus areas: headline formulas that stop scrolling, the AIDA and PAS frameworks applied to Indian content, writing email subject lines with high open rates, sales page copy for Indian audiences, social media captions that drive comments and shares, storytelling structures that build trust fast, trigger words that create urgency and desire, how to write about yourself without sounding arrogant, rewriting weak copy into strong copy live on camera. Titles should feel like they are revealing a secret weapon: "The One Word That Doubles Your Sales", "Why Your Caption Gets Ignored (And How to Fix It)", "The Copywriting Formula Behind Every Viral Post". Ideas must be specific techniques, not generic advice.',
+
+      sales_closing: 'SALES CLOSING AND OBJECTION HANDLING: Generate ideas that teach how to close deals, handle objections, and convert leads into paying clients — specific to the Indian market and mindset. This is the most practical sales content possible. Focus areas: the exact words to say when someone says "I will think about it", how to handle "your price is too high" without discounting, following up without being desperate, closing on a discovery call, building urgency without fake scarcity, reading buying signals in Indian buyers, the psychology of price anchoring, handling "I need to ask my wife/husband", closing techniques for high-ticket offers, WhatsApp sales scripts that actually work, how to close introverts vs extroverts. Titles must feel like tactical weapons: "The Exact Words to Say When They Say Too Expensive", "How to Close a Sale on WhatsApp Without Being Pushy", "Why Your Discovery Call Ends Without a Sale". Every idea must be a specific scenario or technique, not a general topic.',
+      mixed: 'MIXED: Balanced variety — some viral shareable ideas, some practical business how-to, some mindset-challenging pieces. Different angles and formats.',
+      biz_mba: 'ONLINE BUSINESS MBA: Ideas that teach real business skills — how to validate a business idea, how to build an offer, how to price a service, how to find customers, how to run operations, how to scale. Frame each idea like a business school lesson but delivered in plain street language. Topics: business models, revenue streams, productising a skill, building systems, hiring, managing cash flow, going from freelancer to agency. Every idea must be immediately actionable — the viewer learns something they can apply to their own business this week.',
+      copywriting: 'COPYWRITING AND PERSUASION SECRETS: Ideas that teach the psychology and mechanics of writing words that sell. Topics: headline formulas, the AIDA framework, how to write a compelling offer, email subject lines that get opened, social media captions that drive action, how to write a sales page, storytelling in copy, the power of specificity, how to use fear and desire in writing, swipe file breakdowns of famous ads. Every idea should reveal a secret or principle most people do not know — make the viewer feel like they are getting insider knowledge. Format: breakdowns, before/after rewrites, formulas with examples.',
+      sales_closing: 'SALES CLOSING AND OBJECTION HANDLING: Ideas that teach real sales skills — how to handle "I need to think about it", "It is too expensive", "I need to talk to my spouse", "I can find this cheaper elsewhere". Topics: the assumptive close, the takeaway close, how to create urgency without pressure, how to qualify prospects, how to ask for the sale without feeling pushy, tonality and pacing in sales calls, the psychology of objections, handling price resistance, following up without being annoying, going from free consult to paid client. Every idea must be practical — specific scripts, exact phrases, word-for-word responses to objections. Target audience: coaches, consultants, freelancers, agency owners who sell on calls or in DMs.'
     };
     const modeInstructions = focusModeMap[focus] || focusModeMap['mixed'];
     // Build pipeline exclusion context inline — no wrapper needed
@@ -1408,6 +1453,39 @@ async function fetchScript(title, type) {
         '"Salary account lo money vasthundhi, kaani naaku cheppu — naledhu ki em migultundhi?"',
         '"Idi meeru thappu kaadhu. System ilane pettaaru. Kaani system ni understand chesthe, meeru change avvagalaru."',
       ].join('\n');
+      if (focus === 'biz_mba') return [
+        '',
+        'TOPIC CONTEXT — ONLINE BUSINESS MBA:',
+        'This is a business education video for Indian entrepreneurs and aspiring online business owners.',
+        '- Focus on real business mechanics: finding clients, pricing, scaling, systemising',
+        '- Use Indian business context: INR revenue numbers, Razorpay, Instamojo, Indian client behaviour',
+        '- Reference real models: digital agency, consulting, coaching, freelancing, info-products',
+        '- Include real INR numbers: how to go from 0 to 1 lakh/month, how to charge 50,000 for a project',
+        '- Every point must be something the viewer can act on this week',
+        '- Tone: mentor who built a real business sharing what actually worked, not textbook theory',
+      ].join('\n');
+      if (focus === 'copywriting') return [
+        '',
+        'TOPIC CONTEXT — COPYWRITING AND PERSUASION:',
+        'This is a practical copywriting skill video for Indian creators, marketers, and business owners.',
+        '- Teach specific techniques with before/after examples — show weak copy vs strong copy',
+        '- Apply to platforms Indians use: Instagram captions, YouTube titles, WhatsApp messages, email subject lines',
+        '- Name specific frameworks: PAS (Problem-Agitate-Solution), AIDA, 4Ps, before-after-bridge',
+        '- Use Indian examples: Indian product names, Indian campaigns, cultural references',
+        '- Viewer must be able to rewrite their own copy immediately after watching',
+        '- Tone: creative strategist revealing insider secrets, not a boring marketing lecture',
+      ].join('\n');
+      if (focus === 'sales_closing') return [
+        '',
+        'TOPIC CONTEXT — SALES CLOSING AND OBJECTION HANDLING:',
+        'This is a practical sales video for Indian coaches, freelancers, agency owners, and consultants.',
+        '- Teach exact words to say in specific sales situations — script-level specificity',
+        '- Indian-specific scenarios: WhatsApp follow-ups, discovery calls, family objections, price negotiation',
+        '- Teach psychology behind the objection first, then the exact counter to use',
+        '- Role-play format: when they say X, you say Y',
+        '- Use INR amounts: closing a 10,000 project vs 1 lakh package vs 5 lakh retainer',
+        '- Tone: battle-tested sales coach sharing field-tested scripts, not motivational fluff',
+      ].join('\n');
       return '';
     })();
 
@@ -1488,6 +1566,28 @@ async function fetchScript(title, type) {
       '',
       'MATCH THE FORMAT TO THE TITLE. Do not force the "middle class trap / societal brainwashing" frame into community, book, or how-to videos.',
       '',
+      'For ONLINE BUSINESS MBA videos (business models, revenue, systems):',
+      '[HOOK 0:00-0:45] The business insight in one sentence. Make them feel it is simpler than they thought.',
+      '[THE CONCEPT 0:45-2:00] What this business principle is. Plain language, no jargon.',
+      '[REAL EXAMPLE 2:00-5:00] One specific real-world example broken down step by step. Numbers, timelines, outcomes.',
+      '[HOW TO APPLY 5:00-8:00] Exactly how the viewer applies this to their own business this week. Step-by-step.',
+      '[OUTRO] Standard close.',
+      '',
+      'For COPYWRITING / PERSUASION videos (writing, headlines, frameworks):',
+      '[HOOK 0:00-0:45] Show a before/after example immediately. Bad copy vs good copy. No explanation yet — just show the difference.',
+      '[THE PRINCIPLE 0:45-2:30] The one rule or formula behind the difference. Name it.',
+      '[3 MORE EXAMPLES 2:30-6:30] Apply the principle to 3 different contexts — social media, email, sales page.',
+      '[YOUR TURN 6:30-8:30] Give them a template or fill-in-the-blank formula they can use immediately.',
+      '[OUTRO] Standard close.',
+      '',
+      'For SALES CLOSING / OBJECTION HANDLING videos (scripts, responses, techniques):',
+      '[HOOK 0:00-0:45] State the exact objection or scenario. "Someone just said X to you on a sales call. Here is exactly what to say."',
+      '[WHY THEY REALLY SAID IT 0:45-2:30] The real psychology behind the objection. It is rarely what it seems.',
+      '[THE WRONG RESPONSE 2:30-3:30] What most people say — and why it kills the sale.',
+      '[THE RIGHT RESPONSE 3:30-7:00] Word-for-word script with explanation of each line. Tonality notes.',
+      '[PRACTICE DRILL 7:00-8:30] A quick roleplay or mental rehearsal the viewer can do alone.',
+      '[OUTRO] Standard close.',
+      '',
       // Creator story — inject only when topic fits
       (function() {
         var t = title.toLowerCase();
@@ -1516,6 +1616,12 @@ async function fetchScript(title, type) {
           ctx.push('RELEVANT CONTEXT: Community-specific money habits are real and well-documented. Stick to what is genuinely true about this community.');
         if (/book|read|author/.test(t))
           ctx.push('RELEVANT CONTEXT: Ground book references in how they apply to the Indian middle class situation specifically.');
+        if (/business|mba|model|revenue|offer|client|customer|scale|agency|freelanc/.test(t))
+          ctx.push('RELEVANT CONTEXT: Indian business context — bootstrapped businesses, small budgets, local clients, digital services. INR pricing, Indian payment gateways, Indian platforms like Instagram and WhatsApp for sales.');
+        if (/copy|persuasion|headline|caption|write|sales page|email|hook/.test(t))
+          ctx.push('RELEVANT CONTEXT: Examples should use Indian brands, Indian products, Indian scenarios. Show how the principle applies to Instagram captions, WhatsApp messages, or YouTube titles that Indian creators and businesses actually use.');
+        if (/sales|closing|objection|prospect|client|consult|call|dm|price/.test(t))
+          ctx.push('RELEVANT CONTEXT: Indian sales context — selling coaching, consulting, or services via WhatsApp, DMs, or video calls. Common Indian objections: "baat karke batata hoon", price sensitivity, family decision-making, trust barriers with online sellers.');
         return ctx.length ? ctx.join('\n') : '';
       })(),
       '',
